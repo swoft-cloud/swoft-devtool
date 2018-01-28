@@ -7,9 +7,10 @@
         "swoft",
         "devtool"
     ],
-    "description": "devtool for swoft",
+    "description": "devTool for swoft",
     "license": "Apache-2.0",
     "require": {
+        "swoft/console": "dev-component",
         "swoft/framework": "dev-component"
     },
     "autoload": {
@@ -36,7 +37,6 @@
         }
     ],
     "require-dev": {
-        "eaglewu/swoole-ide-helper": "dev-master",
         "phpunit/phpunit": "^5.7"
     },
     "scripts": {

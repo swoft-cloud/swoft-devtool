@@ -5,17 +5,15 @@
  * User: Inhere
  * Date: 2018/1/26 0026
  * Time: 22:11
- * @var \Inhere\Console\Components\PharCompiler $compiler
+ * @var \Swoft\DevTool\PharCompiler $compiler
  */
 
 // config
 $compiler
-  // ->stripComments(false)
+  ->stripComments(false)
   ->setShebang(true)
   ->addExclude([
-    'demo',
-    'tests',
-    'tmp',
+    'test',
   ])
   ->addFile([
     'LICENSE',
@@ -23,7 +21,7 @@ $compiler
     'README.md',
     'tests/bootstrap.php',
   ])
-  ->setCliIndex('examples/app')
+  ->setCliIndex('bin/devtool')
   // ->setWebIndex('web/index.php')
   // ->setVersionFile('config/config.php')
 ;

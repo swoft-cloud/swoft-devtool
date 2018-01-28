@@ -1,3 +1,6 @@
 #!/usr/bin/env php
 <?php
 
+$console = new \Swoft\Console\Console();
+
+$console->run();
