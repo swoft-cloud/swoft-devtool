@@ -1,12 +1,5 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Inhere
- * Date: 2018/1/18 0018
- * Time: 21:32
- */
-
-namespace Swoft\DevTool;
+namespace Swoft\Devtool;
 
 use Seld\PharUtils\Timestamps;
 use Swoft\Helper\DirHelper;

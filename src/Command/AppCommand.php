@@ -1,14 +1,7 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Inhere
- * Date: 2018/1/28 0028
- * Time: 16:51
- */
+namespace Swoft\Devtool\Command;
 
-namespace Swoft\DevTool\Command;
-
-use Swoft\DevTool\PharCompiler;
+use Swoft\Devtool\PharCompiler;
 use Swoft\Helper\DirHelper;
 use Swoft\Console\Bean\Annotation\Command;
 
@@ -54,8 +47,8 @@ class AppCommand
 
     /**
      * pack project to a phar package
-     * @usage {fullCommand} [--dir DIR] [--output FILE]
-     * @options
+     * @Usage {fullCommand} [--dir DIR] [--output FILE]
+     * @Options
      *  --dir STRING            Setting the project directory for packing.
      *                          - default is current work-dir.(<comment>{workDir}</comment>)
      *  --fast BOOL             Fast build. only add modified files by <cyan>git status -s</cyan>
@@ -146,13 +139,13 @@ class AppCommand
 
     /**
      * unpack a phar package to a directory
-     * @usage {fullCommand} -f FILE [-d DIR]
-     * @options
+     * @Usage {fullCommand} -f FILE [-d DIR]
+     * @Options
      *  -f, --file STRING   The packed phar file path
      *  -d, --dir STRING    The output dir on extract phar package.
      *  -y, --yes BOOL      Whether display goon tips message.
      *  --overwrite BOOL    Whether overwrite exists files on extract phar
-     * @example {fullCommand} -f myapp.phar -d var/www/app
+     * @Example {fullCommand} -f myapp.phar -d var/www/app
      * @return int
      * @throws \RuntimeException
      * @throws \BadMethodCallException
