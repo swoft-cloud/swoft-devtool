@@ -10,7 +10,7 @@
     "description": "devTool for swoft",
     "license": "Apache-2.0",
     "require": {
-        "swoft/console": "dev-component",
+        "swoft/console": "dev-master",
         "swoft/framework": "dev-component"
     },
     "autoload": {
