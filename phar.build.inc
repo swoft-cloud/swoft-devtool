@@ -5,12 +5,12 @@
  * User: Inhere
  * Date: 2018/1/26 0026
  * Time: 22:11
- * @var \Swoft\DevTool\PharCompiler $compiler
+ * @var \Swoft\Devtool\PharCompiler $compiler
  */
 
 // config
 $compiler
-  ->stripComments(false)
+  ->stripComments(true)
   ->setShebang(true)
   ->addExclude([
     'test',
@@ -29,7 +29,11 @@ $compiler
 // Console 下的 Command Controller 命令类不去除注释，注释上是命令帮助信息
 $compiler->setStripFilter(function ($file) {
   /** @var \SplFileInfo $file */
-  $name = $file->getFilename();
+  $path = $file->getPath();
 
-  return false === strpos($name, 'Command.php') && false === strpos($name, 'Controller.php');
+  if (strpos($path, 'swoft')) {
+    return false;
+  }
+
+  return false === strpos($file->getFilename(), 'Command.php');
 });

@@ -15,10 +15,10 @@
     },
     "autoload": {
         "psr-4": {
-            "Swoft\\Devtool\\": "src/"
+            "Swoft\\Devtool\\": "app/"
         },
         "files": [
-            "src/Helper/Functions.php"
+            "app/Helper/Functions.php"
         ]
     },
     "autoload-dev": {
