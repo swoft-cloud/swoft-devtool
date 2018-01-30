@@ -6,10 +6,10 @@ use Swoft\Helper\DirHelper;
 use Swoft\Console\Bean\Annotation\Command;
 
 /**
- * the group command list of http-server
+ * There are some help command for application
  *
  * @Command(coroutine=false)
- * @uses      ServerCommand
+ * @uses      AppCommand
  * @version   2017年10月06日
  * @author    stelin <phpcrazy@126.com>
  * @copyright Copyright 2010-2016 swoft software
@@ -24,7 +24,7 @@ class AppCommand
      * app:{command} [arguments] [options]
      *
      * @Options
-     * -d,--d start by daemonized process
+     * --test start by daemonized process
      *
      * @throws \RuntimeException
      */
@@ -52,15 +52,15 @@ class AppCommand
      *  --dir STRING            Setting the project directory for packing.
      *                          - default is current work-dir.(<comment>{workDir}</comment>)
      *  --fast BOOL             Fast build. only add modified files by <cyan>git status -s</cyan>
-     *  -c, --config STRING     Use the defined config for build phar.
      *  --output STRING         Setting the output file name(<comment>app.phar</comment>)
      *  --refresh BOOL          Whether build vendor folder files on phar file exists(<comment>False</comment>)
+     *  -c, --config STRING     Use the defined config for build phar.
      * @return int
      * @throws \InvalidArgumentException
      * @throws \BadMethodCallException
      * @throws \RuntimeException
      */
-    public function packCommand(): int
+    public function pack(): int
     {
         $time = microtime(1);
         $workDir = input()->getPwd();
@@ -150,7 +150,7 @@ class AppCommand
      * @throws \RuntimeException
      * @throws \BadMethodCallException
      */
-    public function unpackCommand(): int
+    public function unpack(): int
     {
         if (!$path = input()->getSameOpt(['f', 'file'])) {
             return output()->writeln("<error>Please input the phar file path by option '-f|--file'</error>");
