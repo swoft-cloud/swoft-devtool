@@ -1,6 +1,7 @@
 <?php
 namespace Swoft\Devtool\Command;
 
+use Swoft\Console\Bean\Annotation\Mapping;
 use Swoft\Devtool\PharCompiler;
 use Swoft\Helper\DirHelper;
 use Swoft\Console\Bean\Annotation\Command;
@@ -26,9 +27,10 @@ class AppCommand
      * @Options
      * --test start by daemonized process
      *
+     * @Mapping("init")
      * @throws \RuntimeException
      */
-    public function init()
+    public function initApp()
     {
         output()->writeln('Create runtime directoies: ', false);
 
