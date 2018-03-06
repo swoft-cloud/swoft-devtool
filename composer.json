@@ -10,8 +10,8 @@
     "description": "devTool for swoft",
     "license": "Apache-2.0",
     "require": {
-        "swoft/console": "dev-master",
-        "swoft/framework": "dev-master"
+        "swoft/console": "^1.0",
+        "swoft/framework": "^1.0"
     },
     "autoload": {
         "psr-4": {
@@ -27,10 +27,6 @@
         }
     },
     "repositories": [
-        {
-            "type": "vcs",
-            "url": "https://github.com/swoft-cloud/framework"
-        },
         {
             "type": "composer",
             "url": "https://packagist.phpcomposer.com"
