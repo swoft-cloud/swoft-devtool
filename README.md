@@ -7,7 +7,7 @@ Dev tool for swoft
 - composer command
 
 ```bash
-composer require swoft/console
+composer require swoft/devtool
 ```
 
 # Document
