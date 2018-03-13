@@ -25,7 +25,7 @@ class AppCommand
      * app:{command} [arguments] [options]
      *
      * @Options
-     * --test start by daemonized process
+     *   --test start by daemonized process
      *
      * @Mapping("init")
      * @throws \RuntimeException
@@ -49,14 +49,14 @@ class AppCommand
 
     /**
      * pack project to a phar package
-     * @Usage {fullCommand} [--dir DIR] [--output FILE]
+     * @Usage {command} [--dir DIR] [--output FILE]
      * @Options
-     *  --dir STRING            Setting the project directory for packing.
-     *                          - default is current work-dir.(<comment>{workDir}</comment>)
-     *  --fast BOOL             Fast build. only add modified files by <cyan>git status -s</cyan>
-     *  --output STRING         Setting the output file name(<comment>app.phar</comment>)
-     *  --refresh BOOL          Whether build vendor folder files on phar file exists(<comment>False</comment>)
-     *  -c, --config STRING     Use the defined config for build phar.
+     *   --dir STRING            Setting the project directory for packing.
+     *                           - default is current work-dir.(<comment>{workDir}</comment>)
+     *   --fast BOOL             Fast build. only add modified files by <cyan>git status -s</cyan>
+     *   --output STRING         Setting the output file name(<comment>app.phar</comment>)
+     *   --refresh BOOL          Whether build vendor folder files on phar file exists(<comment>False</comment>)
+     *   -c, --config STRING     Use the defined config for build phar.
      * @return int
      * @throws \InvalidArgumentException
      * @throws \BadMethodCallException
@@ -88,21 +88,21 @@ class AppCommand
             " phar file: <info>$pharFile</info>"
         );
 
-        output()->writeln('<info>Pack file to Phar: </info>');
+        \output()->writeln('<info>Pack file to Phar: </info>');
         $cpr->onError(function ($error) {
-            output()->writeln("<warning>$error</warning>");
+            \output()->writeln("<warning>$error</warning>");
         });
 
         if (input()->getOpt('debug')) {
             $cpr->onAdd(function ($path) {
-                output()->writeln(" <comment>+</comment> $path");
+                \output()->writeln(" <comment>+</comment> $path");
             });
         }
 
         // packing ...
         $cpr->pack($pharFile, $refresh);
 
-        output()->writeln([
+        \output()->writeln([
             PHP_EOL . '<success>Phar build completed!</success>',
             " - Phar file: $pharFile",
             ' - Phar size: ' . round(filesize($pharFile) / 1024 / 1024, 2) . ' Mb',
@@ -141,12 +141,12 @@ class AppCommand
 
     /**
      * unpack a phar package to a directory
-     * @Usage {fullCommand} -f FILE [-d DIR]
+     * @Usage {command} -f FILE [-d DIR]
      * @Options
-     *  -f, --file STRING   The packed phar file path
-     *  -d, --dir STRING    The output dir on extract phar package.
-     *  -y, --yes BOOL      Whether display goon tips message.
-     *  --overwrite BOOL    Whether overwrite exists files on extract phar
+     *   -f, --file STRING   The packed phar file path
+     *   -d, --dir STRING    The output dir on extract phar package.
+     *   -y, --yes BOOL      Whether display goon tips message.
+     *   --overwrite BOOL    Whether overwrite exists files on extract phar
      * @Example {fullCommand} -f myapp.phar -d var/www/app
      * @return int
      * @throws \RuntimeException
