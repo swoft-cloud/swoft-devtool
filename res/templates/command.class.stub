@@ -1,0 +1,37 @@
+<?php
+
+namespace {= namespace};
+
+use Swoft\Console\Bean\Annotation\Command;
+use Swoft\Console\Input\Input;
+use Swoft\Console\Output\Output;
+
+/**
+ * This is a example command class
+ * @Command(coroutine=false)
+ * @package {= namespace}
+ */
+class GenCommand
+{
+    /**
+     * this is a example command
+     * @Usage {command} [arguments] [--options ...]
+     * @Arguments
+     *   first STRING        The first argument value
+     *   second STRING       The second argument value
+     * @Options
+     *   --opt STRING        Setting the project directory for packing.
+     *   -s BOOL             Whether build vendor folder files on phar file exists(<comment>False</comment>)
+     * @Example {command} FIRST SECOND --opt -o
+     * @param Input $input
+     * @param Output $output
+     * @return int
+     */
+    public function {= defaultName}(Input $input, Output $output): int
+    {
+        // some logic ...
+        $output->write('hello, this is ' . __METHOD__);
+
+        return 0;
+    }
+}
