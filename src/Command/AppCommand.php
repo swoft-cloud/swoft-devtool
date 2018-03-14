@@ -28,6 +28,7 @@ class AppCommand
      *   --test start by daemonized process
      *
      * @Mapping("init")
+     * @throws \InvalidArgumentException
      * @throws \RuntimeException
      */
     public function initApp()
@@ -57,7 +58,11 @@ class AppCommand
      *   --output STRING         Setting the output file name(<comment>app.phar</comment>)
      *   --refresh BOOL          Whether build vendor folder files on phar file exists(<comment>False</comment>)
      *   -c, --config STRING     Use the defined config for build phar.
+     * @Example
+     *   {fullCommand}                                  Pack current dir to a phar file.
+     *   {fullCommand} --dir vendor/swoft/devtool       Pack the specified dir to a phar file.
      * @return int
+     * @throws \UnexpectedValueException
      * @throws \InvalidArgumentException
      * @throws \BadMethodCallException
      * @throws \RuntimeException
@@ -67,7 +72,7 @@ class AppCommand
         $time = microtime(1);
         $workDir = input()->getPwd();
 
-        $dir = input()->getOpt('dir') ?: $workDir;
+        $dir = \input()->getOpt('dir') ?: $workDir;
         $cpr = $this->configCompiler($dir);
 
         $counter = null;
@@ -84,11 +89,11 @@ class AppCommand
         }
 
         output()->writeln(
-            "Now, will begin building phar package.\n from path: <comment>$workDir</comment>\n" .
+            "Now, will begin building phar package.\n from path: <comment>$dir</comment>\n" .
             " phar file: <info>$pharFile</info>"
         );
 
-        \output()->writeln('<info>Pack file to Phar: </info>');
+        \output()->writeln('<info>Pack file to Phar ... ... </info>');
         $cpr->onError(function ($error) {
             \output()->writeln("<warning>$error</warning>");
         });
@@ -102,14 +107,15 @@ class AppCommand
         // packing ...
         $cpr->pack($pharFile, $refresh);
 
-        \output()->writeln([
+        $info = [
             PHP_EOL . '<success>Phar build completed!</success>',
             " - Phar file: $pharFile",
             ' - Phar size: ' . round(filesize($pharFile) / 1024 / 1024, 2) . ' Mb',
             ' - Pack Time: ' . round(microtime(1) - $time, 3) . ' s',
             ' - Pack File: ' . $cpr->getCounter(),
             ' - Commit ID: ' . $cpr->getVersion(),
-        ]);
+        ];
+        \output()->writeln(\implode("\n", $info));
 
         return 0;
     }
