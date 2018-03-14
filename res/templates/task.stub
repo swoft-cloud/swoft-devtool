@@ -23,7 +23,7 @@ use Swoft\Task\Bean\Annotation\Task;
  * @Task("{= name}")
  * @package {= namespace}
  */
-class {= className} implements EventHandlerInterface
+class {= className}
 {
     /**
      * A work task

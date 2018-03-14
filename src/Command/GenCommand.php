@@ -179,11 +179,11 @@ class GenCommand
     {
         list($config, $data) = $this->collectInfo($in, $out, [
             'suffix' => 'Middleware',
-            'namespace' => 'App\\Middleware',
+            'namespace' => 'App\\Middlewares',
             'tplFilename' => 'middleware',
         ]);
 
-        $dir = $in->getArg(1) ?: '@app/Middleware';
+        $dir = $in->getArg(1) ?: '@app/Middlewares';
 
         return $this->writeFile($dir, $data, $config, $out);
     }

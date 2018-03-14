@@ -30,8 +30,7 @@ class {= className} implements ProcessInterface
         $processName = "$pname myProcess process";
         $process->name($processName);
 
-        echo "Custom child process \n";
-        var_dump(Coroutine::id());
+        echo sprintf("Custom child process, Coroutine-id: %s \n", Coroutine::id());
     }
 
     public function check(): bool
