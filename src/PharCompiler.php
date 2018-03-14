@@ -298,6 +298,7 @@ class PharCompiler
      * @param  string $pharFile The full path to the file to create
      * @param bool $refresh
      * @return string
+     * @throws \UnexpectedValueException
      * @throws \BadMethodCallException
      * @throws \RuntimeException
      * @throws \InvalidArgumentException

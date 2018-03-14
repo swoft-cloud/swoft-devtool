@@ -84,7 +84,7 @@ class GenCommand
     }
 
     /**
-     * Generate http controller class
+     * Generate HTTP controller class
      * @return int
      */
     public function controller(): int
@@ -93,7 +93,7 @@ class GenCommand
     }
 
     /**
-     * Generate rpc service class
+     * Generate RPC service class
      * @return int
      */
     public function rpcService(): int
@@ -102,7 +102,7 @@ class GenCommand
     }
 
     /**
-     * Generate http middleware class
+     * Generate HTTP middleware class
      * @return int
      */
     public function middleware(): int

@@ -12,6 +12,7 @@
     "require": {
         "swoft/console": "^1.0",
         "swoft/framework": "^1.0",
+        "seld/phar-utils": "^1.0",
         "text/template": "~2.3"
     },
     "autoload": {
@@ -37,6 +38,6 @@
         "phpunit/phpunit": "^5.7"
     },
     "scripts": {
-        "test": "./vendor/bin/phpunit -c phpunit.xml"
+        "test": "./vendor/bin/phpunit"
     }
 }

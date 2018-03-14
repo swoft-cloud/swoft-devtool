@@ -1,6 +1,14 @@
 <?php
-require_once dirname(__FILE__, 2) . '/vendor/autoload.php';
-require_once dirname(__FILE__, 2) . '/test/config/define.php';
+
+if (file_exists($file = dirname(__DIR__, 3) . '/autoload.php')) {
+    require $file;
+} elseif (file_exists($file = dirname(__DIR__) . '/vendor/autoload.php')) {
+    require $file;
+} else {
+    exit('OO, The composer autoload file is not found!');
+}
+
+require 'config/define.php';
 
 // init
 \Swoft\App::$isInTest = true;

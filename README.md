@@ -14,6 +14,12 @@ composer require swoft/devtool
 
 Please see [document site](https://doc.swoft.org)
 
+# unit testing
+
+```bash
+phpunit test/unit
+```
+
 # LICENSE
 
 The Component is open-sourced software licensed under the [Apache license](LICENSE).
