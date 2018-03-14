@@ -105,8 +105,8 @@ class PharCompiler
      * @var \Closure[] Some events. if you want to get some info on packing.
      */
     private $events = [
-        'add' => 1,
-        'error' => 1,
+        'add' => 0,
+        'error' => 0,
     ];
 
     /**
@@ -298,6 +298,7 @@ class PharCompiler
      * @param  string $pharFile The full path to the file to create
      * @param bool $refresh
      * @return string
+     * @throws \UnexpectedValueException
      * @throws \BadMethodCallException
      * @throws \RuntimeException
      * @throws \InvalidArgumentException
