@@ -27,7 +27,7 @@ class FileGenerator
     /**
      * @var string Template file name.
      */
-    public $tplFilename = '';
+    protected $tplFilename = '';
 
     /**
      * @var array
@@ -100,6 +100,7 @@ class FileGenerator
     /**
      * @param array $data
      * @return bool|int
+     * @throws \RuntimeException
      * @throws \Leuffen\TextTemplate\TemplateParsingException
      */
     public function render(array $data = [])
@@ -108,8 +109,9 @@ class FileGenerator
             $this->addData($data);
         }
 
+        $tplFile = $this->getTplFile();
         $text = $this->parser
-            ->loadTemplate($this->getTplFile())
+            ->loadTemplate(\file_get_contents($tplFile))
             ->apply($this->data);
 
         return $text;
@@ -119,6 +121,7 @@ class FileGenerator
      * @param string $file
      * @param array $data
      * @return bool|int
+     * @throws \RuntimeException
      * @throws \Leuffen\TextTemplate\TemplateParsingException
      */
     public function renderAs(string $file, array $data = [])
@@ -127,19 +130,28 @@ class FileGenerator
             $this->addData($data);
         }
 
+        $tplFile = $this->getTplFile();
         $text = $this->parser
-            ->loadTemplate($this->getTplFile())
+            ->loadTemplate(\file_get_contents($tplFile))
             ->apply($this->data);
 
-        return \file_put_contents($file, $text);
+        return \file_put_contents($file, $text) > 0;
     }
 
     /**
+     * @param bool $checkIt
      * @return string
+     * @throws \RuntimeException
      */
-    public function getTplFile(): string
+    public function getTplFile(bool $checkIt = true): string
     {
-        return $this->tplDir . $this->tplFilename . $this->tplExt;
+        $file = $this->tplDir . $this->tplFilename . $this->tplExt;
+
+        if (!\file_exists($file)) {
+            throw new \RuntimeException("Template file not exists! File: $file");
+        }
+
+        return $file;
     }
 
     /**

@@ -31,4 +31,40 @@ class {= className}
     {
         return ['item0', 'item1'];
     }
+
+    /**
+     * @RequestMapping(route="{= idVar}", method=RequestMethod::GET)
+     * @return array
+     */
+    public function get(): array
+    {
+        return ['item0'];
+    }
+
+    /**
+     * @RequestMapping(route="{= prefix}", method=RequestMethod::POST)
+     * @return array
+     */
+    public function post(): array
+    {
+        return ['id' => 2];
+    }
+
+    /**
+     * @RequestMapping(route="{= idVar}", method=RequestMethod::PUT)
+     * @return array
+     */
+    public function put(): array
+    {
+        return ['id' => 1];
+    }
+
+    /**
+     * @RequestMapping(route="{= idVar}", method=RequestMethod::DELETE)
+     * @return array
+     */
+    public function del(): array
+    {
+        return ['id' => 1];
+    }
 }
