@@ -35,7 +35,7 @@ class GenCommand
      * @Options
      *   -y, --yes BOOL             Whether to ask when writing a file. default is: <info>True</info>
      *   -o, --override BOOL        Force override exists file. default is: <info>False</info>
-     *   -n, --namespace STRING     The class namespace. default is: <info>App\Command</info>
+     *   -n, --namespace STRING     The class namespace. default is: <info>App\Commands</info>
      *   --suffix STRING            The class name suffix. default is: <info>Command</info>
      *   --tpl-file STRING          The template file name. default is: <info>command.stub</info>
      *   --tpl-dir STRING           The template file dir path.(default: devtool/res/templates)
@@ -132,7 +132,7 @@ class GenCommand
      *   --tpl-file STRING          The template file name. default is: <info>listener.stub</info>
      *   --tpl-dir STRING           The template file dir path.(default: devtool/res/templates)
      * @Example
-     *   <info>{fullCommand} demo</info>     Gen DemoCommand class to `@app/Process`
+     *   <info>{fullCommand} demo</info>     Gen DemoListener class to `@app/Listener`
      * @param Input $in
      * @param Output $out
      * @return int
@@ -167,7 +167,7 @@ class GenCommand
      *   --tpl-file STRING          The template file name. default is: <info>middleware.stub</info>
      *   --tpl-dir STRING           The template file dir path.(default: devtool/res/templates)
      * @Example
-     *   <info>{fullCommand} demo</info>     Gen DemoCommand class to `@app/Process`
+     *   <info>{fullCommand} demo</info>     Gen DemoMiddleware class to `@app/Middlewares`
      * @param Input $in
      * @param Output $out
      * @return int
@@ -202,7 +202,7 @@ class GenCommand
      *   --tpl-file STRING          The template file name. default is: <info>task.stub</info>
      *   --tpl-dir STRING           The template file dir path.(default: devtool/res/templates)
      * @Example
-     *   <info>{fullCommand} demo</info>     Gen DemoCommand class to `@app/Process`
+     *   <info>{fullCommand} demo</info>     Gen DemoTask class to `@app/Tasks`
      * @param Input $in
      * @param Output $out
      * @return int
@@ -276,7 +276,7 @@ class GenCommand
         }
 
         if (!$name) {
-            $out->writeln('<error>No class name input! Quit</error>');
+            $out->writeln('<error>No class name input! Quit</error>', true, 1);
         }
 
         $sfx = $in->getOpt('suffix') ?: $defaults['suffix'];
