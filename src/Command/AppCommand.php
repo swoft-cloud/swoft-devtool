@@ -53,10 +53,10 @@ class AppCommand
      * @Usage {fullCommand} [--dir DIR] [--output FILE]
      * @Options
      *   --dir STRING            Setting the project directory for packing.
-     *                           - default is current work-dir.(<comment>{workDir}</comment>)
+     *                            default is current work-dir.(<comment>{workDir}</comment>)
      *   --fast BOOL             Fast build. only add modified files by <cyan>git status -s</cyan>
-     *   --output STRING         Setting the output file name(<comment>app.phar</comment>)
      *   --refresh BOOL          Whether build vendor folder files on phar file exists(<comment>False</comment>)
+     *   -o,--output STRING      Setting the output file name(<comment>app.phar</comment>)
      *   -c, --config STRING     Use the defined config for build phar.
      * @Example
      *   {fullCommand}                                  Pack current dir to a phar file.
@@ -77,7 +77,7 @@ class AppCommand
 
         $counter = null;
         $refresh = input()->getOpt('refresh');
-        $pharFile = $workDir . '/' . input()->getOpt('output', 'app.phar');
+        $pharFile = $workDir . '/' . (\input()->sameOpt(['o', 'output']) ?: 'app.phar');
 
         // use fast build
         if (\input()->getOpt('fast')) {
@@ -136,14 +136,18 @@ class AppCommand
     public function unpack(): int
     {
         if (!$path = \input()->getSameOpt(['f', 'file'])) {
-            return \output()->writeln("<error>Please input the phar file path by option '-f|--file'</error>");
+            \output()->writeln("<error>Please input the phar file path by option '-f|--file'</error>");
+
+            return 1;
         }
 
         $basePath = \input()->getPwd();
-        $file = realpath($basePath . '/' . $path);
+        $file = \realpath($basePath . '/' . $path);
 
         if (!file_exists($file)) {
-            return \output()->writeln("<error>The phar file not exists. File: $file</error>");
+            \output()->writeln("<error>The phar file not exists. File: $file</error>");
+
+            return 1;
         }
 
         $dir = input()->getSameOpt(['d', 'dir']) ?: $basePath;
