@@ -98,7 +98,7 @@ class GenCommand
         ]);
 
         $dir = $in->getArg(1) ?: '@app/Controllers';
-        $data['prefix'] = $in->getOpt('prefix') ?: '/prefix';
+        $data['prefix'] = $in->getOpt('prefix') ?: '/' . $data['name'];
         $data['idVar'] = '{id}';
 
         if ($in->getOpt('rest', false)) {
