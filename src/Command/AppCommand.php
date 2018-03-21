@@ -22,7 +22,7 @@ class AppCommand
      * init the project, will create runtime dirs
      *
      * @Usage
-     * app:{command} [arguments] [options]
+     *   {fullCommand} [arguments] [options]
      *
      * @Options
      *   --test start by daemonized process

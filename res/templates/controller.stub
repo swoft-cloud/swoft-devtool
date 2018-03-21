@@ -24,6 +24,7 @@ use Swoft\Http\Server\Bean\Annotation\RequestMethod;
 class {= className}
 {
     /**
+     * this is a example action
      * @RequestMapping(route="{= prefix}", method=RequestMethod::GET)
      * @return array
      */

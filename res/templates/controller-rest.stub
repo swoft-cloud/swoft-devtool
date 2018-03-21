@@ -24,6 +24,7 @@ use Swoft\Http\Server\Bean\Annotation\RequestMethod;
 class {= className}
 {
     /**
+     * Get data list
      * @RequestMapping(route="{= prefix}", method=RequestMethod::GET)
      * @return array
      */
@@ -33,6 +34,7 @@ class {= className}
     }
 
     /**
+     * Get one by ID
      * @RequestMapping(route="{= idVar}", method=RequestMethod::GET)
      * @return array
      */
@@ -42,6 +44,7 @@ class {= className}
     }
 
     /**
+     * Create a new record
      * @RequestMapping(route="{= prefix}", method=RequestMethod::POST)
      * @return array
      */
@@ -51,6 +54,7 @@ class {= className}
     }
 
     /**
+     * Update one by ID
      * @RequestMapping(route="{= idVar}", method=RequestMethod::PUT)
      * @return array
      */
@@ -60,6 +64,7 @@ class {= className}
     }
 
     /**
+     * Delete one by ID
      * @RequestMapping(route="{= idVar}", method=RequestMethod::DELETE)
      * @return array
      */
