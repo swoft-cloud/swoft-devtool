@@ -57,10 +57,9 @@ class GenCommand
             'tplFilename' => 'command',
         ]);
 
-        $dir = $in->getArg(1) ?: '@app/Commands';
         $data['commandVar'] = '{command}';
 
-        return $this->writeFile($dir, $data, $config, $out);
+        return $this->writeFile('@app/Commands', $data, $config, $out);
     }
 
     /**
@@ -97,7 +96,6 @@ class GenCommand
             'tplFilename' => 'controller',
         ]);
 
-        $dir = $in->getArg(1) ?: '@app/Controllers';
         $data['prefix'] = $in->getOpt('prefix') ?: '/' . $data['name'];
         $data['idVar'] = '{id}';
 
@@ -105,7 +103,7 @@ class GenCommand
             $config['tplFilename'] = 'controller-rest';
         }
 
-        return $this->writeFile($dir, $data, $config, $out);
+        return $this->writeFile('@app/Controllers', $data, $config, $out);
     }
 
     /**
@@ -148,9 +146,7 @@ class GenCommand
             'tplFilename' => 'listener',
         ]);
 
-        $dir = $in->getArg(1) ?: '@app/Listener';
-
-        return $this->writeFile($dir, $data, $config, $out);
+        return $this->writeFile('@app/Listener', $data, $config, $out);
     }
 
     /**
@@ -183,9 +179,7 @@ class GenCommand
             'tplFilename' => 'middleware',
         ]);
 
-        $dir = $in->getArg(1) ?: '@app/Middlewares';
-
-        return $this->writeFile($dir, $data, $config, $out);
+        return $this->writeFile('@app/Middlewares', $data, $config, $out);
     }
 
     /**
@@ -218,9 +212,7 @@ class GenCommand
             'tplFilename' => 'task',
         ]);
 
-        $dir = $in->getArg(1) ?: '@app/Tasks';
-
-        return $this->writeFile($dir, $data, $config, $out);
+        return $this->writeFile('@app/Tasks', $data, $config, $out);
     }
 
     /**
@@ -253,9 +245,7 @@ class GenCommand
             'tplFilename' => 'process',
         ]);
 
-        $dir = $in->getArg(1) ?: '@app/Process';
-
-        return $this->writeFile($dir, $data, $config, $out);
+        return $this->writeFile('@app/Process', $data, $config, $out);
     }
 
     /**
@@ -291,7 +281,7 @@ class GenCommand
     }
 
     /**
-     * @param string $dir
+     * @param string $defaultDir
      * @param array $data
      * @param array $config
      * @param Output $out
@@ -300,14 +290,18 @@ class GenCommand
      * @throws \RuntimeException
      * @throws \Leuffen\TextTemplate\TemplateParsingException
      */
-    private function writeFile(string $dir, array $data, array $config, Output $out): int
+    private function writeFile(string $defaultDir, array $data, array $config, Output $out): int
     {
         // $out->writeln("Some Info: \n" . \json_encode($config, \JSON_PRETTY_PRINT | \JSON_UNESCAPED_SLASHES));
         $out->writeln("Class data: \n" . \json_encode($data, \JSON_PRETTY_PRINT | \JSON_UNESCAPED_SLASHES));
 
-        $file = App::getAlias($dir) . '/' . $data['className'] . '.php';
+        if (!$saveDir = \input()->getArg(1)) {
+            $saveDir = $defaultDir;
+        }
 
-        $out->writeln("Target File: <info>$file</info>");
+        $file = App::getAlias($saveDir) . '/' . $data['className'] . '.php';
+
+        $out->writeln("Target File: <info>$file</info>\n");
 
         if (\file_exists($file)) {
             $override = \input()->sameOpt(['o', 'override']);
