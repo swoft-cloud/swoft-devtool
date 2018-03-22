@@ -8,9 +8,11 @@
 
 namespace Swoft\Devtool\Controller;
 
+use Swoft\App;
 use Swoft\Http\Server\Bean\Annotation\Controller;
 use Swoft\Http\Server\Bean\Annotation\RequestMapping;
 use Swoft\Http\Server\Bean\Annotation\RequestMethod;
+use Swoft\View\Bean\Annotation\View;
 
 /**
  * Class DashboardController
@@ -22,10 +24,16 @@ class DashboardController
     /**
      * this is a example action
      * @RequestMapping(route="/__devtool", method=RequestMethod::GET)
-     * @return array
+     * View(template="@devtool/res/views/index.php")
+     * @return mixed
+     * @throws \InvalidArgumentException
      */
-    public function index(): array
+    public function index()
     {
-        return ['item0', 'item1'];
+        $data = [
+            '@devtool' => App::getAlias('@devtool')
+        ];
+
+        return \view(App::getAlias('@devtool/res/views/index.php'), $data);
     }
 }

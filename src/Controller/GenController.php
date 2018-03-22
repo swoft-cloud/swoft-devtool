@@ -10,6 +10,7 @@
 
 namespace Swoft\Devtool\Controller;
 
+use Swoft\Http\Message\Server\Request;
 use Swoft\Http\Server\Bean\Annotation\Controller;
 use Swoft\Http\Server\Bean\Annotation\RequestMapping;
 use Swoft\Http\Server\Bean\Annotation\RequestMethod;
@@ -26,10 +27,13 @@ class GenController
     /**
      * this is a example action
      * @RequestMapping(route="/__devtool/gen", method=RequestMethod::GET)
+     * @param Request $request
      * @return array
      */
-    public function index(): array
+    public function index(Request $request): array
     {
+        // $request->isAjax();
+
         return ['item0', 'item1'];
     }
 }

@@ -1,0 +1,56 @@
+<?php
+/**
+ * This file is part of Swoft.
+ *
+ * @link https://swoft.org
+ * @document https://doc.swoft.org
+ * @contact group@swoft.org
+ * @license https://github.com/swoft-cloud/swoft/blob/master/LICENSE
+ */
+
+namespace {= namespace};
+
+use Swoft\Http\Message\Server\Request;
+use Swoft\Http\Message\Server\Response;
+use Swoft\WebSocket\Server\Bean\Annotation\WebSocket;
+use Swoft\WebSocket\Server\WsController;
+
+/**
+ * Class {= className} - This is an controller for handle websocket
+ * @package {= namespace}
+ * @WebSocket("{= path}")
+ */
+class {= className}
+{
+    /**
+     * 在这里你可以验证请求信息
+     * - 返回bool来决定是否进行握手
+     * @param Request $request
+     * @param Response $response
+     * @return bool
+     */
+    public function checkHandshake(Request $request, Response $response): bool
+    {
+        // some validate logic ...
+
+        return true;
+    }
+
+    /**
+     * @param Request $request
+     */
+    public function onOpen(Request $request)
+    {
+
+    }
+
+    public function onMessage()
+    {
+
+    }
+
+    public function onClose()
+    {
+
+    }
+}
