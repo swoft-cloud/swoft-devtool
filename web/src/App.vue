@@ -10,12 +10,15 @@
       fixed
       app
     >
-      <v-toolbar flat>
-        <v-list>
-          <v-list-tile>
-            <v-list-tile-title class="title">
-              Application
-            </v-list-tile-title>
+      <v-toolbar flat class="transparent">
+        <v-list class="pa-0">
+          <v-list-tile avatar>
+            <v-list-tile-avatar>
+              <img src="@/assets/swoft-logo-sm.png"  alt="logo">
+            </v-list-tile-avatar>
+            <v-list-tile-content>
+              Swoft Dev
+            </v-list-tile-content>
           </v-list-tile>
         </v-list>
       </v-toolbar>
@@ -41,20 +44,21 @@
     <!-- top menu -->
     <v-toolbar
       app
+      color="blue-grey lighten-5"
       :clipped-left="clipped"
     >
       <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
       <v-btn icon @click.stop="miniVariant = !miniVariant">
         <v-icon v-html="miniVariant ? 'chevron_right' : 'chevron_left'"></v-icon>
       </v-btn>
+      <!--<v-btn icon @click.stop="fixed = !fixed">-->
+        <!--<v-icon>remove</v-icon>-->
+      <!--</v-btn>-->
+      <v-toolbar-title v-text="title"></v-toolbar-title>
+      <v-spacer></v-spacer>
       <v-btn icon @click.stop="clipped = !clipped">
         <v-icon>web</v-icon>
       </v-btn>
-      <v-btn icon @click.stop="fixed = !fixed">
-        <v-icon>remove</v-icon>
-      </v-btn>
-      <v-toolbar-title v-text="title"></v-toolbar-title>
-      <v-spacer></v-spacer>
       <v-btn icon @click.stop="rightDrawer = !rightDrawer">
         <v-icon>menu</v-icon>
       </v-btn>
@@ -62,8 +66,21 @@
 
     <v-content>
       <v-container :fluid="false">
+        <v-breadcrumbs>
+          <v-icon slot="divider">chevron_right</v-icon>
+          <v-breadcrumbs-item
+            v-for="item in bcItems"
+            :key="item.text"
+            :disabled="item.disabled"
+          >
+            {{ item.text }}
+          </v-breadcrumbs-item>
+        </v-breadcrumbs>
         <router-view></router-view>
+
       </v-container>
+      <!--footer-->
+      <app-footer></app-footer>
     </v-content>
 
     <!--right-->
@@ -83,45 +100,41 @@
         </v-list-tile>
       </v-list>
     </v-navigation-drawer>
-    <v-footer :fixed="fixed" insert app>
-      <span>&copy; 2018</span>
-      <a target="_blank" :href="swoft.githubUrl"> Github</a>
-      <a target="_blank" :href="swoft.issueUrl"><v-icon>bug_report</v-icon> Issues</a>
-    </v-footer>
   </v-app>
 </template>
 
 <script>
-export default {
-  data () {
-    return {
-      clipped: false,
-      drawer: true,
-      fixed: false,
-      uriPrefix: '/__devtool',
-      items: [{
-        icon: 'dashboard',
-        title: 'Dashboard',
-        href: '/'
-      }, {
-        icon: 'list',
-        title: 'Routes',
-        href: '/http/routes'
-      }, {
-        icon: 'insert_drive_file',
-        title: 'Logs',
-        href: '/app/logs'
-      }],
-      miniVariant: false,
-      right: true,
-      rightDrawer: false,
-      title: 'Swoft DEV',
-      swoft: {
-        githubUrl: 'https://github.com/swoft-cloud/swoft',
-        issueUrl: 'https://github.com/swoft-cloud/swoft/issues'
+  import sidebar from './libs/sidebar'
+  import AppFooter from './views/base/AppFooter'
+  import * as VBreadcrumbs from 'vuetify/es5/components/VBreadcrumbs'
+
+  export default {
+    components: {AppFooter, ...VBreadcrumbs},
+    data() {
+      return {
+        clipped: false,
+        drawer: true,
+        fixed: false,
+        uriPrefix: '/__devtool',
+        items: sidebar,
+        miniVariant: false,
+        right: true,
+        rightDrawer: false,
+        title: 'DevTool',
+        swoft: {
+          officialUrl: 'https://swoft.org',
+          githubUrl: 'https://github.com/swoft-cloud/swoft',
+          issueUrl: 'https://github.com/swoft-cloud/swoft/issues'
+        },
+        bcItems: [{
+          text: 'Dashboard',
+          disabled: false
+        }, {
+          text: 'Page',
+          disabled: true
+        }]
       }
-    }
-  },
-  name: 'App'
-}
+    },
+    name: 'App'
+  }
 </script>

@@ -14,7 +14,7 @@ const router = new Router({
 
 router.beforeEach((to, from, next) => {
   // iView.LoadingBar.start()
-  Util.title(to.meta.title)
+  Util.title(to.meta.title ? to.meta.title : to.name)
 
   console.log('before route each')
 
