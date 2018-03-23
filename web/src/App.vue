@@ -1,5 +1,5 @@
 <template>
-  <v-app>
+  <v-app id="app-wrapper">
     <!-- left sidebar -->
     <v-navigation-drawer
       persistent
@@ -64,8 +64,9 @@
       </v-btn>
     </v-toolbar>
 
+    <!-- content -->
     <v-content>
-      <v-container :fluid="false">
+      <v-container :fluid="false" grid-list-md>
         <v-breadcrumbs>
           <v-icon slot="divider">chevron_right</v-icon>
           <v-breadcrumbs-item
@@ -76,7 +77,10 @@
             {{ item.text }}
           </v-breadcrumbs-item>
         </v-breadcrumbs>
-        <router-view></router-view>
+
+        <v-slide-y-transition mode="out-in">
+          <router-view></router-view>
+        </v-slide-y-transition>
 
       </v-container>
       <!--footer-->
@@ -100,22 +104,26 @@
         </v-list-tile>
       </v-list>
     </v-navigation-drawer>
+
+    <n-progress parent="#app-wrapper"></n-progress>
   </v-app>
 </template>
 
 <script>
   import sidebar from './libs/sidebar'
-  import AppFooter from './views/base/AppFooter'
+  import {URI_PREFIX} from './libs/constants'
+  import NProgress from './views/base/NProgress'
+  import AppFooter from './views/parts/AppFooter'
   import * as VBreadcrumbs from 'vuetify/es5/components/VBreadcrumbs'
 
   export default {
-    components: {AppFooter, ...VBreadcrumbs},
+    components: {AppFooter, NProgress, ...VBreadcrumbs},
     data() {
       return {
         clipped: false,
         drawer: true,
         fixed: false,
-        uriPrefix: '/__devtool',
+        uriPrefix: URI_PREFIX,
         items: sidebar,
         miniVariant: false,
         right: true,
@@ -132,7 +140,12 @@
         }, {
           text: 'Page',
           disabled: true
-        }]
+        }],
+        gotoOpts: {
+          duration: 300,
+          offset: 0,
+          easing: 'easeInOutCubic'
+        }
       }
     },
     name: 'App'

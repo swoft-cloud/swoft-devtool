@@ -22,6 +22,9 @@ let util = {
   toFixed(num, decimals = 2) {
     return (num * 1).toFixed(decimals)
   },
+  timestamp () {
+    return Date.parse(new Date()) / 1000
+  },
   // string
   lcFirst(str) {
     return str.substr(0, 1).toLowerCase() + str.slice(1)

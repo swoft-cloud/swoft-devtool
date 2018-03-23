@@ -15,6 +15,22 @@
         &copy;2018 — <strong>Swoft</strong>
       </v-flex>
     </v-layout>
+    <v-fab-transition>
+      <v-btn
+        color="blue"
+        fab
+        dark
+        small
+        bottom
+        fixed
+        right
+        v-show="1"
+        @click="$vuetify.goTo('#app-wrapper', gotoOpts)"
+        ref="button"
+      >
+        <v-icon>keyboard_arrow_up</v-icon>
+      </v-btn>
+    </v-fab-transition>
   </v-footer>
 </template>
 

@@ -1,5 +1,4 @@
 <template>
-  <v-slide-y-transition mode="out-in">
     <div>
       <v-card>
         <v-card-title>
@@ -82,7 +81,6 @@
         </v-data-table>
       </v-card>
     </div>
-  </v-slide-y-transition>
 </template>
 
 <script>
