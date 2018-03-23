@@ -15,15 +15,15 @@
           ></v-text-field>
         </v-flex>
         <v-flex xs5>
-          <v-btn :disabled="wsUrlIsEmpty" @click="connect" color="info">
-            <v-icon>link</v-icon> Connect
+          <v-btn :disabled="wsUrlIsEmpty" @click="connect" color="info" class="px-2">
+            Connect
           </v-btn>
           <v-btn :disabled="!isConnected" @click="disconnect" color="warning">
-            <v-icon>do_not_disturb</v-icon> Disconnect
+            Disconnect
           </v-btn>
         </v-flex>
         <v-alert :value="true" color="error" icon="warning" v-show="errorMsg">
-          <v-icon>error</v-icon> {{errorMsg}}
+          {{errorMsg}}
         </v-alert>
       </v-layout>
       <v-layout row wrap>
@@ -39,7 +39,10 @@
             </v-card-text>
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn color="green" @click="send"><v-icon>send</v-icon> Send</v-btn>
+              <v-btn color="green" @click="send">
+                <v-icon>send</v-icon>
+                Send
+              </v-btn>
             </v-card-actions>
           </v-card>
         </v-flex>
@@ -49,11 +52,21 @@
     <v-flex d-flex xs12 md8>
       <v-card color="grey lighten-4" flat>
         <v-card-text>
-          <v-subheader><v-icon>textsms</v-icon> Message Box</v-subheader>
-          <v-container fluid fill-height>
-            <v-layout row fill-height>
-              <v-flex xs12 v-for="item in messages" key="item.date">
-                {{item.msg}}
+          <v-subheader>
+            <v-icon>textsms</v-icon>
+            Message Box
+          </v-subheader>
+          <v-container fluid>
+            <v-layout row wrap v-for="(item, idx) in messages" :key="idx">
+              <v-flex xs12>
+                <v-avatar size="30px" class="teal" v-if="item.type === 1">
+                  <span class="white--text headline">C</span>
+                </v-avatar>
+                <v-avatar size="30px" class="blue" v-else>
+                  <span class="white--text headline">S</span>
+                </v-avatar>
+                <span> {{item.date}}</span>
+                <p>{{item.msg}}</p>
               </v-flex>
             </v-layout>
           </v-container>
@@ -76,16 +89,13 @@
 </template>
 
 <script>
-  import {VAlert, VSubheader} from 'vuetify'
+  import {VAlert, VAvatar, VSubheader} from 'vuetify'
   import * as VCard from 'vuetify/es5/components/VCard'
   import Util from '../../libs/util'
 
-  // ws instance
-  let ws = null
-
   export default {
     name: 'web-socket',
-    components: {VAlert, VSubheader, ...VCard},
+    components: {VAlert, VAvatar, VSubheader, ...VCard},
     data() {
       return {
         ws: null,
@@ -93,7 +103,15 @@
         locWsUrl: '',
         errorMsg: '',
         message: '',
-        messages: [],
+        messages: [{
+          type: 1,
+          msg: 'send',
+          date: '2018-03-23 12:45:34'
+        }, {
+          type: 2,
+          msg: 'receive',
+          date: '2018-03-23 12:45:44'
+        }],
         urlHistories: [],
         defaultUrls: [
           'wss://echo.websocket.org/'
@@ -116,40 +134,46 @@
     mounted() {
     },
     computed: {
-      wsUrlIsEmpty () {
+      wsUrlIsEmpty() {
         return this.wsUrl === ''
       },
-      isConnected () {
+      isConnected() {
         return this.ws !== null
       }
     },
     methods: {
       connect() {
+        if (this.ws) {
+          this.errorMsg = 'websocket server has been connected!'
+          return
+        }
+
         let app = this
         let timer
 
         app.errorMsg = ''
 
-        ws = new WebSocket(this.wsUrl)
-        ws.onerror = function error(e) {
+        this.ws = new WebSocket(this.wsUrl)
+        this.ws.onerror = function error(e) {
           console.log('connect failed!')
           app.errorMsg = 'connect failed! server url:' + app.wsUrl
         }
 
-        ws.onopen = function open() {
+        this.ws.onopen = function open() {
           console.log('connected')
 
           // send Heartbeat
           timer = setTimeout(function () {
-            ws.send('@heartbeat')
+            app.ws.send('@heartbeat')
           }, 20000)
         }
 
-        ws.onmessage = function incoming(data) {
-          app.saveMessage(data, 2)
+        this.ws.onmessage = function incoming(me) {
+          console.log('received', me)
+          app.saveMessage(me.data, 2)
         }
 
-        ws.onclose = function close() {
+        this.ws.onclose = function close() {
           console.log('disconnected')
 
           clearTimeout(timer)
@@ -157,8 +181,8 @@
         }
       },
       disconnect() {
-        if (ws) {
-          ws.close()
+        if (this.ws) {
+          this.ws.close()
         }
       },
       send() {
@@ -166,13 +190,16 @@
 
         if (!msg) {
           this.errorMsg = 'the message cannot be empty'
+          return
         }
 
-        if (!ws) {
+        if (!this.ws) {
           this.errorMsg = 'please connect to websocket server before send message!'
+          return
         }
 
-        ws.send(msg)
+        this.ws.send(msg)
+        this.saveMessage(msg)
       },
       saveMessage(msg, type = 1) {
         this.messages.push({
@@ -181,7 +208,7 @@
           date: Util.formatDate.format(new Date(), 'yyyy-MM-dd hh:mm:ss')
         })
       },
-      clearMessages () {
+      clearMessages() {
         this.messages = []
       }
     }
