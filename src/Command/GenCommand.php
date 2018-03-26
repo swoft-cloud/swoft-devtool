@@ -73,7 +73,7 @@ class GenCommand
      *   -o, --override BOOL        Force override exists file. default is: <info>False</info>
      *   -n, --namespace STRING     The class namespace. default is: <info>App\Controllers</info>
      *   --rest BOOL                The class will contains CURD action. default is: <info>False</info>
-     *   --prefix STRING            The route prefix for the controller. default is: <info>App\Controllers</info>
+     *   --prefix STRING            The route prefix for the controller. default is class name
      *   --suffix STRING            The class name suffix. default is: <info>Controller</info>
      *   --tpl-file STRING          The template file name. default is: <info>command.stub</info>
      *   --tpl-dir STRING           The template file dir path.(default: devtool/res/templates)
@@ -104,6 +104,44 @@ class GenCommand
         }
 
         return $this->writeFile('@app/Controllers', $data, $config, $out);
+    }
+
+    /**
+     * Generate WebSocket controller class
+     * @Usage {fullCommand} CLASS_NAME SAVE_DIR [--option ...]
+     * @Arguments
+     *   name       The class name, don't need suffix and ext.(eg. <info>demo</info>)
+     *   dir        The class file save dir(default: <info>@app/WebSocket</info>)
+     * @Options
+     *   -y, --yes BOOL             Whether to ask when writing a file. default is: <info>True</info>
+     *   -o, --override BOOL        Force override exists file. default is: <info>False</info>
+     *   -n, --namespace STRING     The class namespace. default is: <info>App\WebSocket</info>
+     *   --prefix STRING            The route path for the controller. default is class name
+     *   --suffix STRING            The class name suffix. default is: <info>Controller</info>
+     *   --tpl-file STRING          The template file name. default is: <info>ws-controller.stub</info>
+     *   --tpl-dir STRING           The template file dir path.(default: devtool/res/templates)
+     * @Example
+     *   <info>{fullCommand} echo --prefix /echo -y</info>         Gen EchoController class to `@app/WebSocket`
+     *   <info>{fullCommand} chat --prefix /chat</info>     Gen ChatController class to `@app/WebSocket`
+     * @return int
+     * @param Input $in
+     * @param Output $out
+     * @return int
+     * @throws \RuntimeException
+     * @throws \InvalidArgumentException
+     * @throws \Leuffen\TextTemplate\TemplateParsingException
+     */
+    public function websocket(Input $in, Output $out): int
+    {
+        list($config, $data) = $this->collectInfo($in, $out, [
+            'suffix' => 'Controller',
+            'namespace' => 'App\\WebSocket',
+            'tplFilename' => 'ws-controller',
+        ]);
+
+        $data['prefix'] = $in->getOpt('prefix') ?: '/' . $data['name'];
+
+        return $this->writeFile('@app/WebSocket', $data, $config, $out);
     }
 
     /**

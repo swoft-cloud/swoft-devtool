@@ -11,43 +11,51 @@ namespace Swoft\Devtool\WebSocket;
 use Swoft\Http\Message\Server\Request;
 use Swoft\Http\Message\Server\Response;
 use Swoft\WebSocket\Server\Bean\Annotation\WebSocket;
+use Swoft\WebSocket\Server\HandlerInterface;
+use Swoole\WebSocket\Frame;
+use Swoole\WebSocket\Server;
 
 /**
  * Class DevToolController
  * @package Swoft\Devtool\WebSocket
  * @WebSocket("/__devtool")
  */
-class DevToolController
+class DevToolController implements HandlerInterface
 {
-    /**
-     * 在这里你可以验证请求信息
-     * - 返回bool来决定是否进行握手
-     * @param Request $request
-     * @param Response $response
-     * @return bool
-     */
-    public function checkHandshake(Request $request, Response $response): bool
-    {
-        // some validate logic ...
 
-        return true;
+    /**
+     * {@inheritdoc}
+     */
+    public function checkHandshake(Request $request, Response $response): array
+    {
+        return [0, $response];
     }
 
     /**
+     * @param Server $server
      * @param Request $request
+     * @param int $fd
      */
-    public function onOpen(Request $request)
+    public function onOpen(Server $server, Request $request, int $fd)
     {
-
+        $server->push($fd, 'hello, welcome! :)');
     }
 
-    public function onMessage()
+    /**
+     * @param Server $server
+     * @param Frame $frame
+     */
+    public function onMessage(Server $server, Frame $frame)
     {
-
+        $server->push($frame->fd, 'hello, I have received your message: ' . $frame->data);
     }
 
-    public function onClose()
+    /**
+     * @param Server $server
+     * @param int $fd
+     */
+    public function onClose(Server $server, int $fd)
     {
-
+        $server->push($fd, 'ooo, goodbye! :)');
     }
 }

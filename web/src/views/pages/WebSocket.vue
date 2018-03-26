@@ -2,33 +2,39 @@
   <v-layout row wrap>
     <v-flex xs12 md4>
       <v-layout row wrap>
-        <v-flex xs7>
-          <v-text-field
-            name="wsUrl"
-            :label="'eg ' + locWsUrl"
-            single-line
-            required
-            prepend-icon="language"
-            v-model="wsUrl"
-            hint="websocket url. eg wss://echo.websocket.org/"
-            persistent-hint
-          ></v-text-field>
-        </v-flex>
-        <v-flex xs5>
-          <v-btn :disabled="wsUrlIsEmpty" @click="connect" color="info" class="px-2">
-            Connect
-          </v-btn>
-          <v-btn :disabled="!isConnected" @click="disconnect" color="warning">
-            Disconnect
-          </v-btn>
-        </v-flex>
-        <v-alert :value="true" color="error" icon="warning" v-show="errorMsg">
-          {{errorMsg}}
-        </v-alert>
-      </v-layout>
-      <v-layout row wrap>
         <v-flex xs12>
+          <v-alert :value="true" color="warning" icon="warning" v-show="errorMsg">
+            {{errorMsg}}
+          </v-alert>
           <v-card color="grey lighten-4" flat>
+            <v-layout row wrap>
+              <v-flex xs7>
+                <v-text-field
+                  name="wsUrl"
+                  :label="'eg ' + locWsUrl"
+                  single-line
+                  required
+                  v-model="wsUrl"
+                  hint="websocket url. eg wss://echo.websocket.org/"
+                  persistent-hint
+                ></v-text-field>
+              </v-flex>
+              <v-flex xs5>
+                <v-btn
+                  outline
+                  :disabled="wsUrlIsEmpty"
+                  @click="connect"
+                  color="info"
+                >
+                  Connect
+                </v-btn>
+                <v-btn :disabled="!isConnected" @click="disconnect" color="warning" outline>
+                  Disconnect
+                </v-btn>
+              </v-flex>
+
+            </v-layout>
+
             <v-card-text>
               <v-text-field
                 name="message"
@@ -50,30 +56,33 @@
     </v-flex>
 
     <v-flex d-flex xs12 md8>
-      <v-card color="grey lighten-4" flat>
+      <v-card color="grey lighten-4">
         <v-card-text>
           <v-subheader>
             <v-icon>textsms</v-icon>
             Message Box
           </v-subheader>
-          <v-container fluid>
+          <v-divider></v-divider>
+          <v-container class="msg-box" fluid>
             <v-layout row wrap v-for="(item, idx) in messages" :key="idx">
               <v-flex xs12>
-                <v-avatar size="30px" class="teal" v-if="item.type === 1">
+                <v-avatar size="25px" class="teal" v-if="item.type === 1">
                   <span class="white--text headline">C</span>
                 </v-avatar>
-                <v-avatar size="30px" class="blue" v-else>
+                <v-avatar size="25px" class="blue" v-else>
                   <span class="white--text headline">S</span>
                 </v-avatar>
-                <span> {{item.date}}</span>
-                <p>{{item.msg}}</p>
+                <span class="blue--text"> {{item.date}}</span>
+                <div>
+                <pre class="px-2 py-2 my-1 msg-detail">{{item.msg}}</pre>
+                </div>
               </v-flex>
             </v-layout>
           </v-container>
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn icon>
+          <v-btn @click="clearMessages" icon>
             <v-icon>delete</v-icon>
           </v-btn>
           <v-btn icon>
@@ -89,19 +98,21 @@
 </template>
 
 <script>
-  import {VAlert, VAvatar, VSubheader} from 'vuetify'
+  import {VAlert, VAvatar, VBtnToggle, VSubheader} from 'vuetify'
   import * as VCard from 'vuetify/es5/components/VCard'
   import Util from '../../libs/util'
 
   export default {
     name: 'web-socket',
-    components: {VAlert, VAvatar, VSubheader, ...VCard},
+    components: {VAlert, VAvatar, VBtnToggle, VSubheader, ...VCard},
     data() {
       return {
         ws: null,
         wsUrl: '',
+        loading: false,
         locWsUrl: '',
         errorMsg: '',
+        logHeartbeat: false,
         message: '',
         messages: [{
           type: 1,
@@ -116,10 +127,9 @@
         defaultUrls: [
           'wss://echo.websocket.org/'
         ],
-        btnSts: {
-          connect: true,
-          send: false
-        }
+        // req/res data for handshake request
+        reqData: [],
+        resData: []
       }
     },
     created() {
@@ -159,12 +169,12 @@
           app.errorMsg = 'connect failed! server url:' + app.wsUrl
         }
 
-        this.ws.onopen = function open() {
-          console.log('connected')
+        this.ws.onopen = function open(ev) {
+          console.log('connected', ev)
 
           // send Heartbeat
           timer = setTimeout(function () {
-            app.ws.send('@heartbeat')
+            app.sendMessage('@heartbeat', false)
           }, 20000)
         }
 
@@ -186,7 +196,11 @@
         }
       },
       send() {
-        let msg = Util.trim(this.message)
+        this.sendMessage(Util.trim(this.message))
+        this.message = ''
+      },
+      sendMessage(msg, log = true) {
+        this.errorMsg = ''
 
         if (!msg) {
           this.errorMsg = 'the message cannot be empty'
@@ -199,7 +213,10 @@
         }
 
         this.ws.send(msg)
-        this.saveMessage(msg)
+
+        if (log) {
+          this.saveMessage(msg)
+        }
       },
       saveMessage(msg, type = 1) {
         this.messages.push({
@@ -215,6 +232,12 @@
   }
 </script>
 
-<style scoped>
-
+<style lang="stylus" scoped>
+  .msg-box
+    min-height 400px
+    max-height 550px
+    overflow-y auto
+  .msg-detail
+    border 1px solid #cdcdcd
+    border-radius 3px
 </style>

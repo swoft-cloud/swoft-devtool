@@ -14,8 +14,6 @@ use Swoft\Http\Message\Server\Request;
 use Swoft\Http\Server\Bean\Annotation\Controller;
 use Swoft\Http\Server\Bean\Annotation\RequestMapping;
 use Swoft\Http\Server\Bean\Annotation\RequestMethod;
-// use Swoft\View\Bean\Annotation\View;
-// use Swoft\Http\Message\Server\Response;
 
 /**
  * Class GenController
