@@ -180,7 +180,7 @@
 
         this.ws.onmessage = function incoming(me) {
           console.log('received', me)
-          app.saveMessage(me.data, 2)
+          app.saveMessage(me.data, 2, 1)
         }
 
         this.ws.onclose = function close() {
@@ -218,9 +218,10 @@
           this.saveMessage(msg)
         }
       },
-      saveMessage(msg, type = 1) {
+      saveMessage(msg, type = 1, isHeart = 0) {
         this.messages.push({
           type: type,
+          isHeart: isHeart,
           msg: msg,
           date: Util.formatDate.format(new Date(), 'yyyy-MM-dd hh:mm:ss')
         })
