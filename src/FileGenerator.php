@@ -147,7 +147,7 @@ class FileGenerator
     {
         $file = $this->tplDir . $this->tplFilename . $this->tplExt;
 
-        if (!\file_exists($file)) {
+        if ($checkIt && !\file_exists($file)) {
             throw new \RuntimeException("Template file not exists! File: $file");
         }
 
@@ -193,6 +193,17 @@ class FileGenerator
     public function getTplFilename(): string
     {
         return $this->tplFilename;
+    }
+
+    /**
+     * @param string $tplFilename
+     * @return FileGenerator
+     */
+    public function setTplFilename(string $tplFilename): self
+    {
+        $this->tplFilename = $tplFilename;
+
+        return $this;
     }
 
     /**

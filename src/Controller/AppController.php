@@ -39,6 +39,7 @@ class AppController
             'phpVersion' => \PHP_VERSION,
             'swoVersion' => \SWOOLE_VERSION,
             'swfVersion' => App::version(),
+            'basePath' => \BASE_PATH,
         ];
     }
 
@@ -52,5 +53,16 @@ class AppController
     {
         /** @see Config::toArray() */
         return \bean('config')->toArray();
+    }
+
+    /**
+     * get app path aliases
+     * @RequestMapping(route="config", method=RequestMethod::GET)
+     * @param Request $request
+     * @return array
+     */
+    public function pathAlias(Request $request): array
+    {
+        return [];
     }
 }

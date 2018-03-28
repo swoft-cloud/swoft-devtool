@@ -33,10 +33,16 @@ class ServerController
     public function config(Request $request): array
     {
         /** @see Config::toArray() */
-        return [
+        $info = [
             'basic' => App::$server->getServerSetting(),
             'http' => App::$server->getHttpSetting(),
             'tcp(rpc)' => App::$server->getTcpSetting(),
         ];
+
+        if (\method_exists(App::$server, 'getWsSettings')) {
+            $info['websocket'] = App::$server->getWsSettings();
+        }
+
+        return $info;
     }
 }

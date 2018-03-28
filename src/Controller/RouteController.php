@@ -8,6 +8,8 @@
 
 namespace Swoft\Devtool\Controller;
 
+use Swoft\App;
+use Swoft\Bean\BeanFactory;
 use Swoft\Http\Message\Server\Request;
 use Swoft\Http\Server\Bean\Annotation\Controller;
 use Swoft\Http\Server\Bean\Annotation\RequestMapping;
@@ -52,5 +54,22 @@ class RouteController
             'vague' => $router->getVagueRoutes(),
             'cached' => $router->getCacheRoutes(),
         ];
+    }
+
+    /**
+     * @RequestMapping("/__devtool/ws/routes", method=RequestMethod::GET)
+     * @param Request $request
+     * @return array
+     */
+    public function wsRoutes(Request $request): array
+    {
+        if (!BeanFactory::hasBean('wsRouter')) {
+            return [];
+        }
+
+        /** @var \Swoft\WebSocket\Server\Router\HandlerMapping $router */
+        $router = \bean('swRouter');
+
+        return $router->getRoutes();
     }
 }
