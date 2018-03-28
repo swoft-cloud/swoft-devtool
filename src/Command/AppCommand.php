@@ -1,20 +1,17 @@
 <?php
 namespace Swoft\Devtool\Command;
 
+use Swoft\App;
 use Swoft\Console\Bean\Annotation\Mapping;
 use Swoft\Devtool\PharCompiler;
 use Swoft\Helper\DirHelper;
 use Swoft\Console\Bean\Annotation\Command;
 
 /**
- * There are some help command for application
+ * There are some help command for application[<cyan>built-in</cyan>]
  *
  * @Command(coroutine=false)
- * @uses      AppCommand
- * @version   2017年10月06日
- * @author    stelin <phpcrazy@126.com>
- * @copyright Copyright 2010-2016 swoft software
- * @license   PHP Version 7.x {@link http://www.php.net/license/3_0.txt}
+ * @package Swoft\Devtool\Command
  */
 class AppCommand
 {
@@ -33,9 +30,9 @@ class AppCommand
      */
     public function initApp()
     {
-        output()->writeln('Create runtime directoies: ', false);
+        output()->writeln('Create runtime directories: ', false);
 
-        $tmpDir = \Swoft\App::getAlias('@runtime');
+        $tmpDir = App::getAlias('@runtime');
         $dirs = [
             'logs',
             'uploadfiles'

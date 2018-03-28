@@ -10,7 +10,7 @@ use Swoft\Console\Output\Output;
 use Swoft\Devtool\FileGenerator;
 
 /**
- * Generate some common application template classes
+ * Generate some common application template classes[<cyan>built-in</cyan>]
  * @Command(coroutine=false)
  * @package Swoft\Devtool\Command
  */
