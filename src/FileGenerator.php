@@ -2,6 +2,7 @@
 
 namespace Swoft\Devtool;
 use Leuffen\TextTemplate\TextTemplate;
+use Swoft\App;
 
 /**
  * Class FileGenerator
@@ -37,6 +38,8 @@ class FileGenerator
     /**
      * FileGenerator constructor.
      * @param array $config
+     * @throws \RuntimeException
+     * @throws \InvalidArgumentException
      */
     public function __construct(array $config = [])
     {
@@ -45,14 +48,28 @@ class FileGenerator
         }
 
         $this->parser = new TextTemplate();
-        // {include file="some.tpl"}
-        $this->parser->addFunction('incude', function (
+
+        // usage: {include file="some.tpl"}
+        $this->parser->addFunction('include', function (
             $paramArr,
             $command,
             $context,
             $cmdParam
         ) {
-            return \file_get_contents($paramArr['file']);
+            if (!$partFile = $paramArr['file']) {
+                return '';
+            }
+
+            $firstChar = $partFile[0];
+
+            if ($firstChar === '@') {
+                $partFile = App::getAlias($partFile);
+            } elseif ($firstChar !== '/') {
+                $relativePath = \dirname($this->getTplFile());
+                $partFile = \realpath($relativePath . '/' . $partFile);
+            }
+
+            return PHP_EOL . \file_get_contents($partFile);
         });
     }
 
