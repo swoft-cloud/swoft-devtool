@@ -1,11 +1,14 @@
 <?php
+
 namespace Swoft\Devtool\Command;
 
 use Swoft\App;
 use Swoft\Console\Bean\Annotation\Mapping;
+use Swoft\Console\Output\Output;
 use Swoft\Devtool\PharCompiler;
 use Swoft\Helper\DirHelper;
 use Swoft\Console\Bean\Annotation\Command;
+use Swoft\Helper\ProcessHelper;
 
 /**
  * There are some help command for application[<cyan>built-in</cyan>]
@@ -20,10 +23,6 @@ class AppCommand
      *
      * @Usage
      *   {fullCommand} [arguments] [options]
-     *
-     * @Options
-     *   --test start by daemonized process
-     *
      * @Mapping("init")
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
@@ -42,7 +41,77 @@ class AppCommand
             DirHelper::mkdir($tmpDir . '/' . $dir);
         }
 
-        output()->writeln('<success>OK</success>');
+        \output()->writeln('<success>OK</success>');
+    }
+
+    /**
+     * Check current operating environment information
+     * @param Output $out
+     * @throws \RuntimeException
+     */
+    public function check(Output $out)
+    {
+        list($code, $return,) = ProcessHelper::run('php --ri swoole');
+        $asyncRdsEnabled = $code === 0 ? \strpos($return, 'async redis client => enabled') : false;
+
+        $list = [
+            "Basic env check\n",
+            'PHP version is greater than 7?' => self::coloredText(\version_compare(PHP_VERSION, '7.0'), 'current is ' . \PHP_VERSION),
+            'Swoole extension is installed?' => self::coloredText(\extension_loaded('swoole')),
+            'Swoole version is greater than 2.1?' => self::coloredText(\version_compare(SWOOLE_VERSION, '2.1.0'), 'current is ' . \SWOOLE_VERSION),
+            'Swoole async redis is enabled?' => self::coloredText($asyncRdsEnabled),
+            'Swoole coroutine is enabled?' => self::coloredText(\class_exists('Swoole\Coroutine', false)),
+            "\nExtended inspections that affect 'swoole' operation\n",
+            'Extension "zend" should not be installed?' => self::coloredText(!\extension_loaded('zend'), 'Please disabled it, otherwise swoole will be affected!', true),
+            'Extension "xdebug" should not be installed?' => self::coloredText(!\extension_loaded('xdebug'), 'Please disabled it, otherwise swoole will be affected!', true),
+            'Extension "xhprof" should not be installed?' => self::coloredText(!\extension_loaded('xhprof'), 'Please disabled it, otherwise swoole will be affected!', true),
+            'Extension "blackfire" should not be installed?' => self::coloredText(!\extension_loaded('blackfire'), 'Please disabled it, otherwise swoole will be affected!', true),
+        ];
+
+        $pass = $total = 0;
+        $buffer = [];
+
+        foreach ($list as $question => $value) {
+            if (\is_int($question)) {
+                $buffer[] = $value;
+                continue;
+            }
+
+            $total++;
+
+            if ($value[0]) {
+                $pass++;
+            }
+
+            $question = \str_pad($question, 55);
+            $buffer[] = \sprintf('  <comment>%s</comment> %s', $question, $value[1]);
+        }
+
+        $buffer[] = "\nCheck total: <bold>$total</bold>, Pass the check: <success>$pass</success>";
+
+        $out->writeln($buffer);
+    }
+
+    /**
+     * @param $condition
+     * @param string|null $msg
+     * @param bool $showOnFalse
+     * @return array
+     */
+    public static function coloredText($condition, string $msg = null, $showOnFalse = false): array
+    {
+        $result = $condition ? '<success>Yes</success>' : '<red>No</red>';
+        $des = '';
+
+        if ($msg) {
+            if ($showOnFalse) {
+                $des = !$condition ? " ($msg)" : '';
+            } else {
+                $des = " ($msg)";
+            }
+        }
+
+        return [(bool)$condition, $result . $des];
     }
 
     /**
