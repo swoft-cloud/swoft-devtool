@@ -1,13 +1,5 @@
 <?php
-/**
- * This file is part of Swoft.
- *
- * @link https://swoft.org
- * @document https://doc.swoft.org
- * @contact group@swoft.org
- * @license https://github.com/swoft-cloud/swoft/blob/master/LICENSE
- */
-
+{include file="file-header.stub"}
 namespace {= namespace};
 
 use Swoft\Http\Server\Bean\Annotation\Controller;
@@ -24,6 +16,7 @@ use Swoft\Http\Server\Bean\Annotation\RequestMethod;
 class {= className}
 {
     /**
+     * Get data list. access uri path: {= prefix}
      * @RequestMapping(route="{= prefix}", method=RequestMethod::GET)
      * @return array
      */
@@ -33,6 +26,7 @@ class {= className}
     }
 
     /**
+     * Get one by ID. access uri path: {= prefix}/{= idVar}
      * @RequestMapping(route="{= idVar}", method=RequestMethod::GET)
      * @return array
      */
@@ -42,6 +36,7 @@ class {= className}
     }
 
     /**
+     * Create a new record. access uri path: {= prefix}
      * @RequestMapping(route="{= prefix}", method=RequestMethod::POST)
      * @return array
      */
@@ -51,6 +46,7 @@ class {= className}
     }
 
     /**
+     * Update one by ID. access uri path: {= prefix}/{= idVar}
      * @RequestMapping(route="{= idVar}", method=RequestMethod::PUT)
      * @return array
      */
@@ -60,6 +56,7 @@ class {= className}
     }
 
     /**
+     * Delete one by ID. access uri path: {= prefix}/{= idVar}
      * @RequestMapping(route="{= idVar}", method=RequestMethod::DELETE)
      * @return array
      */

@@ -1,13 +1,5 @@
 <?php
-/**
- * This file is part of Swoft.
- *
- * @link https://swoft.org
- * @document https://doc.swoft.org
- * @contact group@swoft.org
- * @license https://github.com/swoft-cloud/swoft/blob/master/LICENSE
- */
-
+{include file="file-header.stub"}
 namespace {= namespace};
 
 use Swoft\Http\Server\Bean\Annotation\Controller;
@@ -24,6 +16,7 @@ use Swoft\Http\Server\Bean\Annotation\RequestMethod;
 class {= className}
 {
     /**
+     * this is a example action. access uri path: {= prefix}
      * @RequestMapping(route="{= prefix}", method=RequestMethod::GET)
      * @return array
      */

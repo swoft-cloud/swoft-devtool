@@ -10,7 +10,7 @@ use Swoft\Console\Output\Output;
 use Swoft\Devtool\FileGenerator;
 
 /**
- * Generate some common application template classes
+ * Generate some common application template classes[<cyan>built-in</cyan>]
  * @Command(coroutine=false)
  * @package Swoft\Devtool\Command
  */
@@ -57,10 +57,9 @@ class GenCommand
             'tplFilename' => 'command',
         ]);
 
-        $dir = $in->getArg(1) ?: '@app/Commands';
         $data['commandVar'] = '{command}';
 
-        return $this->writeFile($dir, $data, $config, $out);
+        return $this->writeFile('@app/Commands', $data, $config, $out);
     }
 
     /**
@@ -74,7 +73,7 @@ class GenCommand
      *   -o, --override BOOL        Force override exists file. default is: <info>False</info>
      *   -n, --namespace STRING     The class namespace. default is: <info>App\Controllers</info>
      *   --rest BOOL                The class will contains CURD action. default is: <info>False</info>
-     *   --prefix STRING            The route prefix for the controller. default is: <info>App\Controllers</info>
+     *   --prefix STRING            The route prefix for the controller. default is class name
      *   --suffix STRING            The class name suffix. default is: <info>Controller</info>
      *   --tpl-file STRING          The template file name. default is: <info>command.stub</info>
      *   --tpl-dir STRING           The template file dir path.(default: devtool/res/templates)
@@ -97,15 +96,52 @@ class GenCommand
             'tplFilename' => 'controller',
         ]);
 
-        $dir = $in->getArg(1) ?: '@app/Controllers';
-        $data['prefix'] = $in->getOpt('prefix') ?: '/prefix';
+        $data['prefix'] = $in->getOpt('prefix') ?: '/' . $data['name'];
         $data['idVar'] = '{id}';
 
         if ($in->getOpt('rest', false)) {
             $config['tplFilename'] = 'controller-rest';
         }
 
-        return $this->writeFile($dir, $data, $config, $out);
+        return $this->writeFile('@app/Controllers', $data, $config, $out);
+    }
+
+    /**
+     * Generate WebSocket controller class
+     * @Usage {fullCommand} CLASS_NAME SAVE_DIR [--option ...]
+     * @Arguments
+     *   name       The class name, don't need suffix and ext.(eg. <info>demo</info>)
+     *   dir        The class file save dir(default: <info>@app/WebSocket</info>)
+     * @Options
+     *   -y, --yes BOOL             Whether to ask when writing a file. default is: <info>True</info>
+     *   -o, --override BOOL        Force override exists file. default is: <info>False</info>
+     *   -n, --namespace STRING     The class namespace. default is: <info>App\WebSocket</info>
+     *   --prefix STRING            The route path for the controller. default is class name
+     *   --suffix STRING            The class name suffix. default is: <info>Controller</info>
+     *   --tpl-file STRING          The template file name. default is: <info>ws-controller.stub</info>
+     *   --tpl-dir STRING           The template file dir path.(default: devtool/res/templates)
+     * @Example
+     *   <info>{fullCommand} echo --prefix /echo -y</info>         Gen EchoController class to `@app/WebSocket`
+     *   <info>{fullCommand} chat --prefix /chat</info>     Gen ChatController class to `@app/WebSocket`
+     * @return int
+     * @param Input $in
+     * @param Output $out
+     * @return int
+     * @throws \RuntimeException
+     * @throws \InvalidArgumentException
+     * @throws \Leuffen\TextTemplate\TemplateParsingException
+     */
+    public function websocket(Input $in, Output $out): int
+    {
+        list($config, $data) = $this->collectInfo($in, $out, [
+            'suffix' => 'Controller',
+            'namespace' => 'App\\WebSocket',
+            'tplFilename' => 'ws-controller',
+        ]);
+
+        $data['prefix'] = $in->getOpt('prefix') ?: '/' . $data['name'];
+
+        return $this->writeFile('@app/WebSocket', $data, $config, $out);
     }
 
     /**
@@ -148,9 +184,7 @@ class GenCommand
             'tplFilename' => 'listener',
         ]);
 
-        $dir = $in->getArg(1) ?: '@app/Listener';
-
-        return $this->writeFile($dir, $data, $config, $out);
+        return $this->writeFile('@app/Listener', $data, $config, $out);
     }
 
     /**
@@ -183,9 +217,7 @@ class GenCommand
             'tplFilename' => 'middleware',
         ]);
 
-        $dir = $in->getArg(1) ?: '@app/Middlewares';
-
-        return $this->writeFile($dir, $data, $config, $out);
+        return $this->writeFile('@app/Middlewares', $data, $config, $out);
     }
 
     /**
@@ -218,9 +250,7 @@ class GenCommand
             'tplFilename' => 'task',
         ]);
 
-        $dir = $in->getArg(1) ?: '@app/Tasks';
-
-        return $this->writeFile($dir, $data, $config, $out);
+        return $this->writeFile('@app/Tasks', $data, $config, $out);
     }
 
     /**
@@ -253,9 +283,7 @@ class GenCommand
             'tplFilename' => 'process',
         ]);
 
-        $dir = $in->getArg(1) ?: '@app/Process';
-
-        return $this->writeFile($dir, $data, $config, $out);
+        return $this->writeFile('@app/Process', $data, $config, $out);
     }
 
     /**
@@ -291,7 +319,7 @@ class GenCommand
     }
 
     /**
-     * @param string $dir
+     * @param string $defaultDir
      * @param array $data
      * @param array $config
      * @param Output $out
@@ -300,14 +328,18 @@ class GenCommand
      * @throws \RuntimeException
      * @throws \Leuffen\TextTemplate\TemplateParsingException
      */
-    private function writeFile(string $dir, array $data, array $config, Output $out): int
+    private function writeFile(string $defaultDir, array $data, array $config, Output $out): int
     {
         // $out->writeln("Some Info: \n" . \json_encode($config, \JSON_PRETTY_PRINT | \JSON_UNESCAPED_SLASHES));
         $out->writeln("Class data: \n" . \json_encode($data, \JSON_PRETTY_PRINT | \JSON_UNESCAPED_SLASHES));
 
-        $file = App::getAlias($dir) . '/' . $data['className'] . '.php';
+        if (!$saveDir = \input()->getArg(1)) {
+            $saveDir = $defaultDir;
+        }
 
-        $out->writeln("Target File: <info>$file</info>");
+        $file = App::getAlias($saveDir) . '/' . $data['className'] . '.php';
+
+        $out->writeln("Target File: <info>$file</info>\n");
 
         if (\file_exists($file)) {
             $override = \input()->sameOpt(['o', 'override']);

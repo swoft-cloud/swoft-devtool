@@ -1,20 +1,17 @@
 <?php
 namespace Swoft\Devtool\Command;
 
+use Swoft\App;
 use Swoft\Console\Bean\Annotation\Mapping;
 use Swoft\Devtool\PharCompiler;
 use Swoft\Helper\DirHelper;
 use Swoft\Console\Bean\Annotation\Command;
 
 /**
- * There are some help command for application
+ * There are some help command for application[<cyan>built-in</cyan>]
  *
  * @Command(coroutine=false)
- * @uses      AppCommand
- * @version   2017年10月06日
- * @author    stelin <phpcrazy@126.com>
- * @copyright Copyright 2010-2016 swoft software
- * @license   PHP Version 7.x {@link http://www.php.net/license/3_0.txt}
+ * @package Swoft\Devtool\Command
  */
 class AppCommand
 {
@@ -22,7 +19,7 @@ class AppCommand
      * init the project, will create runtime dirs
      *
      * @Usage
-     * app:{command} [arguments] [options]
+     *   {fullCommand} [arguments] [options]
      *
      * @Options
      *   --test start by daemonized process
@@ -33,9 +30,9 @@ class AppCommand
      */
     public function initApp()
     {
-        output()->writeln('Create runtime directoies: ', false);
+        output()->writeln('Create runtime directories: ', false);
 
-        $tmpDir = \Swoft\App::getAlias('@runtime');
+        $tmpDir = App::getAlias('@runtime');
         $dirs = [
             'logs',
             'uploadfiles'
@@ -53,10 +50,10 @@ class AppCommand
      * @Usage {fullCommand} [--dir DIR] [--output FILE]
      * @Options
      *   --dir STRING            Setting the project directory for packing.
-     *                           - default is current work-dir.(<comment>{workDir}</comment>)
+     *                            default is current work-dir.(<comment>{workDir}</comment>)
      *   --fast BOOL             Fast build. only add modified files by <cyan>git status -s</cyan>
-     *   --output STRING         Setting the output file name(<comment>app.phar</comment>)
      *   --refresh BOOL          Whether build vendor folder files on phar file exists(<comment>False</comment>)
+     *   -o,--output STRING      Setting the output file name(<comment>app.phar</comment>)
      *   -c, --config STRING     Use the defined config for build phar.
      * @Example
      *   {fullCommand}                                  Pack current dir to a phar file.
@@ -77,7 +74,7 @@ class AppCommand
 
         $counter = null;
         $refresh = input()->getOpt('refresh');
-        $pharFile = $workDir . '/' . input()->getOpt('output', 'app.phar');
+        $pharFile = $workDir . '/' . (\input()->sameOpt(['o', 'output']) ?: 'app.phar');
 
         // use fast build
         if (\input()->getOpt('fast')) {
@@ -136,14 +133,18 @@ class AppCommand
     public function unpack(): int
     {
         if (!$path = \input()->getSameOpt(['f', 'file'])) {
-            return \output()->writeln("<error>Please input the phar file path by option '-f|--file'</error>");
+            \output()->writeln("<error>Please input the phar file path by option '-f|--file'</error>");
+
+            return 1;
         }
 
         $basePath = \input()->getPwd();
-        $file = realpath($basePath . '/' . $path);
+        $file = \realpath($basePath . '/' . $path);
 
         if (!file_exists($file)) {
-            return \output()->writeln("<error>The phar file not exists. File: $file</error>");
+            \output()->writeln("<error>The phar file not exists. File: $file</error>");
+
+            return 1;
         }
 
         $dir = input()->getSameOpt(['d', 'dir']) ?: $basePath;
