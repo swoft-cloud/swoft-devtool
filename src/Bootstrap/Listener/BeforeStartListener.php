@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: inhere
- * Date: 2018/3/19
- * Time: 上午11:32
- */
 
 namespace Swoft\Devtool\Bootstrap\Listener;
 
@@ -13,6 +7,8 @@ use Swoft\Bean\Annotation\ServerListener;
 use Swoft\Bootstrap\Listeners\Interfaces\BeforeStartInterface;
 use Swoft\Bootstrap\SwooleEvent;
 use Swoft\Bootstrap\Server\AbstractServer;
+use Swoft\Devtool\DevTool;
+use Swoft\Memory\Table;
 
 /**
  * Class BeforeStartListener
@@ -28,5 +24,7 @@ class BeforeStartListener implements BeforeStartInterface
     public function onBeforeStart(AbstractServer &$server)
     {
         App::setAlias('@devtool', \dirname(__DIR__, 3));
+
+        DevTool::$table = new Table('runtime-devtool', 8096);
     }
 }
