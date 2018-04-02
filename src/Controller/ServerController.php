@@ -10,8 +10,10 @@
 
 namespace Swoft\Devtool\Controller;
 
+use Psr\Http\Message\ResponseInterface;
 use Swoft\App;
 use Swoft\Core\Config;
+use Swoft\Helper\ProcessHelper;
 use Swoft\Http\Message\Server\Request;
 use Swoft\Http\Server\Bean\Annotation\Controller;
 use Swoft\Http\Server\Bean\Annotation\RequestMapping;
@@ -44,5 +46,67 @@ class ServerController
         }
 
         return $info;
+    }
+
+    /**
+     * get php ext list
+     * @RequestMapping(route="php-ext-list", method=RequestMethod::GET)
+     * @param Request $request
+     * @return array
+     */
+    public function phpExt(Request $request): array
+    {
+        return \get_loaded_extensions(true);
+    }
+
+    /**
+     * get swoole info
+     * @RequestMapping(route="swoole-info", method=RequestMethod::GET)
+     * @return array|ResponseInterface
+     * @throws \RuntimeException
+     */
+    public function swoole()
+    {
+        list($code, $return, $error) = ProcessHelper::run('php --ri swoole');
+
+        if ($code) {
+            $res = \response();
+            $res->getBody()->write($error);
+
+            return $res;
+        }
+
+        // format
+        $str = \str_replace("\r\n", "\n", \trim($return));
+        list(, $enableStr, $directiveStr) = \explode("\n\n", $str);
+
+        $directive = $this->formatSwooleInfo($directiveStr);
+        \array_shift($directive);
+
+        return [
+            'raw' => $return,
+            'enable' => $this->formatSwooleInfo($enableStr),
+            'directive' => $directive,
+        ];
+    }
+
+    /**
+     * @param string $str
+     * @return array
+     */
+    private function formatSwooleInfo(string $str): array
+    {
+        $data = [];
+        $lines = \explode("\n", \trim($str));
+
+        foreach ($lines as $line) {
+            list($name, $value) = \explode(' => ', $line);
+            $data[] = [
+                'name' => $name,
+                'value' => $value,
+            ];
+        }
+
+        return $data;
     }
 }

@@ -47,10 +47,15 @@ class AppController
      * get app config
      * @RequestMapping(route="config", method=RequestMethod::GET)
      * @param Request $request
-     * @return array
+     * @return array|mixed
      */
-    public function config(Request $request): array
+    public function config(Request $request)
     {
+        if ($key = $request->query('key')) {
+            /** @see Config::get() */
+            return \bean('config')->get($key);
+        }
+
         /** @see Config::toArray() */
         return \bean('config')->toArray();
     }
@@ -58,10 +63,9 @@ class AppController
     /**
      * get app path aliases
      * @RequestMapping(route="aliases", method=RequestMethod::GET)
-     * @param Request $request
      * @return array
      */
-    public function pathAliases(Request $request): array
+    public function pathAliases(): array
     {
         return App::getAliases();
     }
@@ -74,8 +78,9 @@ class AppController
      */
     public function events(Request $request): array
     {
-
-        // 1 global event 2 server event 3 swoole event
+        // 1 application event
+        // 2 server event
+        // 3 swoole event
         $type = (int)$request->query('type', 1);
 
         if ($type === 3) {
@@ -96,13 +101,22 @@ class AppController
     }
 
     /**
-     * get all registered events list
+     * get all registered components
+     * @RequestMapping(route="components", method=RequestMethod::GET)
+     * @return array
+     */
+    public function components(): array
+    {
+        return [];
+    }
+
+    /**
+     * get all registered middleware list
      * @RequestMapping(route="events", method=RequestMethod::GET)
-     * @param Request $request
      * @return array
      */
     public function httpMiddles(): array
     {
-
+        return [];
     }
 }

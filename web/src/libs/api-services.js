@@ -18,5 +18,14 @@ export const getLoggedUser = () => ajax.get('/v1/users/me')
 // 获取用户信息
 export const getUserInfo = (id) => ajax.get('/v1/users/' + id)
 
+// 获取 basic 信息
+export const getBasicInfo = () => ajax.get('/app/info')
+
+// 获取 app config 信息
+export const getAppConfig = () => ajax.get('/app/config')
+
+// 获取 server config 信息
+export const getServerConfig = (type = 'all') => ajax.get('/server/config', {type})
+
 // 获取http routes信息
 export const getHttpRoutes = (type = 'all') => ajax.get('/http/routes', {type})
