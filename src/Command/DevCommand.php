@@ -15,14 +15,18 @@ class DevCommand
 {
     /**
      * Used to publish the internal resources of the module to the 'public' directory
+     * @throws \RuntimeException
      * @throws \InvalidArgumentException
      */
     public function publish(): int
     {
         $assetDir = App::getAlias('@devtool') . '/web/dist/devtool';
         $targetDir = App::getAlias('@root') . '/public';
+        $command = "cp -Rf $assetDir $targetDir";
 
-        list($code, $return, $error) = ProcessHelper::run("cp $assetDir $targetDir", App::getAlias('@root'));
+        \output()->writeln("Will run shell command:\n $command");
+
+        list($code, , $error) = ProcessHelper::run($command, App::getAlias('@root'));
 
         if ($code !== 0) {
             \output()->colored("Publish devtool assets to $targetDir is failed!", 'error');
@@ -31,9 +35,13 @@ class DevCommand
             return -2;
         }
 
-        \output()->colored("Publish devtool assets to $targetDir is OK!", 'info');
+        \output()->colored("\nPublish devtool assets to $targetDir is OK!", 'info');
 
         return 0;
     }
 
+    public function test(): int
+    {
+        return 0;
+    }
 }

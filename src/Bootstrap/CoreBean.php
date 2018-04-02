@@ -13,15 +13,19 @@ use Swoft\Core\BootBeanInterface;
  */
 class CoreBean implements BootBeanInterface
 {
+    /**
+     * CoreBean constructor.
+     * @throws \InvalidArgumentException
+     */
     public function __construct()
     {
-        App::setAlias('@devtool', \dirname(__DIR__, 3));
+        App::setAlias('@devtool', \dirname(__DIR__, 2));
     }
 
     /**
      * @return array
      */
-    public function beans()
+    public function beans(): array
     {
         return [];
     }
