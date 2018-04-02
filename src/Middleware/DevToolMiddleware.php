@@ -15,6 +15,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Swoft\App;
 use Swoft\Bean\Annotation\Bean;
+use Swoft\Console\Helper\ConsoleUtil;
 use Swoft\Devtool\DevTool;
 use Swoft\Http\Message\Middleware\MiddlewareInterface;
 use Swoft\Http\Message\Server\Request;
@@ -37,17 +38,18 @@ class DevToolMiddleware implements MiddlewareInterface
         // before request handle
         $path = $request->getUri()->getPath();
 
-        \printf("[%s] %s request uri %s \n", \date('Y/m/d H:i:s'), $request->getMethod(), $path);
-
         // if not is ajax, always render vue index file.
         if (0 === \strpos($path, DevTool::ROUTE_PREFIX) && !$request->isAjax()) {
-            return \view(App::getAlias('@devtool/web/index.html'), []);
+            ConsoleUtil::log(\sprintf('%s request uri %s', $request->getMethod(), $path));
+
+            if (!$request->query('json')) {
+                return \view(App::getAlias('@devtool/web/dist/index.html'), []);
+            }
         }
 
         $response = $handler->handle($request);
 
         // after request handle
-
         return $response->withAddedHeader('Swoft-DevTool-Version', '1.0.0');
     }
 }

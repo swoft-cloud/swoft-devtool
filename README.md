@@ -14,7 +14,7 @@ composer require swoft/devtool
 
 Please see [document site](https://doc.swoft.org)
 
-# unit testing
+# Unit testing
 
 ```bash
 phpunit test/unit

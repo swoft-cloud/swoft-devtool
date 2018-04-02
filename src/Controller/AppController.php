@@ -11,6 +11,8 @@
 namespace Swoft\Devtool\Controller;
 
 use Swoft\App;
+use Swoft\Bean\Collector\ServerListenerCollector;
+use Swoft\Bean\Collector\SwooleListenerCollector;
 use Swoft\Core\Config;
 use Swoft\Http\Message\Server\Request;
 use Swoft\Http\Server\Bean\Annotation\Controller;
@@ -19,7 +21,7 @@ use Swoft\Http\Server\Bean\Annotation\RequestMethod;
 
 /**
  * Class AppController
- * @Controller(prefix="/__devtool/app/")
+ * @Controller(prefix="/__devtool/app")
  * @package Swoft\Devtool\Controller
  */
 class AppController
@@ -55,12 +57,52 @@ class AppController
 
     /**
      * get app path aliases
-     * @RequestMapping(route="config", method=RequestMethod::GET)
+     * @RequestMapping(route="aliases", method=RequestMethod::GET)
      * @param Request $request
      * @return array
      */
-    public function pathAlias(Request $request): array
+    public function pathAliases(Request $request): array
     {
+        return App::getAliases();
+    }
+
+    /**
+     * get all registered events list
+     * @RequestMapping(route="events", method=RequestMethod::GET)
+     * @param Request $request
+     * @return array
+     */
+    public function events(Request $request): array
+    {
+
+        // 1 global event 2 server event 3 swoole event
+        $type = (int)$request->query('type', 1);
+
+        if ($type === 3) {
+            return SwooleListenerCollector::getCollector();
+        }
+
+        if ($type === 2) {
+            return ServerListenerCollector::getCollector();
+        }
+
+        /** @var \Swoft\Event\EventManager $em */
+        // $em = \bean('eventManager');
+
+        // $event = $request->getQuery('name');
+        // $em->getListenerQueue($event);
+
         return [];
+    }
+
+    /**
+     * get all registered events list
+     * @RequestMapping(route="events", method=RequestMethod::GET)
+     * @param Request $request
+     * @return array
+     */
+    public function httpMiddles(): array
+    {
+
     }
 }

@@ -23,8 +23,7 @@ class BeforeStartListener implements BeforeStartInterface
      */
     public function onBeforeStart(AbstractServer &$server)
     {
-        App::setAlias('@devtool', \dirname(__DIR__, 3));
 
-        DevTool::$table = new Table('runtime-devtool', 8096);
+        // DevTool::$table = new Table('runtime-devtool', 8096);
     }
 }
