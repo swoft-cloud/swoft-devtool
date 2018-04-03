@@ -15,9 +15,11 @@ use Swoft\App;
 use Swoft\Core\Config;
 use Swoft\Helper\ProcessHelper;
 use Swoft\Http\Message\Server\Request;
+use Swoft\Http\Message\Server\Response;
 use Swoft\Http\Server\Bean\Annotation\Controller;
 use Swoft\Http\Server\Bean\Annotation\RequestMapping;
 use Swoft\Http\Server\Bean\Annotation\RequestMethod;
+use Swoft\Http\Server\Payload;
 
 /**
  * Class ServerController
@@ -60,20 +62,32 @@ class ServerController
     }
 
     /**
+     * get swoole server stats
+     * @RequestMapping(route="stats", method=RequestMethod::GET)
+     * @return Payload
+     */
+    public function stats(): Payload
+    {
+        if (!App::$server) {
+            return Payload::make(['msg' => 'server is not started'], 404);
+        }
+
+        return Payload::make(App::$server->getServer()->stats());
+    }
+
+    /**
      * get swoole info
      * @RequestMapping(route="swoole-info", method=RequestMethod::GET)
-     * @return array|ResponseInterface
+     * @return Payload
+     * @throws \InvalidArgumentException
      * @throws \RuntimeException
      */
-    public function swoole()
+    public function swoole(): Payload
     {
         list($code, $return, $error) = ProcessHelper::run('php --ri swoole');
 
         if ($code) {
-            $res = \response();
-            $res->getBody()->write($error);
-
-            return $res;
+            return Payload::make(['msg' => $error], 404);
         }
 
         // format
@@ -83,11 +97,11 @@ class ServerController
         $directive = $this->formatSwooleInfo($directiveStr);
         \array_shift($directive);
 
-        return [
+        return Payload::make([
             'raw' => $return,
             'enable' => $this->formatSwooleInfo($enableStr),
             'directive' => $directive,
-        ];
+        ]);
     }
 
     /**

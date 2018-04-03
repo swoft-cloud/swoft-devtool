@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: inhere
- * Date: 2018/3/22
- * Time: 下午4:55
- */
 
 namespace Swoft\Devtool\WebSocket;
 
@@ -22,7 +16,6 @@ use Swoole\WebSocket\Server;
  */
 class DevToolController implements HandlerInterface
 {
-
     /**
      * {@inheritdoc}
      */
@@ -56,6 +49,6 @@ class DevToolController implements HandlerInterface
      */
     public function onClose(Server $server, int $fd)
     {
-        $server->push($fd, 'ooo, goodbye! :)');
+        // $server->push($fd, 'ooo, goodbye! :)');
     }
 }

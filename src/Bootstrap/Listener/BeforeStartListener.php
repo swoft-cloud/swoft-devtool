@@ -23,7 +23,6 @@ class BeforeStartListener implements BeforeStartInterface
      */
     public function onBeforeStart(AbstractServer &$server)
     {
-
-        // DevTool::$table = new Table('runtime-devtool', 8096);
+        // DevTool::$table = new Table('runtime-devtool', 8 * 1024);
     }
 }
