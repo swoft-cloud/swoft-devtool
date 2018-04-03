@@ -11,13 +11,12 @@
 namespace Swoft\Devtool\Controller;
 
 use Swoft\App;
-use Swoft\Bean\Collector\ServerListenerCollector;
-use Swoft\Bean\Collector\SwooleListenerCollector;
 use Swoft\Core\Config;
 use Swoft\Http\Message\Server\Request;
 use Swoft\Http\Server\Bean\Annotation\Controller;
 use Swoft\Http\Server\Bean\Annotation\RequestMapping;
 use Swoft\Http\Server\Bean\Annotation\RequestMethod;
+use Swoft\Http\Server\Payload;
 
 /**
  * Class AppController
@@ -29,10 +28,9 @@ class AppController
     /**
      * get app info
      * @RequestMapping(route="info", method=RequestMethod::GET)
-     * @param Request $request
      * @return array
      */
-    public function index(Request $request): array
+    public function index(): array
     {
         return [
             'os' => \PHP_OS,
@@ -71,33 +69,27 @@ class AppController
     }
 
     /**
-     * get all registered events list
+     * get all registered application events list
      * @RequestMapping(route="events", method=RequestMethod::GET)
      * @param Request $request
-     * @return array
+     * @return Payload
      */
-    public function events(Request $request): array
+    public function events(Request $request): Payload
     {
-        // 1 application event
-        // 2 server event
-        // 3 swoole event
-        $type = (int)$request->query('type', 1);
-
-        if ($type === 3) {
-            return SwooleListenerCollector::getCollector();
-        }
-
-        if ($type === 2) {
-            return ServerListenerCollector::getCollector();
-        }
-
         /** @var \Swoft\Event\EventManager $em */
-        // $em = \bean('eventManager');
+        $em = \bean('eventManager');
 
-        // $event = $request->getQuery('name');
-        // $em->getListenerQueue($event);
+        if ($event = \trim($request->query('name'))) {
+            $queue = $em->getListenerQueue($event);
 
-        return [];
+            if (!$queue) {
+                return Payload::make(['msg' => 'event name is invalid: ' . $event],404);
+            }
+
+            return Payload::make($queue->getAll());
+        }
+
+        return Payload::make($em->getListenedEvents());
     }
 
     /**

@@ -36,13 +36,15 @@ Please see [document site](https://doc.swoft.org)
 ],
 ```
 
-3. publish devtool's assets to public dir.
+3. publish devtool's assets to `public` dir.
 
 ```bash
 php bin/swoft dev:publish swoft/devtool
 ```
 
 4. now, you can access your server address by browser. like `http://127.0.0.1:9088/__devtool/`
+
+> NOTICE: ensure your static assets is can accessed.
 
 5. If you see the following screen, you have successfully installed
 

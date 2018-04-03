@@ -10,12 +10,11 @@
 
 namespace Swoft\Devtool\Controller;
 
-use Psr\Http\Message\ResponseInterface;
 use Swoft\App;
-use Swoft\Core\Config;
+use Swoft\Bean\Collector\ServerListenerCollector;
+use Swoft\Bean\Collector\SwooleListenerCollector;
 use Swoft\Helper\ProcessHelper;
 use Swoft\Http\Message\Server\Request;
-use Swoft\Http\Message\Server\Response;
 use Swoft\Http\Server\Bean\Annotation\Controller;
 use Swoft\Http\Server\Bean\Annotation\RequestMapping;
 use Swoft\Http\Server\Bean\Annotation\RequestMethod;
@@ -47,6 +46,33 @@ class ServerController
         }
 
         return $info;
+    }
+
+
+    /**
+     * get all registered events list
+     * @RequestMapping(route="events", method=RequestMethod::GET)
+     * @param Request $request
+     * @return array
+     */
+    public function events(Request $request): array
+    {
+        // 1 server event
+        // 2 swoole event
+        $type = (int)$request->query('type', 1);
+
+        if ($type === 1) {
+            return SwooleListenerCollector::getCollector();
+        }
+
+        if ($type === 2) {
+            return ServerListenerCollector::getCollector();
+        }
+
+        return [
+            'server' => SwooleListenerCollector::getCollector(),
+            'swoole' => ServerListenerCollector::getCollector(),
+        ];
     }
 
     /**
