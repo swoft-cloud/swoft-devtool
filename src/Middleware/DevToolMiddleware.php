@@ -16,6 +16,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Swoft\App;
 use Swoft\Bean\Annotation\Bean;
 use Swoft\Console\Helper\ConsoleUtil;
+use Swoft\Core\Coroutine;
 use Swoft\Devtool\DevTool;
 use Swoft\Http\Message\Middleware\MiddlewareInterface;
 use Swoft\Http\Message\Server\Request;
@@ -27,6 +28,13 @@ use Swoft\Http\Message\Server\Request;
  */
 class DevToolMiddleware implements MiddlewareInterface
 {
+    public $logHttpRequestToConsole = true;
+
+    public function __construct()
+    {
+        $this->logHttpRequestToConsole = \bean('config')->get('devtool.logHttpRequestToConsole', true);
+    }
+
     /**
      * @param \Psr\Http\Message\ServerRequestInterface|Request $request
      * @param \Psr\Http\Server\RequestHandlerInterface $handler
@@ -38,11 +46,18 @@ class DevToolMiddleware implements MiddlewareInterface
         // before request handle
         $path = $request->getUri()->getPath();
 
+        if ($this->logHttpRequestToConsole) {
+            ConsoleUtil::log(\sprintf('%s %s', $request->getMethod(), $path), [], 'debug', [
+                'HttpServer',
+                'coID' => Coroutine::tid()
+            ]);
+        }
+
         // if not is ajax, always render vue index file.
         if (0 === \strpos($path, DevTool::ROUTE_PREFIX) && !$request->isAjax()) {
-            ConsoleUtil::log(\sprintf('%s request uri %s', $request->getMethod(), $path));
+            $json = $request->query('json', 0);
 
-            if (!$request->query('json')) {
+            if (!$json) {
                 return \view(App::getAlias('@devtool/web/dist/index.html'), []);
             }
         }

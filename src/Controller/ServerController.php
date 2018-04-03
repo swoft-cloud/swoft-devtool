@@ -31,13 +31,12 @@ class ServerController
     /**
      * get server config
      * @RequestMapping(route="config", method=RequestMethod::GET)
-     * @param Request $request
      * @return array
      */
-    public function config(Request $request): array
+    public function config(): array
     {
-        /** @see Config::toArray() */
         $info = [
+            'swoole' => App::$server->getServer()->setting,
             'basic' => App::$server->getServerSetting(),
             'http' => App::$server->getHttpSetting(),
             'tcp(rpc)' => App::$server->getTcpSetting(),
@@ -53,12 +52,11 @@ class ServerController
     /**
      * get php ext list
      * @RequestMapping(route="php-ext-list", method=RequestMethod::GET)
-     * @param Request $request
      * @return array
      */
-    public function phpExt(Request $request): array
+    public function phpExt(): array
     {
-        return \get_loaded_extensions(true);
+        return \get_loaded_extensions();
     }
 
     /**

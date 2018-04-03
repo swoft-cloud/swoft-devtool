@@ -12,8 +12,6 @@ use Swoft\App;
 use Swoft\Http\Server\Bean\Annotation\Controller;
 use Swoft\Http\Server\Bean\Annotation\RequestMapping;
 use Swoft\Http\Server\Bean\Annotation\RequestMethod;
-use Swoft\View\Bean\Annotation\View;
-
 /**
  * Class DashboardController
  * @package Swoft\Devtool\Controller
@@ -24,7 +22,6 @@ class DashboardController
     /**
      * this is a example action
      * @RequestMapping(route="/__devtool", method=RequestMethod::GET)
-     * View(template="@devtool/res/views/index.php")
      * @return mixed
      * @throws \InvalidArgumentException
      */

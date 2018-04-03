@@ -1,0 +1,96 @@
+<template>
+  <div>
+    <h2>{{this.$route.name}}</h2>
+    <v-card>
+      <v-card-title>
+        <v-spacer></v-spacer>
+        <v-text-field
+          append-icon="search"
+          label="Search"
+          single-line
+          hide-details
+          v-model="search"
+        ></v-text-field>
+      </v-card-title>
+      <v-data-table
+        :headers="headers"
+        :items="routes"
+        :search="search"
+        :rows-per-page-items="pageOpts"
+        class="elevation-1"
+      >
+        <template slot="items" slot-scope="props">
+          <td>{{ props.item.original }}</td>
+          <td>{{ props.item.methods }}</td>
+          <td><code>{{ props.item.handler }}</code></td>
+        </template>
+        <template slot="no-data">
+          <v-alert :value="true" color="info" icon="info">
+            Sorry, nothing to display here :(
+          </v-alert>
+        </template>
+        <v-alert slot="no-results" :value="true" color="error" icon="warning">
+          Your search for "{{ search }}" found no results.
+        </v-alert>
+      </v-data-table>
+    </v-card>
+  </div>
+</template>
+
+<script>
+  import {VAlert, VDataTable} from 'vuetify'
+  import * as VCard from 'vuetify/es5/components/VCard'
+  import {getRpcRoutes} from '../../libs/api-services'
+
+  export default {
+    name: 'RpcRoutes',
+    components: {VAlert, ...VCard, VDataTable},
+    data() {
+      return {
+        search: '',
+        rawData: [],
+
+        // table settings
+        pageOpts: [10, 25, {'text': 'All', 'value': -1}],
+
+        // table headers
+        headers: [{
+          text: 'Uri Path',
+          align: 'left',
+          sortable: false,
+          value: 'path'
+        }, {
+          text: 'Method',
+          align: 'left',
+          value: 'method'
+        }, {
+          text: 'Route Handler',
+          align: 'left',
+          value: 'handler'
+        }],
+
+        // data list
+        routes: []
+      }
+    },
+    created() {
+      this.fetchList()
+    },
+    mounted() {
+    },
+    computed: {},
+    methods: {
+      fetchList() {
+        getRpcRoutes().then(({data}) => {
+          console.log(data)
+          this.rawData = data
+          this.routes = data
+        })
+      }
+    }
+  }
+</script>
+
+<style scoped>
+
+</style>

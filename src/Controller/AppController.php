@@ -111,11 +111,21 @@ class AppController
     }
 
     /**
-     * get all registered middleware list
-     * @RequestMapping(route="events", method=RequestMethod::GET)
+     * get all registered http middleware list
+     * @RequestMapping(route="http/middles", method=RequestMethod::GET)
      * @return array
      */
     public function httpMiddles(): array
+    {
+        return [];
+    }
+
+    /**
+     * get all registered rpc middleware list
+     * @RequestMapping(route="rpc/middles", method=RequestMethod::GET)
+     * @return array
+     */
+    public function rpcMiddles(): array
     {
         return [];
     }

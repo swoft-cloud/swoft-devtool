@@ -61,7 +61,7 @@ class RouteController
         }
 
         /** @var \Swoft\WebSocket\Server\Router\HandlerMapping $router */
-        $router = \bean('swRouter');
+        $router = \bean('wsRouter');
 
         return $router->getRoutes();
     }

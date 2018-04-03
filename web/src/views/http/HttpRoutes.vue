@@ -1,8 +1,10 @@
 <template>
   <div>
-    <h2>Http Routes</h2>
+    <h2>{{this.$route.name}}</h2>
     <v-divider></v-divider>
-    <v-tabs>
+    <v-tabs
+      color="cyan"
+      dark>
       <v-tabs-slider color="yellow"></v-tabs-slider>
       <v-tab href="#tab-1">
         <strong>Static Routes</strong>

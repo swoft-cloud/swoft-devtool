@@ -24,8 +24,23 @@ export const getBasicInfo = () => ajax.get('/app/info')
 // 获取 app config 信息
 export const getAppConfig = () => ajax.get('/app/config')
 
-// 获取 server config 信息
-export const getServerConfig = (type = 'all') => ajax.get('/server/config', {type})
+// 获取 server info 信息
+export const getServerConfig = (type = 'all') => ajax.get('/server/info', {type})
 
-// 获取http routes信息
+// 获取 server info 信息
+export const getServerStats = (type = 'all') => ajax.get('/server/stats', {type})
+
+// 获取 swoole info 信息
+export const getSwooleInfo = (type = 'all') => ajax.get('/server/swoole-info', {type})
+
+// 获取 server php ext list 信息
+export const getPhpExtList = () => ajax.get('/server/php-ext-list')
+
+// 获取 http routes 信息
 export const getHttpRoutes = (type = 'all') => ajax.get('/http/routes', {type})
+
+// 获取 ws routes 信息
+export const getWsRoutes = () => ajax.get('/ws/routes')
+
+// 获取 rpc routes 信息
+export const getRpcRoutes = () => ajax.get('/rpc/routes')

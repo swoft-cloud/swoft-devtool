@@ -1,2 +1,0 @@
-webpackJsonp([7],{KdnL:function(e,n,t){"use strict";Object.defineProperty(n,"__esModule",{value:!0});var a={render:function(){var e=this.$createElement;return(this._self._c||e)("h2",[this._v("hi ")])},staticRenderFns:[]};var r=t("VU/8")({name:"gen-view"},a,!1,function(e){t("sOCJ")},"data-v-bad787fa",null);n.default=r.exports},sOCJ:function(e,n){}});
-//# sourceMappingURL=7.700606319259dec30e12.js.map

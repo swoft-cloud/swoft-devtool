@@ -6,23 +6,47 @@ export default [{
   component: () => import('@/views/Dashboard.vue')
 }, {
   path: URI_PREFIX + '/http/routes',
-  name: 'HttpRoutes',
+  name: 'Http Routes',
   component: () => import('@/views/http/HttpRoutes.vue')
 }, {
   path: URI_PREFIX + '/application',
   name: 'Application',
   component: () => import('@/views/Application.vue')
 }, {
+  path: URI_PREFIX + '/app/info',
+  name: 'Application Info',
+  component: () => import('@/views/app/AppInfo.vue')
+}, {
+  path: URI_PREFIX + '/server/info',
+  name: 'Server Info',
+  component: () => import('@/views/server/ServerInfo.vue')
+}, {
+  path: URI_PREFIX + '/server/stats',
+  name: 'Server Info',
+  component: () => import('@/views/server/ServerStats.vue')
+}, {
+  path: URI_PREFIX + '/server/config',
+  name: 'Server Info',
+  component: () => import('@/views/server/ServerConfig.vue')
+}, {
+  path: URI_PREFIX + '/ws/routes',
+  name: 'WebSocket Routes',
+  component: () => import('@/views/ws/WsRoutes.vue')
+}, {
   path: URI_PREFIX + '/ws/test',
-  name: 'WebSocket',
-  component: () => import('@/views/pages/WebSocket.vue')
+  name: 'WebSocket Test',
+  component: () => import('@/views/ws/WsTest.vue')
+}, {
+  path: URI_PREFIX + '/rpc/routes',
+  name: 'Rpc Routes',
+  component: () => import('@/views/rpc/RpcRoutes.vue')
 }, {
   path: URI_PREFIX + '/code/gen',
   name: 'Generator',
   component: () => import('@/views/gen/GenView.vue')
 }, {
   path: URI_PREFIX + '/app/logs',
-  name: 'AppLogs',
+  name: 'App Logs',
   component: () => import('@/views/AppLogs.vue')
 }, {
   path: URI_PREFIX + '/about',
