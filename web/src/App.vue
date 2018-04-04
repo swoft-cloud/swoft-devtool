@@ -24,20 +24,34 @@
       </v-toolbar>
       <v-divider></v-divider>
       <v-list>
-        <v-list-tile
-          value="true"
-          v-for="(item, i) in items"
-          :key="i"
-          :to="uriPrefix + item.href"
-          exact
+        <v-list-group
+          v-model="item.active"
+          v-for="item in items"
+          :key="item.title"
+          :prepend-icon="item.icon"
+          :append-icon="item.subs ? 'keyboard_arrow_down' : ''"
+          no-action
         >
-          <v-list-tile-action>
-            <v-icon v-html="item.icon"></v-icon>
-          </v-list-tile-action>
-          <v-list-tile-content>
-            <v-list-tile-title v-text="item.title"></v-list-tile-title>
-          </v-list-tile-content>
-        </v-list-tile>
+          <v-list-tile slot="activator" :to="item.href ? uriPrefix + item.href : ''" exact>
+            <v-list-tile-content>
+              <v-list-tile-title>{{ item.title }}</v-list-tile-title>
+            </v-list-tile-content>
+          </v-list-tile>
+          <v-list-tile
+            v-for="subItem in item.subs"
+            :key="subItem.title"
+            @click=""
+            v-if="item.subs"
+            :to="uriPrefix + subItem.href "
+          >
+            <v-list-tile-action v-if="subItem.icon">
+              <v-icon>{{ subItem.icon }}</v-icon>
+            </v-list-tile-action>
+            <v-list-tile-content>
+              <v-list-tile-title>{{ subItem.title }}</v-list-tile-title>
+            </v-list-tile-content>
+          </v-list-tile>
+        </v-list-group>
       </v-list>
     </v-navigation-drawer>
 

@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: inhere
- * Date: 2018/3/21
- * Time: 上午11:44
- */
 
 namespace Swoft\Devtool\Controller;
 
@@ -23,7 +17,7 @@ use Swoft\Http\Server\Bean\Annotation\RequestMethod;
 class RouteController
 {
     /**
-     * @RequestMapping("/__devtool/http/routes", method=RequestMethod::GET)
+     * @RequestMapping("http/routes", method=RequestMethod::GET)
      * @param Request $request
      * @return array
      */
@@ -57,19 +51,35 @@ class RouteController
     }
 
     /**
-     * @RequestMapping("/__devtool/ws/routes", method=RequestMethod::GET)
-     * @param Request $request
+     * @RequestMapping("ws/routes", method=RequestMethod::GET)
      * @return array
      */
-    public function wsRoutes(Request $request): array
+    public function wsRoutes(): array
     {
         if (!BeanFactory::hasBean('wsRouter')) {
             return [];
         }
 
         /** @var \Swoft\WebSocket\Server\Router\HandlerMapping $router */
-        $router = \bean('swRouter');
+        $router = \bean('wsRouter');
 
         return $router->getRoutes();
+    }
+
+    /**
+     * @RequestMapping("rpc/routes", method=RequestMethod::GET)
+     * @return array
+     */
+    public function rpcRoutes(): array
+    {
+        if (!BeanFactory::hasBean('serviceRouter')) {
+            return [];
+        }
+
+        /** @var \Swoft\Rpc\Server\Router\HandlerMapping $router */
+        // $router = \bean('serviceRouter');
+
+        // return $router->getRoutes();
+        return [];
     }
 }

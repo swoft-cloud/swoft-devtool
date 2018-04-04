@@ -34,4 +34,19 @@ class GenController
 
         return ['item0', 'item1'];
     }
+
+    /**
+     * Generate class file
+     * @RequestMapping(route="file", method=RequestMethod::POST)
+     * @param Request $request
+     * @return array
+     */
+    public function create(Request $request): array
+    {
+        // $request->isAjax();
+
+        return ['item0', 'item1'];
+    }
+
+
 }

@@ -2,6 +2,26 @@
 
 > A Vue.js project
 
+## 一些改动
+
+文件 `vendor/swoft/devtool/web/config/index.js`
+
+- 增加了开发时的代理配置
+
+```json
+    proxyTable: {
+      '/api': {
+        target: 'http://127.0.0.1:9088',
+        pathRewrite: {'^/api': '/__devtool'},
+        changeOrigin: true
+      }
+    }
+```
+
+- 资源发布目录做了调整:  `./static` -> `./devtool/static`
+
+方便打包后直接拷贝到项目目录的 public 目录下
+
 ## Build Setup
 
 ``` bash

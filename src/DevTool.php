@@ -16,4 +16,6 @@ final class DevTool
 {
     const VERSION = '1.0.0';
     const ROUTE_PREFIX = '/__devtool';
+
+    public static $table;
 }

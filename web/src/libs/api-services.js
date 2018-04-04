@@ -18,5 +18,56 @@ export const getLoggedUser = () => ajax.get('/v1/users/me')
 // 获取用户信息
 export const getUserInfo = (id) => ajax.get('/v1/users/' + id)
 
-// 获取http routes信息
-export const getHttpRoutes = (type = 'all') => ajax.get('/http/routes', {type})
+/*
+ * Application
+ */
+
+// get basic info
+export const getBasicInfo = () => ajax.get('/app/info')
+
+// get app config
+export const getAppConfig = () => ajax.get('/app/config')
+
+// get app aliases
+export const getAppAliases = () => ajax.get('/app/aliases')
+
+// get App Events
+export const getAppEvents = (name = '') => ajax.get('/app/events?name=' + name)
+
+/*
+ * Server
+ */
+
+// get server config
+export const getServerConfig = (type = 'all') => ajax.get('/server/config', {type})
+
+// get server stats
+export const getServerStats = (type = 'all') => ajax.get('/server/stats', {type})
+
+// get swoole info
+export const getSwooleInfo = () => ajax.get('/server/swoole-info')
+
+// get server events
+export const getServerEvents = (type = 0) => ajax.get('/server/events?type=' + type)
+
+// get server php ext list
+export const getPhpExtList = () => ajax.get('/server/php-ext-list')
+
+/*
+ * Other
+ */
+
+// get http routes
+export const getHttpRoutes = (type = 'all') => ajax.get('/http/routes?type=' + type)
+
+// get http middles
+export const getHttpMiddles = () => ajax.get('/app/http/middles')
+
+// get ws routes
+export const getWsRoutes = () => ajax.get('/ws/routes')
+
+// get rpc routes
+export const getRpcRoutes = () => ajax.get('/rpc/routes')
+
+// get http middles
+export const getRpcMiddles = () => ajax.get('/app/rpc/middles')
