@@ -115,6 +115,13 @@ class AppController
      */
     public function httpMiddles(): array
     {
+        /** @var \Swoft\Http\Server\ServerDispatcher $dispatcher */
+        $dispatcher = \bean('serverDispatcher');
+
+        if (\method_exists($dispatcher, 'getMiddlewares')) {
+            return $dispatcher->getMiddlewares();
+        }
+
         return [];
     }
 
@@ -125,6 +132,13 @@ class AppController
      */
     public function rpcMiddles(): array
     {
+        /** @var \Swoft\Rpc\Server\ServiceDispatcher $dispatcher */
+        $dispatcher = \bean('serviceDispatcher');
+
+        if (\method_exists($dispatcher, 'getMiddlewares')) {
+            return $dispatcher->getMiddlewares();
+        }
+
         return [];
     }
 }

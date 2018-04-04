@@ -28,6 +28,9 @@ export const getBasicInfo = () => ajax.get('/app/info')
 // get app config
 export const getAppConfig = () => ajax.get('/app/config')
 
+// get app aliases
+export const getAppAliases = () => ajax.get('/app/aliases')
+
 // get App Events
 export const getAppEvents = (name = '') => ajax.get('/app/events?name=' + name)
 
@@ -50,11 +53,21 @@ export const getServerEvents = (type = 0) => ajax.get('/server/events?type=' + t
 // get server php ext list
 export const getPhpExtList = () => ajax.get('/server/php-ext-list')
 
+/*
+ * Other
+ */
+
 // get http routes
-export const getHttpRoutes = (type = 'all') => ajax.get('/http/routes', {type})
+export const getHttpRoutes = (type = 'all') => ajax.get('/http/routes?type=' + type)
+
+// get http middles
+export const getHttpMiddles = () => ajax.get('/app/http/middles')
 
 // get ws routes
 export const getWsRoutes = () => ajax.get('/ws/routes')
 
 // get rpc routes
 export const getRpcRoutes = () => ajax.get('/rpc/routes')
+
+// get http middles
+export const getRpcMiddles = () => ajax.get('/app/rpc/middles')
