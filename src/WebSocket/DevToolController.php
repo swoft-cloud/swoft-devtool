@@ -5,16 +5,16 @@ namespace Swoft\Devtool\WebSocket;
 use Swoft\Http\Message\Server\Request;
 use Swoft\Http\Message\Server\Response;
 use Swoft\WebSocket\Server\Bean\Annotation\WebSocket;
-use Swoft\WebSocket\Server\HandlerInterface;
 use Swoole\WebSocket\Frame;
 use Swoole\WebSocket\Server;
 
 /**
  * Class DevToolController
+ * @see \Swoft\WebSocket\Server\HandlerInterface
  * @package Swoft\Devtool\WebSocket
  * @WebSocket("/__devtool")
  */
-class DevToolController implements HandlerInterface
+class DevToolController
 {
     /**
      * {@inheritdoc}

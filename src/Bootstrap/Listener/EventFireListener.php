@@ -37,7 +37,7 @@ class EventFireListener implements EventHandlerInterface
 
         ConsoleUtil::log(
             \sprintf('Trigger the event <cyan>%s</cyan>', $event->getName()),
-            $event->getParams(),
+            [],
             'debug',
             [
                 'Application'

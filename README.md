@@ -42,7 +42,7 @@ Please see [document site](https://doc.swoft.org)
 php bin/swoft dev:publish swoft/devtool
 ```
 
-4. now, you can access your server address by browser. like `http://127.0.0.1:9088/__devtool/`
+4. now, you can access your server address `HOST:PORT/__devtool` by browser. like `http://127.0.0.1:9088/__devtool`
 
 > NOTICE: ensure your static assets is can accessed.
 

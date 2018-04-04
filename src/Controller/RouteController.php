@@ -77,9 +77,18 @@ class RouteController
         }
 
         /** @var \Swoft\Rpc\Server\Router\HandlerMapping $router */
-        // $router = \bean('serviceRouter');
+        $router = \bean('serviceRouter');
+        $rawList = $router->getRoutes();
+        $routes = [];
 
-        // return $router->getRoutes();
-        return [];
+        foreach ($rawList as $key => $route) {
+            $routes[] = [
+                'serviceKey' => $key,
+                'class' => $route[0],
+                'method' => $route[1],
+            ];
+        }
+
+        return $routes;
     }
 }

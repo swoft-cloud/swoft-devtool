@@ -39,10 +39,10 @@ class ServerStartListener implements BeforeStartInterface, WorkerStartInterface
     {
         \output()->writeln(\sprintf(
             'Children process start successful. ' .
-            'PID <magenta>%s</magenta>, Worker Id <magenta>%s</magenta>, Role <info>%s</info> process',
+            'PID <magenta>%s</magenta>, Worker Id <magenta>%s</magenta>, Role <info>%s</info>',
             $server->worker_pid,
             $workerId,
-            $isWorker ? 'Work' : 'Task'
+            $isWorker ? 'Worker' : 'Task'
         ));
     }
 }
