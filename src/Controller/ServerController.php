@@ -38,7 +38,7 @@ class ServerController
             'swoole' => App::$server->getServer()->setting,
             'basic' => App::$server->getServerSetting(),
             'http' => App::$server->getHttpSetting(),
-            'tcp(rpc)' => App::$server->getTcpSetting(),
+            'tcp' => App::$server->getTcpSetting(),
         ];
 
         if (\method_exists(App::$server, 'getWsSettings')) {
@@ -47,7 +47,6 @@ class ServerController
 
         return $info;
     }
-
 
     /**
      * get all registered events list
@@ -59,19 +58,19 @@ class ServerController
     {
         // 1 server event
         // 2 swoole event
-        $type = (int)$request->query('type', 1);
+        $type = (int)$request->query('type');
 
         if ($type === 1) {
-            return SwooleListenerCollector::getCollector();
-        }
-
-        if ($type === 2) {
             return ServerListenerCollector::getCollector();
         }
 
+        if ($type === 2) {
+            return SwooleListenerCollector::getCollector();
+        }
+
         return [
-            'server' => SwooleListenerCollector::getCollector(),
-            'swoole' => ServerListenerCollector::getCollector(),
+            'server' => ServerListenerCollector::getCollector(),
+            'swoole' => SwooleListenerCollector::getCollector(),
         ];
     }
 
@@ -93,10 +92,33 @@ class ServerController
     public function stats(): Payload
     {
         if (!App::$server) {
-            return Payload::make(['msg' => 'server is not started'], 404);
+            return Payload::make(['msg' => 'server is not running'], 404);
         }
 
-        return Payload::make(App::$server->getServer()->stats());
+        $stat = App::$server->getServer()->stats();
+        $stat['start_time'] = \date('Y-m-d H:i:s', $stat['start_time']);
+
+        return Payload::make($stat);
+    }
+
+    /**
+     * get swoole info
+     * @RequestMapping(route="processes", method=RequestMethod::GET)
+     * @return Payload
+     * @throws \InvalidArgumentException
+     * @throws \RuntimeException
+     */
+    public function process(): Payload
+    {
+        list($code, $return, $error) = ProcessHelper::run('ps aux | grep swoft');
+
+        if ($code) {
+            return Payload::make(['msg' => $error], 404);
+        }
+
+        return Payload::make([
+            'raw' => $return
+        ]);
     }
 
     /**

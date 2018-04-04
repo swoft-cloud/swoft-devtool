@@ -86,7 +86,13 @@ class AppController
                 return Payload::make(['msg' => 'event name is invalid: ' . $event],404);
             }
 
-            return Payload::make($queue->getAll());
+            $classes = [];
+
+            foreach ($queue->getIterator() as $listener) {
+                $classes[] = \get_parent_class($listener);
+            }
+
+            return Payload::make($classes);
         }
 
         return Payload::make($em->getListenedEvents());

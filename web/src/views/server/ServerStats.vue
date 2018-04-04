@@ -1,22 +1,25 @@
 <template>
   <div>
-    <v-flex
-      xs12
-      sm6
-      md4
-      lg3
-    >
-      <v-card>
-        <v-card-title><h4>Server stats</h4></v-card-title>
-        <v-divider></v-divider>
-        <v-list dense>
-          <v-list-tile v-for="(item, index) in stats" :key="index">
-            <v-list-tile-content>{{ index }}</v-list-tile-content>
-            <v-list-tile-content class="align-end">{{ item }}</v-list-tile-content>
-          </v-list-tile>
-        </v-list>
-      </v-card>
-    </v-flex>
+    <v-subheader><h2>{{ this.$route.name }}</h2></v-subheader>
+    <v-layout row>
+      <v-flex
+        xs12
+        sm6
+        md4
+        lg3
+      >
+        <v-card>
+          <v-card-title><h4>Server stats</h4></v-card-title>
+          <v-divider></v-divider>
+          <v-list dense>
+            <v-list-tile v-for="(item, index) in stats" :key="index">
+              <v-list-tile-content>{{ index }}</v-list-tile-content>
+              <v-list-tile-content class="align-end">{{ item }}</v-list-tile-content>
+            </v-list-tile>
+          </v-list>
+        </v-card>
+      </v-flex>
+    </v-layout>
   </div>
 </template>
 

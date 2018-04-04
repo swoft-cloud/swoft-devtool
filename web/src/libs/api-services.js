@@ -42,7 +42,10 @@ export const getServerConfig = (type = 'all') => ajax.get('/server/config', {typ
 export const getServerStats = (type = 'all') => ajax.get('/server/stats', {type})
 
 // get swoole info
-export const getSwooleInfo = (type = 'all') => ajax.get('/server/swoole-info', {type})
+export const getSwooleInfo = () => ajax.get('/server/swoole-info')
+
+// get server events
+export const getServerEvents = (type = 0) => ajax.get('/server/events?type=' + type)
 
 // get server php ext list
 export const getPhpExtList = () => ajax.get('/server/php-ext-list')

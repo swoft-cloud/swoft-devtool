@@ -23,6 +23,9 @@ export default [{
     title: 'Server Config',
     href: '/server/config'
   }, {
+    title: 'Server Events',
+    href: '/server/events'
+  }, {
     title: 'Server Stats',
     href: '/server/stats'
   }]

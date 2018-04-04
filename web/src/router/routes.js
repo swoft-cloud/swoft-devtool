@@ -33,6 +33,10 @@ export default [{
   name: 'Server Config',
   component: () => import('../views/server/ServerConfig.vue')
 }, {
+  path: URI_PREFIX + '/server/events',
+  name: 'Server Events',
+  component: () => import('../views/server/ServerEvents.vue')
+}, {
   path: URI_PREFIX + '/ws/routes',
   name: 'WebSocket Routes',
   component: () => import('../views/ws/WsRoutes.vue')
