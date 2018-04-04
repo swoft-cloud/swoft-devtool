@@ -36,9 +36,12 @@ class EventFireListener implements EventHandlerInterface
         }
 
         ConsoleUtil::log(
-            \sprintf('Trigger the application event <cyan>%s</cyan>', $event->getName()),
+            \sprintf('Trigger the event <cyan>%s</cyan>', $event->getName()),
             $event->getParams(),
-            'debug'
+            'debug',
+            [
+                'Application'
+            ]
         );
     }
 }

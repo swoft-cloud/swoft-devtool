@@ -50,6 +50,10 @@ php bin/swoft dev:publish swoft/devtool
 
 ![image](./res/images/devtool.jpg)
 
+## Notice
+
+Opening devTool will have some impact on server operation, please turn it off during stress test.
+
 ## Unit testing
 
 ```bash
