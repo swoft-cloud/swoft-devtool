@@ -7,7 +7,7 @@
 
 <script>
   export default {
-    name: 'RunTrace'
+    name: 'swoole-log'
   }
 </script>
 

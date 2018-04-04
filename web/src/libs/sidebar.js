@@ -45,7 +45,13 @@ export default [{
 }, {
   icon: 'insert_drive_file',
   title: 'Logs',
-  href: '/app/logs'
+  subs: [{
+    title: 'Application Log',
+    href: '/app/logs'
+  }, {
+    title: 'Swoole Log',
+    href: '/swoole/logs'
+  }]
 }, {
   icon: 'build',
   title: 'Tools',

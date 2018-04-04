@@ -37,6 +37,10 @@ export default [{
   name: 'Server Events',
   component: () => import('../views/server/ServerEvents.vue')
 }, {
+  path: URI_PREFIX + '/swoole/logs',
+  name: 'Swoole Logs',
+  component: () => import('../views/server/SwooleLog.vue')
+}, {
   path: URI_PREFIX + '/ws/routes',
   name: 'WebSocket Routes',
   component: () => import('../views/ws/WsRoutes.vue')
@@ -58,8 +62,8 @@ export default [{
   component: () => import('../views/app/RunTrace.vue')
 }, {
   path: URI_PREFIX + '/app/logs',
-  name: 'App Logs',
-  component: () => import('../views/AppLogs.vue')
+  name: 'Application Logs',
+  component: () => import('../views/app/AppLog.vue')
 }, {
   path: URI_PREFIX + '/about',
   name: 'About',

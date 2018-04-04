@@ -80,23 +80,18 @@
 
     <!-- content -->
     <v-content>
-      <v-container :fluid="false" grid-list-md>
+      <v-container :fluid="false" class="content-body" grid-list-md>
         <v-breadcrumbs>
           <v-icon slot="divider">chevron_right</v-icon>
-          <v-breadcrumbs-item
-            v-for="item in bcItems"
-            :key="item.text"
-            :disabled="item.disabled"
-          >
-            {{ item.text }}
-          </v-breadcrumbs-item>
+          <v-breadcrumbs-item :to="uriPrefix" exact>Dashboard</v-breadcrumbs-item>
+          <v-breadcrumbs-item>{{ this.$route.name }}</v-breadcrumbs-item>
         </v-breadcrumbs>
 
         <v-slide-y-transition mode="out-in">
           <router-view></router-view>
         </v-slide-y-transition>
-
       </v-container>
+
       <!--footer-->
       <app-footer></app-footer>
     </v-content>
@@ -143,18 +138,6 @@
         right: true,
         rightDrawer: false,
         title: 'DevTool',
-        swoft: {
-          officialUrl: 'https://swoft.org',
-          githubUrl: 'https://github.com/swoft-cloud/swoft',
-          issueUrl: 'https://github.com/swoft-cloud/swoft/issues'
-        },
-        bcItems: [{
-          text: 'Dashboard',
-          disabled: false
-        }, {
-          text: 'Page',
-          disabled: true
-        }],
         gotoOpts: {
           duration: 300,
           offset: 0,
@@ -165,3 +148,9 @@
     name: 'App'
   }
 </script>
+
+<style scoped>
+  .content-body {
+    min-height: 660px;
+  }
+</style>

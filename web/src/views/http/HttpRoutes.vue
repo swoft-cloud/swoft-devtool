@@ -2,7 +2,7 @@
   <div>
     <v-subheader><h2>{{ this.$route.name }}</h2></v-subheader>
     <v-tabs
-      color="cyan"
+      color="blue"
       dark>
       <v-tabs-slider color="yellow"></v-tabs-slider>
       <v-tab href="#tab-1">

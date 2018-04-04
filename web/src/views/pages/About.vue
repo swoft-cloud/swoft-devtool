@@ -71,6 +71,11 @@
           digest: 'UI framework base on Vue',
           github: 'https://github.com/vuetifyjs/vuetify',
           document: 'https://vuetifyjs.com'
+        }, {
+          name: 'Material Icons',
+          digest: 'Icon font by google',
+          github: 'https://github.com/google/material-design-icons',
+          document: 'https://material.io/icons/'
         }]
       }
     }
