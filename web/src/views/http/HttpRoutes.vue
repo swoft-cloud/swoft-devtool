@@ -1,7 +1,6 @@
 <template>
   <div>
-    <h2>{{this.$route.name}}</h2>
-    <v-divider></v-divider>
+    <v-subheader><h2>{{ this.$route.name }}</h2></v-subheader>
     <v-tabs
       color="cyan"
       dark>

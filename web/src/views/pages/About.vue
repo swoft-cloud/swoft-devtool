@@ -5,8 +5,7 @@
       Modern High performance AOP and Coroutine PHP Framework, base on Swoole 2
     </blockquote>
 
-    <v-divider class="mt-3"></v-divider>
-    <h2>Back-end technology</h2>
+    <v-subheader><h2>Back-end technology</h2></v-subheader>
 
     <v-data-table
       :items="bItems"
@@ -23,8 +22,7 @@
       </template>
     </v-data-table>
 
-    <v-divider class="mt-3"></v-divider>
-    <h2>Front-end technology</h2>
+    <v-subheader><h2>Front-end technology</h2></v-subheader>
     <v-data-table
       :items="fItems"
       hide-actions

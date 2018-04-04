@@ -1,8 +1,9 @@
 <template>
   <div>
+    <v-subheader><h2>{{ this.$route.name }}</h2></v-subheader>
     <v-card>
       <v-card-title>
-        <h2>Php Extensions</h2> <small> (total: {{ extList.length }})</small>
+        <h3>Php Extensions</h3> <small> (total: <code>{{ extList.length }}</code>)</small>
       </v-card-title>
       <v-divider></v-divider>
       <v-card-text class="pa-2">
@@ -10,8 +11,7 @@
       </v-card-text>
     </v-card>
 
-    <h2>Swoole Info</h2>
-    <v-divider></v-divider>
+    <v-subheader><h3>Swoole Info</h3></v-subheader>
     <v-layout>
       <v-flex
         xs12

@@ -9,6 +9,9 @@ export default [{
   subs: [{
     title: 'Information',
     href: '/application'
+  }, {
+    title: 'Registered Events',
+    href: '/app/events'
   }]
 }, {
   icon: 'language',
@@ -52,7 +55,7 @@ export default [{
     href: '/ws/test'
   }, {
     title: 'Run Trace',
-    href: '/app/trace'
+    href: '/run/trace'
   }]
 }, {
   icon: 'info',

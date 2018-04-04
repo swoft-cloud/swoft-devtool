@@ -1,4 +1,7 @@
 <template>
+  <div>
+  <v-subheader><h2>{{ this.$route.name }}</h2></v-subheader>
+
   <v-layout row wrap>
     <v-flex xs12 md4>
       <v-layout row wrap>
@@ -95,16 +98,17 @@
       </v-card>
     </v-flex>
   </v-layout>
+  </div>
 </template>
 
 <script>
-  import {VAlert, VAvatar, VBtnToggle, VSubheader} from 'vuetify'
+  import {VAlert, VAvatar, VBtnToggle} from 'vuetify'
   import * as VCard from 'vuetify/es5/components/VCard'
   import Util from '../../libs/util'
 
   export default {
     name: 'web-socket',
-    components: {VAlert, VAvatar, VBtnToggle, VSubheader, ...VCard},
+    components: {VAlert, VAvatar, VBtnToggle, ...VCard},
     data() {
       return {
         ws: null,

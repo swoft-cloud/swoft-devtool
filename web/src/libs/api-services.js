@@ -18,29 +18,40 @@ export const getLoggedUser = () => ajax.get('/v1/users/me')
 // 获取用户信息
 export const getUserInfo = (id) => ajax.get('/v1/users/' + id)
 
-// 获取 basic 信息
+/*
+ * Application
+ */
+
+// get basic info
 export const getBasicInfo = () => ajax.get('/app/info')
 
-// 获取 app config 信息
+// get app config
 export const getAppConfig = () => ajax.get('/app/config')
 
-// 获取 server info 信息
-export const getServerConfig = (type = 'all') => ajax.get('/server/info', {type})
+// get App Events
+export const getAppEvents = (name = '') => ajax.get('/app/events?name=' + name)
 
-// 获取 server info 信息
+/*
+ * Server
+ */
+
+// get server config
+export const getServerConfig = (type = 'all') => ajax.get('/server/config', {type})
+
+// get server stats
 export const getServerStats = (type = 'all') => ajax.get('/server/stats', {type})
 
-// 获取 swoole info 信息
+// get swoole info
 export const getSwooleInfo = (type = 'all') => ajax.get('/server/swoole-info', {type})
 
-// 获取 server php ext list 信息
+// get server php ext list
 export const getPhpExtList = () => ajax.get('/server/php-ext-list')
 
-// 获取 http routes 信息
+// get http routes
 export const getHttpRoutes = (type = 'all') => ajax.get('/http/routes', {type})
 
-// 获取 ws routes 信息
+// get ws routes
 export const getWsRoutes = () => ajax.get('/ws/routes')
 
-// 获取 rpc routes 信息
+// get rpc routes
 export const getRpcRoutes = () => ajax.get('/rpc/routes')
