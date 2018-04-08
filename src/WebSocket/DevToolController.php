@@ -13,7 +13,7 @@ use Swoole\WebSocket\Server;
  * Class DevToolController
  * @see \Swoft\WebSocket\Server\HandlerInterface
  * @package Swoft\Devtool\WebSocket
- * @notice Remove dependency on 'websocket-server'
+ * - Remove dependency on 'websocket-server'
  * WebSocket("/__devtool")
  * @Bean()
  */

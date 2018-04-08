@@ -38,8 +38,8 @@ class AppController
         return [
             'os' => \PHP_OS,
             'phpVersion' => \PHP_VERSION,
-            'swoVersion' => \SWOOLE_VERSION,
-            'swfVersion' => App::version(),
+            'swooleVersion' => \SWOOLE_VERSION,
+            'swoftVersion' => App::version(),
             'basePath' => \BASE_PATH,
         ];
     }
