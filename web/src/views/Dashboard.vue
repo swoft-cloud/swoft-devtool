@@ -23,7 +23,7 @@
       </v-flex>
       <v-flex d-flex xs12 sm6 md4>
         <v-card>
-          <v-card-title primary class="title">Swoft Application</v-card-title>
+          <v-card-title primary class="title">Environment</v-card-title>
           <table class="table">
             <thead>
             <tr>
@@ -114,15 +114,14 @@
 </template>
 
 <script>
-  import {VJumbotron} from 'vuetify'
-  import {VAlert, VDataTable} from 'vuetify'
+  import {VJumbotron, VDataTable} from 'vuetify'
   import * as VCard from 'vuetify/es5/components/VCard'
   import {URI_PREFIX} from '../libs/constants'
   import {getBasicEnv} from '../libs/api-services'
 
   export default {
     name: 'dashboard',
-    components: {VJumbotron, ...VCard},
+    components: {VJumbotron, VDataTable, ...VCard},
     data: () => ({
       env: {},
       basePath: '',

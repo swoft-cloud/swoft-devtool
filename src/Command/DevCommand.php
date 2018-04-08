@@ -72,7 +72,7 @@ class DevCommand
         $force = \input()->sameOpt(['f', 'force'], false);
 
         if ($force && \is_dir($targetDir)) {
-            \output()->writeln("Will delete the exists dir: $targetDir");
+            \output()->writeln("Will delete the old assets: $targetDir");
 
             list($code, , $error) = ProcessHelper::run("rm -rf $targetDir");
 
