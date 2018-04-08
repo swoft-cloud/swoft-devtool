@@ -2,16 +2,16 @@
   <div>
     <v-subheader><h2>{{ this.$route.name }}</h2></v-subheader>
     <v-layout row wrap>
-      <v-flex xs12
-              md4>
-        hello
-      </v-flex>
-      <v-flex xs12
-              md8>
-        <v-card color="lighten-2">
+      <v-flex xs12 md4>
+        <v-card>
           <v-card-text>
-            <tree-view :data="dataMap" :options="{maxDepth: 2}"></tree-view>
+            get config: <code>\bean('config')->get(key, default = null)</code>
           </v-card-text>
+        </v-card>
+      </v-flex>
+      <v-flex xs12 md8>
+        <v-card color="amber lighten-5" class="pa-3">
+          <tree-view :data="dataMap" :options="{maxDepth: 2, rootObjectKey: 'config'}"></tree-view>
         </v-card>
       </v-flex>
     </v-layout>
@@ -49,6 +49,15 @@
   }
 </script>
 
-<style scoped>
+<style>
+  .tree-view-item-key {
+  }
 
+  .tree-view-item-value {
+    color: #ad1457;
+  }
+
+  .tree-view-item-key-with-chevron {
+
+  }
 </style>

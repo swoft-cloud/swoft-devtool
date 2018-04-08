@@ -53,7 +53,12 @@
         title: 'About Us',
         icon: 'contract',
         link: 'https://github.com/orgs/swoft-cloud/people'
-      }]
+      }],
+      gotoOpts: {
+        duration: 300,
+        offset: 0,
+        easing: 'easeInOutCubic'
+      }
     })
   }
 </script>

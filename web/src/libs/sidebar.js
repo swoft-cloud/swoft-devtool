@@ -4,7 +4,7 @@ export default [{
   title: 'Dashboard',
   href: '/'
 }, {
-  icon: 'assessment',
+  icon: 'layers',
   title: 'Application',
   subs: [{
     title: 'Information',

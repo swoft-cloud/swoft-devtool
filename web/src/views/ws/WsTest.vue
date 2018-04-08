@@ -3,69 +3,65 @@
   <v-subheader><h2>{{ this.$route.name }}</h2></v-subheader>
 
   <v-layout row wrap>
-    <v-flex xs12 md4>
-      <v-layout row wrap>
-        <v-flex xs12>
-          <v-alert :value="true" color="warning" icon="warning" v-show="errorMsg">
-            {{errorMsg}}
-          </v-alert>
-          <v-card color="grey lighten-4" flat>
-            <v-layout row wrap>
-              <v-flex xs7>
-                <v-text-field
-                  name="wsUrl"
-                  :label="'eg ' + locWsUrl"
-                  single-line
-                  required
-                  v-model="wsUrl"
-                  hint="websocket url. eg wss://echo.websocket.org/"
-                  persistent-hint
-                ></v-text-field>
-              </v-flex>
-              <v-flex xs5>
-                <v-btn
-                  outline
-                  :disabled="wsUrlIsEmpty"
-                  @click="connect"
-                  color="info"
-                >
-                  Connect
-                </v-btn>
-                <v-btn :disabled="!isConnected" @click="disconnect" color="warning" outline>
-                  Disconnect
-                </v-btn>
-              </v-flex>
+    <v-flex xs12>
+      <v-alert :type="alertType" v-model="alertStat" dismissible outline>
+        {{ alertMsg }}
+      </v-alert>
+    </v-flex>
+    <v-flex d-flex xs12 md4>
+      <v-card color="grey lighten-4 pa-2">
+        <v-card-title><v-icon>cast</v-icon> &nbsp;Operation</v-card-title>
+        <v-divider></v-divider>
+        <v-layout row wrap>
+          <v-flex xs12>
+            <v-text-field
+              name="wsUrl"
+              :label="'eg ' + locWsUrl"
+              single-line
+              required
+              v-model="wsUrl"
+              hint="websocket server url. eg wss://echo.websocket.org/"
+              persistent-hint
+            ></v-text-field>
+          </v-flex>
+          <v-flex xs12>
+            <v-spacer></v-spacer>
+            <v-btn
+              outline
+              :disabled="wsUrlIsEmpty"
+              @click="connect"
+              color="info"
+            >
+              Connect
+            </v-btn>
+            <v-btn :disabled="!isConnected" @click="disconnect" color="warning" outline>
+              Disconnect
+            </v-btn>
+          </v-flex>
+        </v-layout>
 
-            </v-layout>
-
-            <v-card-text>
-              <v-text-field
-                name="message"
-                label="Message"
-                textarea
-                v-model="message"
-              ></v-text-field>
-            </v-card-text>
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn color="green" @click="send">
-                <v-icon>send</v-icon>
-                Send
-              </v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-flex>
-      </v-layout>
+        <v-card-text>
+          <v-text-field
+            name="message"
+            label="Your Message"
+            textarea
+            v-model="message"
+          ></v-text-field>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="green" @click="send" large dark>
+            <v-icon>send</v-icon> &nbsp; Send
+          </v-btn>
+        </v-card-actions>
+      </v-card>
     </v-flex>
 
     <v-flex d-flex xs12 md8>
       <v-card color="grey lighten-4">
+        <v-card-title><v-icon>sms</v-icon> &nbsp;Messages</v-card-title>
+        <v-divider></v-divider>
         <v-card-text>
-          <v-subheader>
-            <v-icon>textsms</v-icon>
-            Message Box
-          </v-subheader>
-          <v-divider></v-divider>
           <v-container class="msg-box" fluid>
             <v-layout row wrap v-for="(item, idx) in messages" :key="idx">
               <v-flex xs12>
@@ -85,15 +81,7 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn @click="clearMessages" icon>
-            <v-icon>delete</v-icon>
-          </v-btn>
-          <v-btn icon>
-            <v-icon>bookmark</v-icon>
-          </v-btn>
-          <v-btn icon>
-            <v-icon>share</v-icon>
-          </v-btn>
+          <v-btn @click="clearMessages" type="error" icon><v-icon>delete</v-icon></v-btn>
         </v-card-actions>
       </v-card>
     </v-flex>
@@ -115,16 +103,18 @@
         wsUrl: '',
         loading: false,
         locWsUrl: '',
-        errorMsg: '',
+        alertStat: false,
+        alertMsg: '',
+        alertType: 'info',
         logHeartbeat: false,
         message: '',
         messages: [{
           type: 1,
-          msg: 'send',
+          msg: 'send example',
           date: '2018-03-23 12:45:34'
         }, {
           type: 2,
-          msg: 'receive',
+          msg: 'receive example',
           date: '2018-03-23 12:45:44'
         }],
         urlHistories: [],
@@ -158,23 +148,24 @@
     methods: {
       connect() {
         if (this.ws) {
-          this.errorMsg = 'websocket server has been connected!'
+          this.alert('websocket server has been connected!')
           return
         }
 
         let app = this
         let timer
 
-        app.errorMsg = ''
+        app.alert()
 
         this.ws = new WebSocket(this.wsUrl)
         this.ws.onerror = function error(e) {
           console.log('connect failed!')
-          app.errorMsg = 'connect failed! server url:' + app.wsUrl
+          app.alert('connect to server failed! Server url is ' + app.wsUrl)
         }
 
         this.ws.onopen = function open(ev) {
           console.log('connected', ev)
+          app.alert('successfully connected to the server')
 
           // send Heartbeat
           timer = setTimeout(function () {
@@ -192,6 +183,7 @@
 
           clearTimeout(timer)
           app.ws = null
+          app.alert('The connection to the server has been disconnected')
         }
       },
       disconnect() {
@@ -204,15 +196,15 @@
         this.message = ''
       },
       sendMessage(msg, log = true) {
-        this.errorMsg = ''
+        this.alert()
 
         if (!msg) {
-          this.errorMsg = 'the message cannot be empty'
+          this.alert('Message to send cannot be empty!', 'error')
           return
         }
 
         if (!this.ws) {
-          this.errorMsg = 'please connect to websocket server before send message!'
+          this.alert('please connect to websocket server before send message!', 'error')
           return
         }
 
@@ -232,6 +224,17 @@
       },
       clearMessages() {
         this.messages = []
+      },
+      alert (msg = '', type = 'info') {
+        if (!msg) {
+          this.alertMsg = ''
+          this.alertStat = false
+          return
+        }
+
+        this.alertMsg = Util.ucFirst(msg)
+        this.alertStat = true
+        this.alertType = type
       }
     }
   }

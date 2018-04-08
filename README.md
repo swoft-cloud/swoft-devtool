@@ -1,4 +1,4 @@
-# swoft-devtool
+# swoft devtool
 
 Dev tool for swoft
 
@@ -36,9 +36,11 @@ composer require swoft/devtool
 
 ```bash
 php bin/swoft dev:publish swoft/devtool
+// -f will delete old assets.
+php bin/swoft dev:publish swoft/devtool -f
 ```
 
-4. Now, you can access `HOST:PORT/__devtool` by browser. like `http://127.0.0.1:9088/__devtool`
+4. Now, you can access `HOST:PORT/__devtool` by browser. e.g `http://127.0.0.1:9088/__devtool`
 
 5. If you see the following screen, you have successfully installed
 
@@ -62,7 +64,7 @@ Please see [document site](https://doc.swoft.org)
 ## Unit testing
 
 ```bash
-phpunit test/unit
+phpunit
 ```
 
 ## LICENSE

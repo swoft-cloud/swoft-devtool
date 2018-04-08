@@ -9,10 +9,6 @@ export default [{
   name: 'Http Routes',
   component: () => import('../views/http/HttpRoutes.vue')
 }, {
-  path: URI_PREFIX + '/application',
-  name: 'Application',
-  component: () => import('../views/Application.vue')
-}, {
   path: URI_PREFIX + '/app/info',
   name: 'Application Info',
   component: () => import('../views/app/AppInfo.vue')

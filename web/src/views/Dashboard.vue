@@ -22,9 +22,9 @@
         Application
       </v-flex>
       <v-flex d-flex xs12 sm6 md4>
-        <v-card>
+        <v-card :color="randomColor()" dark>
           <v-card-title primary class="title">Environment</v-card-title>
-          <table class="table">
+          <table class="table transparent">
             <thead>
             <tr>
               <th>Name</th>
@@ -91,7 +91,7 @@
           <v-card-title primary-title class="title">{{ item.title }}</v-card-title>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn outline :to="item.href">View</v-btn>
+            <v-btn flat :to="item.href">View</v-btn>
           </v-card-actions>
         </v-card>
       </v-flex>
@@ -104,7 +104,7 @@
           <v-card-title primary-title class="title">{{ item.title }}</v-card-title>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn outline :to="item.href">View</v-btn>
+            <v-btn flat :to="item.href">View</v-btn>
           </v-card-actions>
         </v-card>
       </v-flex>
@@ -149,10 +149,19 @@
         href: URI_PREFIX + '/run/trace'
       }],
       colors: [
+        'amber darken-1',
+        'brown',
+        'cyan',
         'indigo',
         'orange',
+        'deep-purple',
         'purple',
+        'teal',
         'green lighten-2',
+        'green darken-1',
+        'red lighten-2',
+        'light-blue',
+        'light-green',
         'blue lighten-2'
       ],
       lorem: `Lorem ipsum dolor sit amet, mel at clita quando. Te sit oratio vituperatoribus, nam ad ipsum posidonium mediocritatem, explicari dissentiunt cu mea. Repudiare disputationi vim in, mollis iriure nec cu, alienum argumentum ius ad. Pri eu justo aeque torquatos.`

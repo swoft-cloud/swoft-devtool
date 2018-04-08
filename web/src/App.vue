@@ -137,12 +137,7 @@
         miniVariant: false,
         right: true,
         rightDrawer: false,
-        title: 'DevTool',
-        gotoOpts: {
-          duration: 300,
-          offset: 0,
-          easing: 'easeInOutCubic'
-        }
+        title: 'DevTool'
       }
     },
     name: 'App'
