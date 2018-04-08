@@ -11,12 +11,15 @@
 namespace Swoft\Devtool\Controller;
 
 use Swoft\App;
+use Swoft\Bean\BeanFactory;
+use Swoft\Bean\Collector\PoolCollector;
 use Swoft\Core\Config;
 use Swoft\Http\Message\Server\Request;
 use Swoft\Http\Server\Bean\Annotation\Controller;
 use Swoft\Http\Server\Bean\Annotation\RequestMapping;
 use Swoft\Http\Server\Bean\Annotation\RequestMethod;
 use Swoft\Http\Server\Payload;
+use Swoft\Pool\PoolConfigInterface;
 
 /**
  * Class AppController
@@ -27,7 +30,7 @@ class AppController
 {
     /**
      * get app info
-     * @RequestMapping(route="info", method=RequestMethod::GET)
+     * @RequestMapping(route="env", method=RequestMethod::GET)
      * @return array
      */
     public function index(): array
@@ -56,6 +59,59 @@ class AppController
 
         /** @see Config::toArray() */
         return \bean('config')->toArray();
+    }
+
+    /**
+     * get app pools
+     * @RequestMapping(route="pools", method=RequestMethod::GET)
+     * @param Request $request
+     * @return array
+     * @throws \Swoft\Exception\InvalidArgumentException
+     */
+    public function pools(Request $request): array
+    {
+        if ($name = $request->query('name')) {
+            if (!App::hasPool($name)) {
+                return [];
+            }
+
+            /** @var PoolConfigInterface $poolConfig */
+            $poolConfig = App::getPool($name)->getPoolConfig();
+
+            return $poolConfig->toArray();
+        }
+
+        return PoolCollector::getCollector();
+    }
+
+    /**
+     * get app beans
+     * @RequestMapping(route="beans", method=RequestMethod::GET)
+     * @param Request $request
+     * @return array
+     */
+    public function beans(Request $request): array
+    {
+        if ($name = $request->query('name')) {
+            return [];
+        }
+
+        return BeanFactory::getContainer()->getBeanNames();
+    }
+
+    /**
+     * get app beans config
+     * @RequestMapping(route="beans-config", method=RequestMethod::GET)
+     * @param Request $request
+     * @return array
+     */
+    public function beansConfig(Request $request): array
+    {
+        if ($name = $request->query('name')) {
+            return [];
+        }
+
+        return [];
     }
 
     /**

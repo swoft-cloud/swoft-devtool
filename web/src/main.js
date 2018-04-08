@@ -20,11 +20,14 @@ import {
 } from 'vuetify'
 import '../node_modules/vuetify/src/stylus/app.styl'
 
+// json view
+import TreeView from 'vue-json-tree-view'
+
 // Helpers
 // import colors from 'vuetify/es5/util/colors'
 
 // console.log(colors.teal)
-
+Vue.use(TreeView)
 Vue.use(Vuetify, {
   components: {
     VApp,

@@ -8,7 +8,10 @@ export default [{
   title: 'Application',
   subs: [{
     title: 'Information',
-    href: '/application'
+    href: '/app/info'
+  }, {
+    title: 'Configuration',
+    href: '/app/config'
   }, {
     title: 'Registered Events',
     href: '/app/events'

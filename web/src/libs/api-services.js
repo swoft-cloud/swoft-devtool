@@ -22,8 +22,8 @@ export const getUserInfo = (id) => ajax.get('/v1/users/' + id)
  * Application
  */
 
-// get basic info
-export const getBasicInfo = () => ajax.get('/app/info')
+// get basic env info
+export const getBasicEnv = () => ajax.get('/app/env')
 
 // get app config
 export const getAppConfig = () => ajax.get('/app/config')

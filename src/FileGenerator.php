@@ -1,6 +1,7 @@
 <?php
 
 namespace Swoft\Devtool;
+
 use Leuffen\TextTemplate\TextTemplate;
 use Swoft\App;
 

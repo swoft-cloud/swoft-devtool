@@ -17,6 +17,10 @@ export default [{
   name: 'Application Info',
   component: () => import('../views/app/AppInfo.vue')
 }, {
+  path: URI_PREFIX + '/app/config',
+  name: 'Application Config',
+  component: () => import('../views/app/AppConfig.vue')
+}, {
   path: URI_PREFIX + '/app/events',
   name: 'Application Events',
   component: () => import('../views/app/AppEvents.vue')
