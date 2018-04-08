@@ -2,12 +2,15 @@
 
 namespace Swoft\Devtool\Bootstrap\Listener;
 
+use Swoft\App;
 use Swoft\Bean\Annotation\ServerListener;
+use Swoft\Bean\BeanFactory;
 use Swoft\Bootstrap\Listeners\Interfaces\BeforeStartInterface;
 use Swoft\Bootstrap\Listeners\Interfaces\WorkerStartInterface;
 use Swoft\Bootstrap\SwooleEvent;
 use Swoft\Bootstrap\Server\AbstractServer;
 use Swoft\Devtool\DevTool;
+use Swoft\Devtool\WebSocket\DevToolController;
 use Swoft\Memory\Table;
 use Swoole\Server;
 
@@ -44,5 +47,11 @@ class ServerStartListener implements BeforeStartInterface, WorkerStartInterface
             $workerId,
             $isWorker ? 'Worker' : 'Task'
         ));
+
+        // if websocket is enabled. register a ws route
+        if ($isWorker && App::hasBean('wsRouter')) {
+            /* @see \Swoft\WebSocket\Server\Router\HandlerMapping::add() */
+            App::getBean('wsRouter')->add(DevTool::ROUTE_PREFIX, DevToolController::class);
+        }
     }
 }
