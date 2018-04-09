@@ -12,6 +12,7 @@
           v-model="search"
         ></v-text-field>
       </v-card-title>
+      <v-divider></v-divider>
       <v-data-table
         :headers="headers"
         :items="routes"

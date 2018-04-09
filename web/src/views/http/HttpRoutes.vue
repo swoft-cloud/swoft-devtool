@@ -24,6 +24,7 @@
               v-model="stSearch"
             ></v-text-field>
           </v-card-title>
+          <v-divider></v-divider>
           <v-data-table
             :headers="stHeaders"
             :items="staticList"
@@ -64,6 +65,7 @@
               v-model="rgSearch"
             ></v-text-field>
           </v-card-title>
+          <v-divider></v-divider>
           <v-data-table
             :headers="rgHeaders"
             :items="regularList"

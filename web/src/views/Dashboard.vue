@@ -42,43 +42,34 @@
       </v-flex>
       <v-flex d-flex xs12 sm6 md3>
         <v-layout row wrap>
-          <v-flex d-flex>
+          <v-flex d-flex v-for="item in app1" :key="item.href">
             <v-card :color="randomColor()" dark>
-              <v-card-title>
-                Application information
-              </v-card-title>
+              <v-card-title primary class="title">{{ item.title }}</v-card-title>
               <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn outline :to="buildRoute('/app/info')">View</v-btn>
+                <v-btn flat :to="item.href">View</v-btn>
               </v-card-actions>
             </v-card>
           </v-flex>
-          <v-flex d-flex>
-            <v-layout row wrap>
-              <v-flex d-flex v-for="n in 2" :key="n" xs12>
-                <v-card color="red lighten-2" dark>
-                  <v-card-text
-                    v-text="lorem.slice(0, 40)">
-                  </v-card-text>
-                </v-card>
-              </v-flex>
-            </v-layout>
+        </v-layout>
+      </v-flex>
+      <v-flex d-flex xs12 sm6 md3 child-flex>
+        <v-layout row wrap>
+          <v-flex d-flex v-for="item in app2" :key="item.href">
+            <v-card :color="randomColor()" dark>
+              <v-card-title primary class="title">{{ item.title }}</v-card-title>
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn flat :to="item.href">View</v-btn>
+              </v-card-actions>
+            </v-card>
           </v-flex>
         </v-layout>
       </v-flex>
-      <v-flex d-flex xs12 sm6 md2 child-flex>
-        <v-card color="green lighten-2" dark>
-          <v-card-title primary-title><h4 class="mb-0">Information</h4></v-card-title>
-          <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn outline :to="buildRoute('/app/info')">View</v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-flex>
-      <v-flex d-flex xs12 sm6 md3>
+      <v-flex d-flex xs12 sm6 md2>
         <v-card color="blue lighten-2" dark>
           <v-card-text
-            v-text="lorem.slice(0, 100)">
+            v-text="lorem">
           </v-card-text>
         </v-card>
       </v-flex>
@@ -128,6 +119,26 @@
       uriPrefix: URI_PREFIX,
       github: 'https://github.com/swoft-cloud/swoft',
       document: 'https://doc.swoft.org',
+      app1: [{
+        title: 'Information',
+        href: URI_PREFIX + '/app/info'
+      }, {
+        title: 'Configuration',
+        href: URI_PREFIX + '/app/config'
+      }, {
+        title: 'Registered Events',
+        href: URI_PREFIX + '/app/events'
+      }],
+      app2: [{
+        title: 'HTTP Routes',
+        href: URI_PREFIX + '/http/routes'
+      }, {
+        title: 'RPC Routes',
+        href: URI_PREFIX + '/rpc/routes'
+      }, {
+        title: 'WebSocket Routes',
+        href: URI_PREFIX + '/ws/routes'
+      }],
       server: [{
         title: 'Information',
         href: URI_PREFIX + '/server/info'
@@ -137,6 +148,9 @@
       }, {
         title: 'Registered Events',
         href: URI_PREFIX + '/server/events'
+      }, {
+        title: 'Swoole Log',
+        href: URI_PREFIX + '/swoole/logs'
       }],
       tools: [{
         title: 'Code Generator',
@@ -147,27 +161,42 @@
       }, {
         title: 'Run Tracing',
         href: URI_PREFIX + '/run/trace'
+      }, {
+        title: 'Application Log',
+        href: URI_PREFIX + '/app/logs'
       }],
       colors: [
-        'amber darken-1',
+        'amber darken-2',
         'blue',
         'blue lighten-2',
+        'blue darken-3',
+        'blue accent-4',
         'brown',
         'brown darken-2',
         'cyan',
         'cyan darken-1',
+        'cyan darken-3',
         'indigo',
-        'lime darken-1',
+        'indigo darken-2',
+        'lime darken-2',
         'orange',
+        'orange darken-2',
+        'deep-orange darken-2',
         'deep-purple',
+        'deep-purple darken-2',
         'purple',
+        'purple darken-2',
+        'yellow darken-3',
         'teal',
+        'teal darken-3',
         'blue-grey',
+        'blue-grey darken-2',
         'green',
-        'green lighten-2',
-        'green darken-1',
-        'red lighten-2',
+        'green darken-2',
+        'red darken-2',
+        'pink darken-1',
         'light-blue',
+        'light-blue darken-4',
         'light-green',
         'light-green darken-3'
       ],
