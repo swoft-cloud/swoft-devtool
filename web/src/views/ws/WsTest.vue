@@ -9,38 +9,40 @@
       </v-alert>
     </v-flex>
     <v-flex d-flex xs12 md4>
-      <v-card color="grey lighten-4 pa-2">
+      <v-card color="lime lighten-5">
         <v-card-title><v-icon>cast</v-icon> &nbsp;Operation</v-card-title>
         <v-divider></v-divider>
-        <v-layout row wrap>
-          <v-flex xs12>
-            <v-text-field
-              name="wsUrl"
-              :label="'eg ' + locWsUrl"
-              single-line
-              required
-              v-model="wsUrl"
-              hint="websocket server url. eg wss://echo.websocket.org/"
-              persistent-hint
-            ></v-text-field>
-          </v-flex>
-          <v-flex xs12>
-            <v-spacer></v-spacer>
-            <v-btn
-              outline
-              :disabled="wsUrlIsEmpty"
-              @click="connect"
-              color="info"
-            >
-              Connect
-            </v-btn>
-            <v-btn :disabled="!isConnected" @click="disconnect" color="warning" outline>
-              Disconnect
-            </v-btn>
-          </v-flex>
-        </v-layout>
-
         <v-card-text>
+          <v-layout row>
+            <v-flex xs12>
+              <v-text-field
+                name="wsUrl"
+                :label="'eg ' + locWsUrl"
+                single-line
+                required
+                v-model="wsUrl"
+                hint="websocket server url. eg wss://echo.websocket.org/"
+                persistent-hint
+              ></v-text-field>
+            </v-flex>
+          </v-layout>
+          <v-layout row>
+            <v-flex xs12>
+              <v-spacer></v-spacer>
+              <v-btn
+                outline
+                :disabled="wsUrlIsEmpty"
+                @click="connect"
+                color="info"
+              >
+                Connect
+              </v-btn>
+              <v-btn :disabled="!isConnected" @click="disconnect" color="warning" outline>
+                Disconnect
+              </v-btn>
+            </v-flex>
+          </v-layout>
+
           <v-text-field
             name="message"
             label="Your Message"
@@ -58,11 +60,10 @@
     </v-flex>
 
     <v-flex d-flex xs12 md8>
-      <v-card color="grey lighten-4">
+      <v-card color="grey lighten-5">
         <v-card-title><v-icon>sms</v-icon> &nbsp;Messages</v-card-title>
         <v-divider></v-divider>
-        <v-card-text>
-          <v-container class="msg-box" fluid>
+        <v-card-text class="msg-box">
             <v-layout row wrap v-for="(item, idx) in messages" :key="idx">
               <v-flex xs12>
                 <v-avatar size="25px" class="teal" v-if="item.type === 1">
@@ -73,11 +74,10 @@
                 </v-avatar>
                 <span class="blue--text"> {{item.date}}</span>
                 <div>
-                <pre class="px-2 py-2 my-1 msg-detail">{{item.msg}}</pre>
+                <pre class="px-2 py-2 my-1 ml-4 msg-detail">{{item.msg}}</pre>
                 </div>
               </v-flex>
             </v-layout>
-          </v-container>
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
@@ -248,4 +248,5 @@
   .msg-detail
     border 1px solid #cdcdcd
     border-radius 3px
+    background-color #FFFDE7
 </style>

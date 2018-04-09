@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-jumbotron color="light-green darken-1" dark>
+    <v-jumbotron :color="randomColor()" dark>
       <v-container fill-height>
         <v-layout align-center>
           <v-flex>
@@ -150,19 +150,26 @@
       }],
       colors: [
         'amber darken-1',
+        'blue',
+        'blue lighten-2',
         'brown',
+        'brown darken-2',
         'cyan',
+        'cyan darken-1',
         'indigo',
+        'lime darken-1',
         'orange',
         'deep-purple',
         'purple',
         'teal',
+        'blue-grey',
+        'green',
         'green lighten-2',
         'green darken-1',
         'red lighten-2',
         'light-blue',
         'light-green',
-        'blue lighten-2'
+        'light-green darken-3'
       ],
       lorem: `Lorem ipsum dolor sit amet, mel at clita quando. Te sit oratio vituperatoribus, nam ad ipsum posidonium mediocritatem, explicari dissentiunt cu mea. Repudiare disputationi vim in, mollis iriure nec cu, alienum argumentum ius ad. Pri eu justo aeque torquatos.`
     }),
