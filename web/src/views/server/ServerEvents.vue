@@ -7,8 +7,9 @@
         md6
       >
         <v-card>
-          <div class="pa-2">
-            <h3>Swoft Server</h3>
+          <v-card-title class="title">Swoft Server</v-card-title>
+          <v-divider></v-divider>
+          <v-card-text class="pa-2">
             <div v-for="(items, name) in server" :key="name" class="px-1">
               <strong>{{ name }}</strong>
               <ul class="list px-1">
@@ -17,30 +18,52 @@
                 </li>
               </ul>
             </div>
-          </div>
+          </v-card-text>
         </v-card>
       </v-flex>
       <v-flex
         xs12
         md6
       >
-        <v-card class="pa-2">
-          <h3>Swoole Server</h3>
-          <ul class="list">
-            <li v-for="(item, name) in swoole.server" :key="name" v-if="swoole.server">
-              {{ name }} - <code>{{ item }}</code>
-            </li>
-          </ul>
+        <v-card>
+          <v-card-title class="title">Swoole Server</v-card-title>
+          <v-divider></v-divider>
+          <v-card-text>
+            <v-subheader>Main Server</v-subheader>
+            <v-divider></v-divider>
+            <table class="table">
+              <thead>
+              <tr>
+                <th>Name</th><th>Value</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr v-for="(val, name) in swoole.server" :key="name">
+                <td>{{ name }}</td>
+                <td><code>{{ val }}</code></td>
+              </tr>
+              </tbody>
+            </table>
 
-          <h3>Swoole Port</h3>
-          <div v-for="(items, name) in swoole.port" :key="name" v-if="swoole.port" class="px-1">
-            <strong>port {{ name }}</strong>
-            <ul class="list px-1">
-              <li v-for="(item, key) in items">
-                {{ key }} - <code>{{ item }}</code>
-              </li>
-            </ul>
-          </div>
+            <v-subheader>Attached Port Server</v-subheader>
+            <div v-for="(items, name) in swoole.port" :key="name" v-if="swoole.port" class="px-1">
+              <h4 class="pa-1"> - Port {{ name }}</h4>
+              <v-divider></v-divider>
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Name</th><th>Value</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="(val, name) in items" :key="name">
+                    <td>{{ name }}</td>
+                    <td><code>{{ val }}</code></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </v-card-text>
         </v-card>
       </v-flex>
     </v-layout>
@@ -48,12 +71,13 @@
 </template>
 
 <script>
+  import {VDataTable} from 'vuetify'
   import * as VCard from 'vuetify/es5/components/VCard'
   import {getServerEvents} from '../../libs/api-services'
 
   export default {
     name: 'ServerEvents',
-    components: {...VCard},
+    components: {VDataTable, ...VCard},
     data() {
       return {
         swoole: {},

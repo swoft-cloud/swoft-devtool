@@ -15,6 +15,12 @@ export default [{
   }, {
     title: 'Registered Events',
     href: '/app/events'
+  }, {
+    title: 'HTTP Middleware',
+    href: '/http/middles'
+  }, {
+    title: 'RPC Middleware',
+    href: '/rpc/middles'
   }]
 }, {
   icon: 'language',
