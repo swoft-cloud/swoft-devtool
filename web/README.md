@@ -1,4 +1,4 @@
-# webc
+# devtool
 
 > A Vue.js project
 
@@ -21,6 +21,8 @@
 - 资源发布目录做了调整:  `./static` -> `./devtool/static`
 
 方便打包后直接拷贝到项目目录的 public 目录下
+
+- 如果想使用本地字体 `npm install material-design-icons -S`
 
 ## Build Setup
 

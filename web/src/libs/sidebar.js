@@ -4,11 +4,14 @@ export default [{
   title: 'Dashboard',
   href: '/'
 }, {
-  icon: 'assessment',
+  icon: 'layers',
   title: 'Application',
   subs: [{
     title: 'Information',
-    href: '/application'
+    href: '/app/info'
+  }, {
+    title: 'Configuration',
+    href: '/app/config'
   }, {
     title: 'Registered Events',
     href: '/app/events'
@@ -45,7 +48,13 @@ export default [{
 }, {
   icon: 'insert_drive_file',
   title: 'Logs',
-  href: '/app/logs'
+  subs: [{
+    title: 'Application Log',
+    href: '/app/logs'
+  }, {
+    title: 'Swoole Log',
+    href: '/swoole/logs'
+  }]
 }, {
   icon: 'build',
   title: 'Tools',

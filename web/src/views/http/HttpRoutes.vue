@@ -2,7 +2,7 @@
   <div>
     <v-subheader><h2>{{ this.$route.name }}</h2></v-subheader>
     <v-tabs
-      color="cyan"
+      color="blue"
       dark>
       <v-tabs-slider color="yellow"></v-tabs-slider>
       <v-tab href="#tab-1">
@@ -24,6 +24,7 @@
               v-model="stSearch"
             ></v-text-field>
           </v-card-title>
+          <v-divider></v-divider>
           <v-data-table
             :headers="stHeaders"
             :items="staticList"
@@ -64,6 +65,7 @@
               v-model="rgSearch"
             ></v-text-field>
           </v-card-title>
+          <v-divider></v-divider>
           <v-data-table
             :headers="rgHeaders"
             :items="regularList"

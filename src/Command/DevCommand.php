@@ -6,6 +6,7 @@ use Swoft\App;
 use Swoft\Console\Bean\Annotation\Command;
 use Swoft\Console\Helper\ConsoleUtil;
 use Swoft\Console\Input\Input;
+use Swoft\Helper\DirHelper;
 use Swoft\Helper\ProcessHelper;
 
 /**
@@ -18,12 +19,12 @@ class DevCommand
     /**
      * @return array
      */
-    public function internalConfig(): array
+    public static function internalConfig(): array
     {
         return [
             'swoft/devtool' => [
-                '@devtool/web/dist/devtool',
-                '@root/public'
+                '@devtool/web/dist/devtool/static',
+                '@root/public/devtool'
             ],
         ];
     }
@@ -34,7 +35,7 @@ class DevCommand
      *  srcDir   The source assets directory path. eg. `@vendor/some/lib/assets`
      *  dstDir   The defined component name.(default is `@root/public`)
      * @Options
-     *   -y, --yes BOOL      Whether to ask when writing a file. default is: <info>True</info>
+     *   -y, --yes BOOL      Do not confirm when execute publish. default is: <info>False</info>
      *   -f, --force BOOL    Force override all exists file.(default: <info>False</info>)
      * @Example
      *   {fullCommand} swoft/devtool
@@ -56,7 +57,7 @@ class DevCommand
 
         // first arg is internal component name
         if ($assetDir && !$targetDir) {
-            $config = $this->internalConfig();
+            $config = static::internalConfig();
 
             if (!isset($config[$assetDir])) {
                 \output()->colored('missing arguments!', 'warning');
@@ -68,6 +69,21 @@ class DevCommand
         $assetDir = App::getAlias($assetDir);
         $targetDir = App::getAlias($targetDir);
 
+        $force = \input()->sameOpt(['f', 'force'], false);
+
+        if ($force && \is_dir($targetDir)) {
+            \output()->writeln("Will delete the old assets: $targetDir");
+
+            list($code, , $error) = ProcessHelper::run("rm -rf $targetDir");
+
+            if ($code !== 0) {
+                \output()->colored("Delete dir $targetDir is failed!", 'error');
+                \output()->writeln($error);
+
+                return -2;
+            }
+        }
+
         $yes = \input()->sameOpt(['y', 'yes'], false);
         $command = "cp -Rf $assetDir $targetDir";
 
@@ -78,6 +94,8 @@ class DevCommand
 
             return 0;
         }
+
+        DirHelper::mkdir($targetDir);
 
         list($code, , $error) = ProcessHelper::run($command, App::getAlias('@root'));
 

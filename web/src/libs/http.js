@@ -2,6 +2,7 @@ import axios from 'axios'
 import config from '../config'
 import { ACCESS_TOKEN } from './constants'
 
+// set base Url
 axios.defaults.baseURL = config.baseUri
 
 // Add a request interceptor

@@ -2,6 +2,7 @@
 
 namespace Swoft\Devtool\Bootstrap\Listener;
 
+use Swoft\App;
 use Swoft\Bean\Annotation\Listener;
 use Swoft\Bean\Annotation\Value;
 use Swoft\Console\Helper\ConsoleUtil;
@@ -37,10 +38,11 @@ class EventFireListener implements EventHandlerInterface
 
         ConsoleUtil::log(
             \sprintf('Trigger the event <cyan>%s</cyan>', $event->getName()),
-            $event->getParams(),
+            [],
             'debug',
             [
-                'Application'
+                'Application',
+                'WorkerId' => App::getWorkerId()
             ]
         );
     }

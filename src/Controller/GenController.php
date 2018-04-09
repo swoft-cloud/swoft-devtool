@@ -17,7 +17,7 @@ use Swoft\Http\Server\Bean\Annotation\RequestMethod;
 
 /**
  * Class GenController
- * @Controller(prefix="/__devtool/gen")
+ * @Controller(prefix="/__devtool/gen/")
  * @package Swoft\Devtool\Controller
  */
 class GenController
@@ -31,6 +31,19 @@ class GenController
     public function index(Request $request): array
     {
         // $request->isAjax();
+
+        return ['item0', 'item1'];
+    }
+
+    /**
+     * Generate class file preview
+     * @RequestMapping(route="preview", method=RequestMethod::POST)
+     * @param Request $request
+     * @return array
+     */
+    public function preview(Request $request): array
+    {
+        // $data = $request->json();
 
         return ['item0', 'item1'];
     }

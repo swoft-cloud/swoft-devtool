@@ -9,13 +9,13 @@ export default [{
   name: 'Http Routes',
   component: () => import('../views/http/HttpRoutes.vue')
 }, {
-  path: URI_PREFIX + '/application',
-  name: 'Application',
-  component: () => import('../views/Application.vue')
-}, {
   path: URI_PREFIX + '/app/info',
   name: 'Application Info',
   component: () => import('../views/app/AppInfo.vue')
+}, {
+  path: URI_PREFIX + '/app/config',
+  name: 'Application Config',
+  component: () => import('../views/app/AppConfig.vue')
 }, {
   path: URI_PREFIX + '/app/events',
   name: 'Application Events',
@@ -36,6 +36,10 @@ export default [{
   path: URI_PREFIX + '/server/events',
   name: 'Server Events',
   component: () => import('../views/server/ServerEvents.vue')
+}, {
+  path: URI_PREFIX + '/swoole/logs',
+  name: 'Swoole Logs',
+  component: () => import('../views/server/SwooleLog.vue')
 }, {
   path: URI_PREFIX + '/ws/routes',
   name: 'WebSocket Routes',
@@ -58,8 +62,8 @@ export default [{
   component: () => import('../views/app/RunTrace.vue')
 }, {
   path: URI_PREFIX + '/app/logs',
-  name: 'App Logs',
-  component: () => import('../views/AppLogs.vue')
+  name: 'Application Logs',
+  component: () => import('../views/app/AppLog.vue')
 }, {
   path: URI_PREFIX + '/about',
   name: 'About',

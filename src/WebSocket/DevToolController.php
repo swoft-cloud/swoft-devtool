@@ -2,19 +2,22 @@
 
 namespace Swoft\Devtool\WebSocket;
 
+use Swoft\Bean\Annotation\Bean;
 use Swoft\Http\Message\Server\Request;
 use Swoft\Http\Message\Server\Response;
-use Swoft\WebSocket\Server\Bean\Annotation\WebSocket;
-use Swoft\WebSocket\Server\HandlerInterface;
+// use Swoft\WebSocket\Server\Bean\Annotation\WebSocket;
 use Swoole\WebSocket\Frame;
 use Swoole\WebSocket\Server;
 
 /**
  * Class DevToolController
+ * @see \Swoft\WebSocket\Server\HandlerInterface
  * @package Swoft\Devtool\WebSocket
- * @WebSocket("/__devtool")
+ * - Remove dependency on 'websocket-server'
+ * WebSocket("/__devtool")
+ * @Bean()
  */
-class DevToolController implements HandlerInterface
+class DevToolController
 {
     /**
      * {@inheritdoc}
@@ -31,7 +34,7 @@ class DevToolController implements HandlerInterface
      */
     public function onOpen(Server $server, Request $request, int $fd)
     {
-        $server->push($fd, 'hello, welcome! :)');
+        $server->push($fd, 'hello, welcome to devtool! :)');
     }
 
     /**

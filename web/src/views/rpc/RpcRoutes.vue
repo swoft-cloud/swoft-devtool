@@ -12,6 +12,7 @@
           v-model="search"
         ></v-text-field>
       </v-card-title>
+      <v-divider></v-divider>
       <v-data-table
         :headers="headers"
         :items="routes"
@@ -20,9 +21,9 @@
         class="elevation-1"
       >
         <template slot="items" slot-scope="props">
-          <td>{{ props.item.original }}</td>
-          <td>{{ props.item.methods }}</td>
-          <td><code>{{ props.item.handler }}</code></td>
+          <td>{{ props.item.class }}</td>
+          <td>{{ props.item.method }}</td>
+          <td><code>{{ props.item.serviceKey }}</code></td>
         </template>
         <template slot="no-data">
           <v-alert :value="true" color="info" icon="info">
@@ -48,25 +49,24 @@
     data() {
       return {
         search: '',
-        rawData: [],
 
         // table settings
         pageOpts: [10, 25, {'text': 'All', 'value': -1}],
 
         // table headers
         headers: [{
-          text: 'Uri Path',
+          text: 'Class',
           align: 'left',
           sortable: false,
-          value: 'path'
+          value: 'class'
         }, {
           text: 'Method',
           align: 'left',
           value: 'method'
         }, {
-          text: 'Route Handler',
+          text: 'Service Key',
           align: 'left',
-          value: 'handler'
+          value: 'serviceKey'
         }],
 
         // data list
@@ -83,7 +83,7 @@
       fetchList() {
         getRpcRoutes().then(({data}) => {
           console.log(data)
-          this.rawData = data
+
           this.routes = data
         })
       }

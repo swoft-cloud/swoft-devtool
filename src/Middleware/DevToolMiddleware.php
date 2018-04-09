@@ -15,6 +15,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Swoft\App;
 use Swoft\Bean\Annotation\Bean;
+use Swoft\Bean\Annotation\Value;
 use Swoft\Console\Helper\ConsoleUtil;
 use Swoft\Core\Coroutine;
 use Swoft\Devtool\DevTool;
@@ -28,12 +29,16 @@ use Swoft\Http\Message\Server\Request;
  */
 class DevToolMiddleware implements MiddlewareInterface
 {
+    /**
+     * @Value("{$config.devtool.logHttpRequestToConsole}")
+     * @var bool
+     */
     public $logHttpRequestToConsole = true;
 
-    public function __construct()
-    {
-        $this->logHttpRequestToConsole = \bean('config')->get('devtool.logHttpRequestToConsole', true);
-    }
+    // public function __construct()
+    // {
+    //     $this->logHttpRequestToConsole = \bean('config')->get('devtool.logHttpRequestToConsole', true);
+    // }
 
     /**
      * @param \Psr\Http\Message\ServerRequestInterface|Request $request
@@ -49,7 +54,8 @@ class DevToolMiddleware implements MiddlewareInterface
         if ($this->logHttpRequestToConsole) {
             ConsoleUtil::log(\sprintf('%s %s', $request->getMethod(), $path), [], 'debug', [
                 'HttpServer',
-                'coID' => Coroutine::tid()
+                'WorkerId' => App::getWorkerId(),
+                'CoId' => Coroutine::tid()
             ]);
         }
 
