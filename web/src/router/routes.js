@@ -25,6 +25,14 @@ export default [{
   name: 'Application Events',
   component: () => import('../views/app/AppEvents.vue')
 }, {
+  path: URI_PREFIX + '/app/beans',
+  name: 'Application Beans',
+  component: () => import('../views/app/AppBeans.vue')
+}, {
+  path: URI_PREFIX + '/aop/handlers',
+  name: 'AOP Handlers',
+  component: () => import('../views/app/AopHandlers.vue')
+}, {
   path: URI_PREFIX + '/server/info',
   name: 'Server Info',
   component: () => import('../views/server/ServerInfo.vue')

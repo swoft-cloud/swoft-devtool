@@ -61,9 +61,9 @@ class DevToolMiddleware implements MiddlewareInterface
 
         // if not is ajax, always render vue index file.
         if (0 === \strpos($path, DevTool::ROUTE_PREFIX) && !$request->isAjax()) {
-            $json = $request->query('json', 0);
+            $json = $request->query('json');
 
-            if (!$json) {
+            if (null === $json) {
                 return \view(App::getAlias('@devtool/web/dist/index.html'), []);
             }
         }

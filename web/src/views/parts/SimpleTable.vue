@@ -1,23 +1,23 @@
 <template>
   <table class="table">
     <thead>
-    <tr>
-      <th>Name</th>
-      <th>Value</th>
-    </tr>
+      <tr><slot name="header"></slot></tr>
     </thead>
     <tbody>
-    <tr v-for="(val, name) in env" :key="name">
-      <td>{{ name }}</td>
-      <td><code>{{ val }}</code></td>
-    </tr>
+      <slot></slot>
     </tbody>
   </table>
 </template>
 
 <script>
+  import {VDataTable} from 'vuetify'
+
   export default {
-    name: 'simple-table'
+    name: 'simple-table',
+    props: {
+      transparent: Boolean
+    },
+    components: {VDataTable}
   }
 </script>
 

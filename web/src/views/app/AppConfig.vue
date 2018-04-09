@@ -1,7 +1,8 @@
 <template>
-  <div>
-    <v-subheader><h2>{{ this.$route.name }}</h2></v-subheader>
     <v-layout row wrap>
+      <v-flex xs12>
+        <v-subheader><h2>{{ this.$route.name }}</h2></v-subheader>
+      </v-flex>
       <v-flex xs12 md4>
         <v-card>
           <v-card-text>
@@ -15,7 +16,6 @@
         </v-card>
       </v-flex>
     </v-layout>
-  </div>
 </template>
 
 <script>

@@ -16,6 +16,12 @@ export default [{
     title: 'Registered Events',
     href: '/app/events'
   }, {
+    title: 'Registered Beans',
+    href: '/app/beans'
+  }, {
+    title: 'AOP Handlers',
+    href: '/aop/handlers'
+  }, {
     title: 'HTTP Middleware',
     href: '/http/middles'
   }, {

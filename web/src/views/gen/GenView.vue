@@ -1,53 +1,89 @@
 <template>
   <div>
-  <v-subheader><h2>{{ this.$route.name }}</h2></v-subheader>
-    <v-form v-model="valid" ref="form" lazy-validation>
-      <v-text-field
-        label="Name"
-        v-model="name"
-        :rules="nameRules"
-        :counter="10"
-        required
-      ></v-text-field>
-      <v-text-field
-        label="E-mail"
-        v-model="email"
-        :rules="emailRules"
-        required
-      ></v-text-field>
-      <v-select
-        label="Item"
-        v-model="select"
-        :items="items"
-        :rules="[v => !!v || 'Item is required']"
-        required
-      ></v-select>
-      <v-checkbox
-        label="Do you agree?"
-        v-model="checkbox"
-        :rules="[v => !!v || 'You must agree to continue!']"
-        required
-      ></v-checkbox>
+    <v-subheader><h2>{{ this.$route.name }}</h2></v-subheader>
+    <v-layout row wrap>
+      <v-flex d-flex xs12 md4>
+        <v-card>
+          <v-container>
+            <v-form v-model="valid" ref="form" lazy-validation>
+              <v-text-field
+                label="Class Name"
+                v-model="name"
+                :rules="nameRules"
+                :counter="10"
+                hint="The class name, don't need suffix and ext(eg. demo)"
+                persistent-hint
+                required
+              ></v-text-field>
+              <v-text-field
+                label="E-mail"
+                v-model="email"
+                :rules="emailRules"
+                required
+              ></v-text-field>
+              <v-select
+                label="Item"
+                v-model="select"
+                :items="items"
+                :rules="[v => !!v || 'Item is required']"
+                required
+              ></v-select>
+              <v-checkbox
+                label="Do you agree?"
+                v-model="checkbox"
+                :rules="[v => !!v || 'You must agree to continue!']"
+                required
+              ></v-checkbox>
 
-      <v-btn
-        @click="submit"
-        :disabled="!valid"
-      >
-        submit
-      </v-btn>
-      <v-btn @click="clear">clear</v-btn>
-    </v-form>
+              <v-btn
+                @click="submit"
+                :disabled="!valid"
+              >
+                submit
+              </v-btn>
+              <v-btn @click="clear">clear</v-btn>
+            </v-form>
+          </v-container>
+        </v-card>
+
+      </v-flex>
+      <v-flex d-flex xs12 md8>
+        <v-card>
+          <v-card-title primary-title>
+            <div>
+              <div class="headline">Top western road trips</div>
+              <span class="grey--text">1,000 miles of wonder</span>
+            </div>
+          </v-card-title>
+          <v-card-actions>
+            <v-btn flat>Share</v-btn>
+            <v-btn flat color="purple">Explore</v-btn>
+            <v-spacer></v-spacer>
+            <v-btn flat @click.native="show = !show">
+              View <v-icon>{{ show ? 'keyboard_arrow_down' : 'keyboard_arrow_up' }}</v-icon>
+            </v-btn>
+          </v-card-actions>
+          <v-slide-y-transition>
+            <v-card-text v-show="show">
+              escape.
+            </v-card-text>
+          </v-slide-y-transition>
+        </v-card>
+      </v-flex>
+    </v-layout>
   </div>
 </template>
 
 <script>
   import axios from 'axios'
+  import * as VCard from 'vuetify/es5/components/VCard'
   import {VForm, VCheckbox, VSelect} from 'vuetify'
 
   export default {
     name: 'GenView',
-    components: {VForm, VCheckbox, VSelect},
+    components: {VForm, VCheckbox, VSelect, ...VCard},
     data: () => ({
+      show: false,
       valid: true,
       name: '',
       nameRules: [

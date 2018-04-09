@@ -32,8 +32,8 @@ class DevCommand
     /**
      * Used to publish the internal resources of the module to the 'public' directory
      * @Arguments
-     *  srcDir   The source assets directory path. eg. `@vendor/some/lib/assets`
-     *  dstDir   The defined component name.(default is `@root/public`)
+     *   srcDir   The source assets directory path. eg. `@vendor/some/lib/assets`
+     *   dstDir   The dist directory component name.(default is `@root/public/some/lib`)
      * @Options
      *   -y, --yes BOOL      Do not confirm when execute publish. default is: <info>False</info>
      *   -f, --force BOOL    Force override all exists file.(default: <info>False</info>)

@@ -10,6 +10,7 @@
 
 namespace Swoft\Devtool\Controller;
 
+use Swoft\Aop\Aop;
 use Swoft\App;
 use Swoft\Bean\BeanFactory;
 use Swoft\Bean\Collector\PoolCollector;
@@ -163,6 +164,19 @@ class AppController
     public function components(): array
     {
         return [];
+    }
+
+    /**
+     * get all registered aop handlers
+     * @RequestMapping(route="aop/handlers", method=RequestMethod::GET)
+     * @return array
+     */
+    public function aopHandles(): array
+    {
+        /** @var Aop $aop */
+        $aop = \bean(Aop::class);
+
+        return $aop->getAspects();
     }
 
     /**
