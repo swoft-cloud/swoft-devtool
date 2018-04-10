@@ -12,7 +12,7 @@
     </v-flex>
     <v-flex xs12 md8>
       <v-card color="amber lighten-5" class="pa-3">
-        <tree-view :data="dataMap" :options="{maxDepth: 2, rootObjectKey: 'JSON'}"></tree-view>
+        <tree-view :data="dataMap" :options="{maxDepth: 4, rootObjectKey: 'JSON'}"></tree-view>
       </v-card>
     </v-flex>
   </v-layout>

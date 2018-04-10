@@ -144,8 +144,9 @@
   }
 </script>
 
-<style scoped>
-  .content-body {
-    min-height: 660px;
-  }
+<style lang="stylus">
+  @import "assets/style/common.styl";
+
+  .content-body
+    min-height 660px
 </style>

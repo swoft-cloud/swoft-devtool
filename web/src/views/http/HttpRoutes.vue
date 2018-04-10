@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="mb-2">
     <v-subheader><h2>{{ this.$route.name }}</h2></v-subheader>
     <v-tabs
       color="blue"

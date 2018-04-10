@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-subheader><h2>{{ this.$route.name }}</h2></v-subheader>
-    <simple-table>
+    <simple-table class="table-bordered">
       <template slot="header">
         <th> Number </th>
         <th> Middleware Class</th>
