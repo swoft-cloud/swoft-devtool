@@ -14,7 +14,7 @@
 
       <v-tab-item id="tab-1">
         <v-card>
-          <v-card-title>
+          <v-card-title class="pt-1">
             <v-spacer></v-spacer>
             <v-text-field
               append-icon="search"
@@ -55,7 +55,7 @@
       </v-tab-item>
       <v-tab-item id="tab-2">
         <v-card>
-          <v-card-title>
+          <v-card-title class="pt-1">
             <v-spacer></v-spacer>
             <v-text-field
               append-icon="search"

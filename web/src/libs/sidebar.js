@@ -1,3 +1,4 @@
+// import {URI_PREFIX} from "./constants"
 
 export default [{
   icon: 'dashboard',
@@ -18,6 +19,9 @@ export default [{
   }, {
     title: 'Registered Beans',
     href: '/app/beans'
+  }, {
+    title: 'Connection Pools',
+    href: '/connection/pools'
   }, {
     title: 'AOP Handlers',
     href: '/aop/handlers'

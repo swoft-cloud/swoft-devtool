@@ -63,6 +63,9 @@ export const getPhpExtList = () => ajax.get('/server/php-ext-list')
 // get aop handlers
 export const getAopHandlers = () => ajax.get('/app/aop/handlers')
 
+// get app pools
+export const getAppPools = (name = '') => ajax.get('/app/pools?name=' + name)
+
 // get http routes
 export const getHttpRoutes = (type = 'all') => ajax.get('/http/routes?type=' + type)
 

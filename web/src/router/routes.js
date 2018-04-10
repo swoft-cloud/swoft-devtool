@@ -33,6 +33,10 @@ export default [{
   name: 'AOP Handlers',
   component: () => import('../views/app/AopHandlers.vue')
 }, {
+  path: URI_PREFIX + '/connection/pools',
+  name: 'Connection Pools',
+  component: () => import('../views/app/ConnectionPools.vue')
+}, {
   path: URI_PREFIX + '/server/info',
   name: 'Server Info',
   component: () => import('../views/server/ServerInfo.vue')

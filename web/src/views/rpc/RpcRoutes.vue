@@ -2,7 +2,7 @@
   <div>
     <v-subheader><h2>{{ this.$route.name }}</h2></v-subheader>
     <v-card>
-      <v-card-title>
+      <v-card-title class="pt-1">
         <v-spacer></v-spacer>
         <v-text-field
           append-icon="search"
