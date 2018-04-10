@@ -62,9 +62,9 @@
       :clipped-left="clipped"
     >
       <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
-      <v-btn icon @click.stop="miniVariant = !miniVariant">
+      <!--<v-btn icon @click.stop="miniVariant = !miniVariant">
         <v-icon v-html="miniVariant ? 'chevron_right' : 'chevron_left'"></v-icon>
-      </v-btn>
+      </v-btn>-->
       <!--<v-btn icon @click.stop="fixed = !fixed">-->
         <!--<v-icon>remove</v-icon>-->
       <!--</v-btn>-->
@@ -121,7 +121,7 @@
 <script>
   import sidebar from './libs/sidebar'
   import {URI_PREFIX} from './libs/constants'
-  import NProgress from './views/base/NProgress'
+  import NProgress from './views/parts/NProgress'
   import AppFooter from './views/parts/AppFooter'
   import * as VBreadcrumbs from 'vuetify/es5/components/VBreadcrumbs'
 

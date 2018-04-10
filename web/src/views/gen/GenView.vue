@@ -6,6 +6,13 @@
         <v-card>
           <v-container>
             <v-form v-model="valid" ref="form" lazy-validation>
+              <v-select
+                label="Class Type"
+                v-model="select"
+                :items="items"
+                :rules="[v => !!v || 'Class type is required']"
+                required
+              ></v-select>
               <v-text-field
                 label="Class Name"
                 v-model="name"
@@ -16,29 +23,36 @@
                 required
               ></v-text-field>
               <v-text-field
-                label="E-mail"
-                v-model="email"
-                :rules="emailRules"
+                label="Save Directory"
+                v-model="dir"
+                :rules="dirRules"
+                hint="The class file save directory(default: @app/Controllers)"
                 required
               ></v-text-field>
-              <v-select
-                label="Item"
-                v-model="select"
-                :items="items"
-                :rules="[v => !!v || 'Item is required']"
-                required
-              ></v-select>
+              <v-text-field
+                label="Class Suffix"
+                v-model="suffix"
+                :rules="[v => /^[a-zA-Z]+$/.test(v) || 'Suffix only allow alpha']"
+                hint="The class name suffix. default is: Controller"
+              ></v-text-field>
+              <v-text-field
+                label="Template Directory"
+                v-model="tplDir"
+                :rules="[v => /^[a-zA-Z]+$/.test(v) || 'Suffix only allow alpha']"
+                hint="The template file dir path.(default: @devtool/res/templates)"
+              ></v-text-field>
+              <v-text-field
+                label="Template Filename"
+                v-model="tplFile"
+                :rules="[v => /^[a-zA-Z]+$/.test(v) || 'Suffix only allow alpha']"
+                hint="The template file name.(default: controller.stub)"
+              ></v-text-field>
               <v-checkbox
-                label="Do you agree?"
-                v-model="checkbox"
-                :rules="[v => !!v || 'You must agree to continue!']"
-                required
+                label="Force override exists file?"
+                v-model="override"
               ></v-checkbox>
 
-              <v-btn
-                @click="submit"
-                :disabled="!valid"
-              >
+              <v-btn @click="submit" :disabled="!valid">
                 submit
               </v-btn>
               <v-btn @click="clear">clear</v-btn>
@@ -90,19 +104,33 @@
         v => !!v || 'Name is required',
         v => (v && v.length <= 10) || 'Name must be less than 10 characters'
       ],
-      email: '',
-      emailRules: [
+      dir: '',
+      dirRules: [
         v => !!v || 'E-mail is required',
         v => /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) || 'E-mail must be valid'
       ],
       select: null,
       items: [
-        'Item 1',
-        'Item 2',
-        'Item 3',
-        'Item 4'
+        'command',
+        'controller',
+        'listener',
+        'middleware',
+        'process',
+        'task',
+        'ws controller'
       ],
-      checkbox: false
+      defaultTplFiles: [
+        'command.stub',
+        'controller-rest.stub',
+        'controller.stub',
+        'listener.stub',
+        'middleware.stub',
+        'process.stub',
+        'task.stub',
+        'ws-controller.stub'
+      ],
+      override: false,
+      config: {}
     }),
 
     methods: {

@@ -31,6 +31,9 @@ export const getAppConfig = () => ajax.get('/app/config')
 // get app aliases
 export const getAppAliases = () => ajax.get('/app/aliases')
 
+// get app components
+export const getComponents = () => ajax.get('/app/components')
+
 // get app beans
 export const getAppBeans = () => ajax.get('/app/beans')
 

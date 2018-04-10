@@ -30,6 +30,7 @@
             :items="staticList"
             :search="stSearch"
             :rows-per-page-items="pageOpts"
+            disable-initial-sort
             class="elevation-1"
           >
             <template slot="items" slot-scope="props">
@@ -71,6 +72,7 @@
             :items="regularList"
             :search="rgSearch"
             :rows-per-page-items="pageOpts"
+            disable-initial-sort
             class="elevation-1"
           >
             <template slot="items" slot-scope="props">

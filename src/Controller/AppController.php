@@ -15,6 +15,7 @@ use Swoft\App;
 use Swoft\Bean\BeanFactory;
 use Swoft\Bean\Collector\PoolCollector;
 use Swoft\Core\Config;
+use Swoft\Devtool\Helper\DevToolHelper;
 use Swoft\Http\Message\Server\Request;
 use Swoft\Http\Server\Bean\Annotation\Controller;
 use Swoft\Http\Server\Bean\Annotation\RequestMapping;
@@ -160,10 +161,13 @@ class AppController
      * get all registered components
      * @RequestMapping(route="components", method=RequestMethod::GET)
      * @return array
+     * @throws \InvalidArgumentException
      */
     public function components(): array
     {
-        return [];
+        $lockFile = App::getAlias('@root/composer.lock');
+
+        return DevToolHelper::parseComposerLockFile($lockFile);
     }
 
     /**

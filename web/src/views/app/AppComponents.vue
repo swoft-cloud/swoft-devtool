@@ -15,16 +15,27 @@
       <v-divider></v-divider>
       <v-data-table
         :headers="headers"
-        :items="routes"
+        :items="dataList"
         :search="search"
         :rows-per-page-items="pageOpts"
-        disable-initial-sort
+        item-key="name"
         class="elevation-1"
       >
         <template slot="items" slot-scope="props">
-          <td>{{ props.item.class }}</td>
-          <td>{{ props.item.method }}</td>
-          <td><code>{{ props.item.serviceKey }}</code></td>
+          <tr @click="props.expanded = !props.expanded">
+            <td>
+              <a :href="props.item.source.url" title="To github repo" target="_blank">{{ props.item.name }}</a>
+            </td>
+            <td><code>{{ props.item.version }}</code></td>
+            <td><code>{{ props.item.source.reference.slice(0, 7) }}</code></td>
+            <td>{{ props.item.keywords.join(', ') }}</td>
+            <td>{{ props.item.time.slice(0, 19) }}</td>
+          </tr>
+        </template>
+        <template slot="expand" slot-scope="props">
+          <v-card flat color="grey lighten-4">
+            <v-card-text class="pl-4">{{ props.item.description }}</v-card-text>
+          </v-card>
         </template>
         <template slot="no-data">
           <v-alert :value="true" color="info" icon="info">
@@ -42,10 +53,10 @@
 <script>
   import {VAlert, VDataTable} from 'vuetify'
   import * as VCard from 'vuetify/es5/components/VCard'
-  import {getRpcRoutes} from '../../libs/api-services'
+  import {getComponents} from '../../libs/api-services'
 
   export default {
-    name: 'RpcRoutes',
+    name: 'app-components',
     components: {VAlert, ...VCard, VDataTable},
     data() {
       return {
@@ -56,22 +67,26 @@
 
         // table headers
         headers: [{
-          text: 'Class',
-          align: 'left',
+          text: 'Name',
+          value: 'name'
+        }, {
+          text: 'Version',
+          value: 'version'
+        }, {
+          text: 'Commit ID',
           sortable: false,
-          value: 'class'
+          value: 'commit'
         }, {
-          text: 'Method',
-          align: 'left',
-          value: 'method'
+          text: 'Keywords',
+          sortable: false,
+          value: 'keywords'
         }, {
-          text: 'Service Key',
-          align: 'left',
-          value: 'serviceKey'
+          text: 'Publish Time',
+          value: 'time'
         }],
 
         // data list
-        routes: []
+        dataList: []
       }
     },
     created() {
@@ -82,10 +97,8 @@
     computed: {},
     methods: {
       fetchList() {
-        getRpcRoutes().then(({data}) => {
-          console.log(data)
-
-          this.routes = data
+        getComponents().then(({data}) => {
+          this.dataList = data
         })
       }
     }

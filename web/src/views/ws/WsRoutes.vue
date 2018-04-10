@@ -18,6 +18,7 @@
         :items="routes"
         :search="search"
         :rows-per-page-items="pageOpts"
+        disable-initial-sort
         class="elevation-1"
       >
         <template slot="items" slot-scope="props">

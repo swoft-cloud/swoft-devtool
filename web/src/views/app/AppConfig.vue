@@ -5,8 +5,11 @@
       </v-flex>
       <v-flex xs12 md4>
         <v-card>
+          <v-card-title>
+            Some Tips
+          </v-card-title>
           <v-card-text>
-            get config: <code>\bean('config')->get(key, default = null)</code>
+            <p>get config: <code>\bean('config')->get(key, default = null)</code></p>
           </v-card-text>
         </v-card>
       </v-flex>

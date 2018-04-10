@@ -29,6 +29,10 @@ export default [{
   name: 'Application Beans',
   component: () => import('../views/app/AppBeans.vue')
 }, {
+  path: URI_PREFIX + '/app/components',
+  name: 'App Components',
+  component: () => import('../views/app/AppComponents.vue')
+}, {
   path: URI_PREFIX + '/aop/handlers',
   name: 'AOP Handlers',
   component: () => import('../views/app/AopHandlers.vue')
@@ -74,7 +78,7 @@ export default [{
   component: () => import('../views/rpc/RpcMiddleware.vue')
 }, {
   path: URI_PREFIX + '/code/gen',
-  name: 'Generator',
+  name: 'Class Generator',
   component: () => import('../views/gen/GenView.vue')
 }, {
   path: URI_PREFIX + '/run/trace',

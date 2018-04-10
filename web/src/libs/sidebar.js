@@ -14,6 +14,9 @@ export default [{
     title: 'Configuration',
     href: '/app/config'
   }, {
+    title: 'Components',
+    href: '/app/components'
+  }, {
     title: 'Registered Events',
     href: '/app/events'
   }, {
@@ -76,7 +79,7 @@ export default [{
   title: 'Tools',
   subs: [{
     // icon: 'code',
-    title: 'Code Generator',
+    title: 'Class Generator',
     href: '/code/gen'
   }, {
     title: 'WebSocket Test',
