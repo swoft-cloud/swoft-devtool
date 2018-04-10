@@ -4,6 +4,12 @@
     <v-layout row wrap>
       <v-flex d-flex xs12 md4>
         <v-card>
+          <v-card-title primary-title>
+            <div>
+              <div class="headline">Class Setting</div>
+              <span class="grey--text">There are some setting for class generate!</span>
+            </div>
+          </v-card-title>
           <v-container>
             <v-form v-model="valid" ref="form" lazy-validation>
               <v-select
@@ -27,6 +33,7 @@
                 v-model="dir"
                 :rules="dirRules"
                 hint="The class file save directory(default: @app/Controllers)"
+                persistent-hint
                 required
               ></v-text-field>
               <v-text-field
@@ -34,25 +41,28 @@
                 v-model="suffix"
                 :rules="[v => /^[a-zA-Z]+$/.test(v) || 'Suffix only allow alpha']"
                 hint="The class name suffix. default is: Controller"
+                persistent-hint
               ></v-text-field>
               <v-text-field
                 label="Template Directory"
                 v-model="tplDir"
                 :rules="[v => /^[a-zA-Z]+$/.test(v) || 'Suffix only allow alpha']"
                 hint="The template file dir path.(default: @devtool/res/templates)"
+                persistent-hint
               ></v-text-field>
               <v-text-field
                 label="Template Filename"
                 v-model="tplFile"
                 :rules="[v => /^[a-zA-Z]+$/.test(v) || 'Suffix only allow alpha']"
                 hint="The template file name.(default: controller.stub)"
+                persistent-hint
               ></v-text-field>
               <v-checkbox
                 label="Force override exists file?"
                 v-model="override"
               ></v-checkbox>
 
-              <v-btn @click="submit" :disabled="!valid">
+              <v-btn @click="submit" :disabled="!valid" color="success">
                 submit
               </v-btn>
               <v-btn @click="clear">clear</v-btn>
@@ -65,7 +75,7 @@
         <v-card>
           <v-card-title primary-title>
             <div>
-              <div class="headline">Top western road trips</div>
+              <div class="headline">Class Preview</div>
               <span class="grey--text">1,000 miles of wonder</span>
             </div>
           </v-card-title>
@@ -99,17 +109,20 @@
     data: () => ({
       show: false,
       valid: true,
-      name: '',
+      name: 'demo',
       nameRules: [
         v => !!v || 'Name is required',
         v => (v && v.length <= 10) || 'Name must be less than 10 characters'
       ],
-      dir: '',
+      dir: '@app/Controllers',
       dirRules: [
         v => !!v || 'E-mail is required',
         v => /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) || 'E-mail must be valid'
       ],
-      select: null,
+      suffix: 'Controller',
+      tplDir: '@devtool/res/templates',
+      tplFile: 'controller.stub',
+      select: 'controller',
       items: [
         'command',
         'controller',
