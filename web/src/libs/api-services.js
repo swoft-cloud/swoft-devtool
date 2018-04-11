@@ -31,6 +31,12 @@ export const getAppConfig = () => ajax.get('/app/config')
 // get app aliases
 export const getAppAliases = () => ajax.get('/app/aliases')
 
+// get app components
+export const getComponents = () => ajax.get('/app/components')
+
+// get app beans
+export const getAppBeans = () => ajax.get('/app/beans')
+
 // get App Events
 export const getAppEvents = (name = '') => ajax.get('/app/events?name=' + name)
 
@@ -57,6 +63,12 @@ export const getPhpExtList = () => ajax.get('/server/php-ext-list')
  * Other
  */
 
+// get aop handlers
+export const getAopHandlers = () => ajax.get('/app/aop/handlers')
+
+// get app pools
+export const getAppPools = (name = '') => ajax.get('/app/pools?name=' + name)
+
 // get http routes
 export const getHttpRoutes = (type = 'all') => ajax.get('/http/routes?type=' + type)
 
@@ -69,5 +81,5 @@ export const getWsRoutes = () => ajax.get('/ws/routes')
 // get rpc routes
 export const getRpcRoutes = () => ajax.get('/rpc/routes')
 
-// get http middles
+// get rpc middles
 export const getRpcMiddles = () => ajax.get('/app/rpc/middles')

@@ -1,9 +1,9 @@
 <template>
   <div>
-    <v-subheader><h2>{{ this.$route.name }}</h2></v-subheader>
+    <v-subheader><h1>{{ this.$route.name }}</h1></v-subheader>
     <v-card>
-      <v-card-title>
-        <h3>Php Extensions</h3> <small> (total: <code>{{ extList.length }}</code>)</small>
+      <v-card-title class="title grey lighten-3">
+        Php Extensions <small> (total: <code>{{ extList.length }}</code>)</small>
       </v-card-title>
       <v-divider></v-divider>
       <v-card-text class="pa-2">
@@ -11,14 +11,14 @@
       </v-card-text>
     </v-card>
 
-    <v-subheader><h3>Swoole Info</h3></v-subheader>
+    <v-subheader><h2>Swoole Information</h2></v-subheader>
     <v-layout>
       <v-flex
         xs12
         sm6
       >
         <v-card>
-          <v-card-title><h2>Enable Info</h2></v-card-title>
+          <v-card-title class="title grey lighten-3">Enable</v-card-title>
           <v-divider></v-divider>
           <v-list dense>
             <v-list-tile v-for="(item, index) in swooleInfo.enable" :key="index">
@@ -34,7 +34,7 @@
         sm6
       >
         <v-card>
-          <v-card-title><h2>Directive Info</h2></v-card-title>
+          <v-card-title class="title grey lighten-3">Directive</v-card-title>
           <v-divider></v-divider>
           <v-list dense>
             <v-list-tile v-for="(item, index) in swooleInfo.directive" :key="index">

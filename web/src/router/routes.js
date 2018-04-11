@@ -6,8 +6,12 @@ export default [{
   component: () => import('@/views/Dashboard.vue')
 }, {
   path: URI_PREFIX + '/http/routes',
-  name: 'Http Routes',
+  name: 'HTTP Routes',
   component: () => import('../views/http/HttpRoutes.vue')
+}, {
+  path: URI_PREFIX + '/http/middles',
+  name: 'HTTP Middleware',
+  component: () => import('../views/http/HttpMiddleware.vue')
 }, {
   path: URI_PREFIX + '/app/info',
   name: 'Application Info',
@@ -20,6 +24,22 @@ export default [{
   path: URI_PREFIX + '/app/events',
   name: 'Application Events',
   component: () => import('../views/app/AppEvents.vue')
+}, {
+  path: URI_PREFIX + '/app/beans',
+  name: 'Application Beans',
+  component: () => import('../views/app/AppBeans.vue')
+}, {
+  path: URI_PREFIX + '/app/components',
+  name: 'App Components',
+  component: () => import('../views/app/AppComponents.vue')
+}, {
+  path: URI_PREFIX + '/aop/handlers',
+  name: 'AOP Handlers',
+  component: () => import('../views/app/AopHandlers.vue')
+}, {
+  path: URI_PREFIX + '/connection/pools',
+  name: 'Connection Pools',
+  component: () => import('../views/app/ConnectionPools.vue')
 }, {
   path: URI_PREFIX + '/server/info',
   name: 'Server Info',
@@ -50,15 +70,19 @@ export default [{
   component: () => import('../views/ws/WsTest.vue')
 }, {
   path: URI_PREFIX + '/rpc/routes',
-  name: 'Rpc Routes',
+  name: 'RPC Routes',
   component: () => import('../views/rpc/RpcRoutes.vue')
 }, {
+  path: URI_PREFIX + '/rpc/middles',
+  name: 'RPC Middleware',
+  component: () => import('../views/rpc/RpcMiddleware.vue')
+}, {
   path: URI_PREFIX + '/code/gen',
-  name: 'Generator',
-  component: () => import('../views/gen/GenView.vue')
+  name: 'Class Generator',
+  component: () => import('../views/gen/ClassGen.vue')
 }, {
   path: URI_PREFIX + '/run/trace',
-  name: 'RunTrace',
+  name: 'Run Tracing',
   component: () => import('../views/app/RunTrace.vue')
 }, {
   path: URI_PREFIX + '/app/logs',

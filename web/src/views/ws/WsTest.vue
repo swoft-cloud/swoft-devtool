@@ -1,6 +1,6 @@
 <template>
   <div>
-  <v-subheader><h2>{{ this.$route.name }}</h2></v-subheader>
+  <v-subheader><h1>{{ this.$route.name }}</h1></v-subheader>
 
   <v-layout row wrap>
     <v-flex xs12>
@@ -9,8 +9,8 @@
       </v-alert>
     </v-flex>
     <v-flex d-flex xs12 md4>
-      <v-card color="lime lighten-5">
-        <v-card-title><v-icon>cast</v-icon> &nbsp;Operation</v-card-title>
+      <v-card>
+        <v-card-title class="title blue lighten-4"><v-icon>cast</v-icon> &nbsp;Operation</v-card-title>
         <v-divider></v-divider>
         <v-card-text>
           <v-layout row>
@@ -61,7 +61,7 @@
 
     <v-flex d-flex xs12 md8>
       <v-card color="grey lighten-5">
-        <v-card-title><v-icon>sms</v-icon> &nbsp;Messages</v-card-title>
+        <v-card-title class="title grey lighten-3"><v-icon>sms</v-icon> &nbsp;Messages</v-card-title>
         <v-divider></v-divider>
         <v-card-text class="msg-box">
             <v-layout row wrap v-for="(item, idx) in messages" :key="idx">

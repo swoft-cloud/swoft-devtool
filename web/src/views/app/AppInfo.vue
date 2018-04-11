@@ -1,14 +1,17 @@
 <template>
   <v-layout row wrap>
-    <v-flex class="headline" xs12><v-subheader><h2>{{ this.$route.name }}</h2></v-subheader></v-flex>
+    <v-flex xs12><v-subheader><h1>{{ this.$route.name }}</h1></v-subheader></v-flex>
     <v-flex d-flex xs12 md4>
-      hello
+      <v-card>
+        <v-card-title class="title grey lighten-3">Some Tips</v-card-title>
+        <v-card-text>
+          <p>get real path: <code>\Swoft::getAlias('@root/public')</code></p>
+        </v-card-text>
+      </v-card>
     </v-flex>
     <v-flex d-flex xs12 md8>
       <v-card>
-        <v-card-title>
-          <h3>Path aliases</h3>
-        </v-card-title>
+        <v-card-title class="title blue lighten-5">Path Aliases</v-card-title>
         <table class="table">
           <thead>
             <tr>

@@ -1,8 +1,9 @@
 <template>
   <div>
-    <v-subheader><h2>{{ this.$route.name }}</h2></v-subheader>
+    <v-subheader><h1>{{ this.$route.name }}</h1></v-subheader>
     <v-layout row wrap>
       <v-flex
+        d-flex
         xs12
         sm6
         md3
@@ -10,9 +11,7 @@
         :key="section"
       >
         <v-card>
-          <v-card-title>
-            <h2>{{ section }}</h2>
-          </v-card-title>
+          <v-card-title class="title grey lighten-3"> {{ section }} </v-card-title>
           <v-divider></v-divider>
           <v-list dense class="pa-2">
             <v-list-tile v-for="(val, key) in items" :key="key">

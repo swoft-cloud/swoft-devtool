@@ -21,16 +21,10 @@
       <v-flex d-flex xs12 tag="h2" class="headline">
         Application
       </v-flex>
-      <v-flex d-flex xs12 sm6 md4>
+      <v-flex d-flex xs12 sm6 md3>
         <v-card :color="randomColor()" dark>
           <v-card-title primary class="title">Environment</v-card-title>
           <table class="table transparent">
-            <thead>
-            <tr>
-              <th>Name</th>
-              <th>Value</th>
-            </tr>
-            </thead>
             <tbody>
             <tr v-for="(val, name) in env" :key="name">
               <td>{{ name }}</td>
@@ -66,12 +60,18 @@
           </v-flex>
         </v-layout>
       </v-flex>
-      <v-flex d-flex xs12 sm6 md2>
-        <v-card color="blue lighten-2" dark>
-          <v-card-text
-            v-text="lorem">
-          </v-card-text>
-        </v-card>
+      <v-flex d-flex xs12 sm6 md3>
+        <v-layout row wrap>
+          <v-flex d-flex v-for="item in app3" :key="item.href">
+            <v-card :color="randomColor()" dark>
+              <v-card-title primary class="title">{{ item.title }}</v-card-title>
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn flat :to="item.href">View</v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-flex>
+        </v-layout>
       </v-flex>
     </v-layout>
 
@@ -138,6 +138,16 @@
       }, {
         title: 'WebSocket Routes',
         href: URI_PREFIX + '/ws/routes'
+      }],
+      app3: [{
+        title: 'Registered Beans',
+        href: URI_PREFIX + '/app/beans'
+      }, {
+        title: 'AOP Handlers',
+        href: URI_PREFIX + '/aop/handlers'
+      }, {
+        title: 'HTTP Middleware',
+        href: URI_PREFIX + '/http/middles'
       }],
       server: [{
         title: 'Information',

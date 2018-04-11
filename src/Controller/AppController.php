@@ -10,10 +10,12 @@
 
 namespace Swoft\Devtool\Controller;
 
+use Swoft\Aop\Aop;
 use Swoft\App;
 use Swoft\Bean\BeanFactory;
 use Swoft\Bean\Collector\PoolCollector;
 use Swoft\Core\Config;
+use Swoft\Devtool\Helper\DevToolHelper;
 use Swoft\Http\Message\Server\Request;
 use Swoft\Http\Server\Bean\Annotation\Controller;
 use Swoft\Http\Server\Bean\Annotation\RequestMapping;
@@ -159,43 +161,73 @@ class AppController
      * get all registered components
      * @RequestMapping(route="components", method=RequestMethod::GET)
      * @return array
+     * @throws \InvalidArgumentException
      */
     public function components(): array
     {
-        return [];
+        $lockFile = App::getAlias('@root/composer.lock');
+
+        return DevToolHelper::parseComposerLockFile($lockFile);
+    }
+
+    /**
+     * get all registered aop handlers
+     * @RequestMapping(route="aop/handlers", method=RequestMethod::GET)
+     * @return array
+     */
+    public function aopHandles(): array
+    {
+        /** @var Aop $aop */
+        $aop = \bean(Aop::class);
+
+        return $aop->getAspects();
     }
 
     /**
      * get all registered http middleware list
      * @RequestMapping(route="http/middles", method=RequestMethod::GET)
+     * @param Request $request
      * @return array
      */
-    public function httpMiddles(): array
+    public function httpMiddles(Request $request): array
     {
         /** @var \Swoft\Http\Server\ServerDispatcher $dispatcher */
         $dispatcher = \bean('serverDispatcher');
 
-        if (\method_exists($dispatcher, 'getMiddlewares')) {
+        $type = (int)$request->query('type');
+
+        // 1 only return user's
+        if ($type === 1) {
             return $dispatcher->getMiddlewares();
         }
 
-        return [];
+        return $dispatcher->requestMiddleware();
     }
 
     /**
      * get all registered rpc middleware list
      * @RequestMapping(route="rpc/middles", method=RequestMethod::GET)
+     * @param Request $request
      * @return array
      */
-    public function rpcMiddles(): array
+    public function rpcMiddles(Request $request): array
     {
-        /** @var \Swoft\Rpc\Server\ServiceDispatcher $dispatcher */
-        $dispatcher = \bean('serviceDispatcher');
+        $bean = 'ServiceDispatcher';
 
-        if (\method_exists($dispatcher, 'getMiddlewares')) {
+        if (!App::hasBean($bean)) {
+            return [];
+        }
+
+        /** @var \Swoft\Rpc\Server\ServiceDispatcher $dispatcher */
+        $dispatcher = \bean($bean);
+
+        $type = (int)$request->query('type');
+
+        // 1 only return user's
+        if ($type === 1) {
             return $dispatcher->getMiddlewares();
         }
 
-        return [];
+        return $dispatcher->requestMiddleware();
     }
 }

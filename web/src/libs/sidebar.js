@@ -1,3 +1,4 @@
+// import {URI_PREFIX} from "./constants"
 
 export default [{
   icon: 'dashboard',
@@ -13,8 +14,26 @@ export default [{
     title: 'Configuration',
     href: '/app/config'
   }, {
+    title: 'Components',
+    href: '/app/components'
+  }, {
     title: 'Registered Events',
     href: '/app/events'
+  }, {
+    title: 'Registered Beans',
+    href: '/app/beans'
+  }, {
+    title: 'Connection Pools',
+    href: '/connection/pools'
+  }, {
+    title: 'AOP Handlers',
+    href: '/aop/handlers'
+  }, {
+    title: 'RPC Middleware',
+    href: '/rpc/middles'
+  }, {
+    title: 'HTTP Middleware',
+    href: '/http/middles'
   }]
 }, {
   icon: 'language',
@@ -39,11 +58,11 @@ export default [{
     title: 'HTTP Routes',
     href: '/http/routes'
   }, {
-    title: 'WebSocket Routes',
-    href: '/ws/routes'
-  }, {
     title: 'RPC Routes',
     href: '/rpc/routes'
+  }, {
+    title: 'WebSocket Routes',
+    href: '/ws/routes'
   }]
 }, {
   icon: 'insert_drive_file',
@@ -60,7 +79,7 @@ export default [{
   title: 'Tools',
   subs: [{
     // icon: 'code',
-    title: 'Code Generator',
+    title: 'Class Generator',
     href: '/code/gen'
   }, {
     title: 'WebSocket Test',

@@ -1,8 +1,8 @@
 <template>
   <div>
-    <v-subheader><h2>{{ this.$route.name }}</h2></v-subheader>
+    <v-subheader><h1>{{ this.$route.name }}</h1></v-subheader>
     <v-card>
-      <v-card-title>
+      <v-card-title class="pt-1">
         <v-spacer></v-spacer>
         <v-text-field
           append-icon="search"
@@ -18,6 +18,7 @@
         :items="routes"
         :search="search"
         :rows-per-page-items="pageOpts"
+        disable-initial-sort
         class="elevation-1"
       >
         <template slot="items" slot-scope="props">

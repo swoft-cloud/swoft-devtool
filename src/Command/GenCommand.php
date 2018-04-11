@@ -33,7 +33,7 @@ class GenCommand
      *   name       The class name, don't need suffix and ext.(eg. <info>demo</info>)
      *   dir        The class file save dir(default: <info>@app/Commands</info>)
      * @Options
-     *   -y, --yes BOOL             Whether to ask when writing a file. default is: <info>True</info>
+     *   -y, --yes BOOL             No need to confirm when performing file writing. default is: <info>False</info>
      *   -o, --override BOOL        Force override exists file. default is: <info>False</info>
      *   -n, --namespace STRING     The class namespace. default is: <info>App\Commands</info>
      *   --suffix STRING            The class name suffix. default is: <info>Command</info>
@@ -69,7 +69,7 @@ class GenCommand
      *   name       The class name, don't need suffix and ext.(eg. <info>demo</info>)
      *   dir        The class file save dir(default: <info>@app/Controllers</info>)
      * @Options
-     *   -y, --yes BOOL             Whether to ask when writing a file. default is: <info>True</info>
+     *   -y, --yes BOOL             No need to confirm when performing file writing. default is: <info>False</info>
      *   -o, --override BOOL        Force override exists file. default is: <info>False</info>
      *   -n, --namespace STRING     The class namespace. default is: <info>App\Controllers</info>
      *   --rest BOOL                The class will contains CURD action. default is: <info>False</info>
@@ -113,7 +113,7 @@ class GenCommand
      *   name       The class name, don't need suffix and ext.(eg. <info>demo</info>)
      *   dir        The class file save dir(default: <info>@app/WebSocket</info>)
      * @Options
-     *   -y, --yes BOOL             Whether to ask when writing a file. default is: <info>True</info>
+     *   -y, --yes BOOL             No need to confirm when performing file writing. default is: <info>False</info>
      *   -o, --override BOOL        Force override exists file. default is: <info>False</info>
      *   -n, --namespace STRING     The class namespace. default is: <info>App\WebSocket</info>
      *   --prefix STRING            The route path for the controller. default is class name
@@ -161,7 +161,7 @@ class GenCommand
      *   name       The class name, don't need suffix and ext.(eg. <info>demo</info>)
      *   dir        The class file save dir(default: <info>@app/Listener</info>)
      * @Options
-     *   -y, --yes BOOL             Whether to ask when writing a file. default is: <info>True</info>
+     *   -y, --yes BOOL             No need to confirm when performing file writing. default is: <info>False</info>
      *   -o, --override BOOL        Force override exists file. default is: <info>False</info>
      *   -n, --namespace STRING     The class namespace. default is: <info>App\Listener</info>
      *   --suffix STRING            The class name suffix. default is: <info>Listener</info>
@@ -194,7 +194,7 @@ class GenCommand
      *   name       The class name, don't need suffix and ext.(eg. <info>demo</info>)
      *   dir        The class file save dir(default: <info>@app/Middlewares</info>)
      * @Options
-     *   -y, --yes BOOL             Whether to ask when writing a file. default is: <info>True</info>
+     *   -y, --yes BOOL             No need to confirm when performing file writing. default is: <info>False</info>
      *   -o, --override BOOL        Force override exists file. default is: <info>False</info>
      *   -n, --namespace STRING     The class namespace. default is: <info>App\Middlewares</info>
      *   --suffix STRING            The class name suffix. default is: <info>Middleware</info>
@@ -227,7 +227,7 @@ class GenCommand
      *   name       The class name, don't need suffix and ext.(eg. <info>demo</info>)
      *   dir        The class file save dir(default: <info>@app/Tasks</info>)
      * @Options
-     *   -y, --yes BOOL             Whether to ask when writing a file. default is: <info>True</info>
+     *   -y, --yes BOOL             No need to confirm when performing file writing. default is: <info>False</info>
      *   -o, --override BOOL        Force override exists file. default is: <info>False</info>
      *   -n, --namespace STRING     The class namespace. default is: <info>App\Tasks</info>
      *   --suffix STRING            The class name suffix. default is: <info>Task</info>
@@ -260,7 +260,7 @@ class GenCommand
      *   name       The class name, don't need suffix and ext.(eg. <info>demo</info>)
      *   dir        The class file save dir(default: <info>@app/Process</info>)
      * @Options
-     *   -y, --yes BOOL             Whether to ask when writing a file. default is: <info>True</info>
+     *   -y, --yes BOOL             No need to confirm when performing file writing. default is: <info>False</info>
      *   -o, --override BOOL        Force override exists file. default is: <info>False</info>
      *   -n, --namespace STRING     The class namespace. default is: <info>App\Process</info>
      *   --suffix STRING            The class name suffix. default is: <info>Process</info>

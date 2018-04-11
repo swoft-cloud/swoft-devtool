@@ -102,6 +102,23 @@ class ServerController
     }
 
     /**
+     * get crontab list
+     * @RequestMapping(route="crontab", method=RequestMethod::GET)
+     * @return array
+     */
+    public function crontab(): array
+    {
+        if (!App::hasBean('crontab')) {
+            return [];
+        }
+
+        /** @var \Swoft\Task\Crontab\Crontab $cronTab */
+        $cronTab = \bean('crontab');
+
+        return $cronTab->getTasks();
+    }
+
+    /**
      * get swoole info
      * @RequestMapping(route="processes", method=RequestMethod::GET)
      * @return Payload
