@@ -70,6 +70,18 @@
       <!--</v-btn>-->
       <v-toolbar-title v-text="title"></v-toolbar-title>
       <v-spacer></v-spacer>
+      <v-select
+        flat
+        solo-inverted
+        autocomplete
+        prepend-icon="search"
+        label="Page Search"
+        class="hidden-sm-and-down"
+        item-text="name"
+        :items="pages"
+        v-model="userInput"
+        @change="gotoPage"
+      ></v-select>
       <v-btn icon @click.stop="clipped = !clipped">
         <v-icon>web</v-icon>
       </v-btn>
@@ -120,27 +132,50 @@
 
 <script>
   import sidebar from './libs/sidebar'
+  import routes from './router/routes'
+  import {VSelect} from 'vuetify'
   import {URI_PREFIX} from './libs/constants'
   import NProgress from './views/parts/NProgress'
   import AppFooter from './views/parts/AppFooter'
   import * as VBreadcrumbs from 'vuetify/es5/components/VBreadcrumbs'
 
   export default {
-    components: {AppFooter, NProgress, ...VBreadcrumbs},
+    name: 'App',
+    components: {AppFooter, NProgress, VSelect, ...VBreadcrumbs},
     data() {
+      let pages = []
+
+      for (let key in routes) {
+        let route = routes[key]
+        if (!route.name) {
+          continue
+        }
+
+        pages.push({
+          path: route.path,
+          name: route.name
+        })
+      }
+
       return {
         clipped: false,
         drawer: true,
         fixed: false,
         uriPrefix: URI_PREFIX,
         items: sidebar,
+        pages: pages,
         miniVariant: false,
         right: true,
         rightDrawer: false,
-        title: 'DevTool'
+        title: 'DevTool',
+        userInput: null
       }
     },
-    name: 'App'
+    methods: {
+      gotoPage (item) {
+        this.$router.push(item.path)
+      }
+    }
   }
 </script>
 
