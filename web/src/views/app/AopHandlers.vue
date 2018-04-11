@@ -1,7 +1,7 @@
 <template>
   <v-layout row wrap>
     <v-flex xs12>
-      <v-subheader><h2>{{ this.$route.name }}</h2></v-subheader>
+      <v-subheader><h1>{{ this.$route.name }}</h1></v-subheader>
     </v-flex>
     <v-flex xs12 md4>
       <v-card>

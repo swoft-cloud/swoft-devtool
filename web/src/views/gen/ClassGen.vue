@@ -1,10 +1,10 @@
 <template>
   <div>
-    <v-subheader><h2>{{ this.$route.name }}</h2></v-subheader>
+    <v-subheader><h1>{{ this.$route.name }}</h1></v-subheader>
     <v-layout row wrap>
       <v-flex d-flex xs12 md4>
         <v-card>
-          <v-card-title primary-title>
+          <v-card-title primary-title class="blue lighten-5">
             <div>
               <div class="headline">Class Setting</div>
               <span class="grey--text">There are some setting for class generate!</span>
@@ -73,7 +73,7 @@
       </v-flex>
       <v-flex d-flex xs12 md8>
         <v-card>
-          <v-card-title primary-title>
+          <v-card-title primary-title class="blue-grey lighten-5">
             <div>
               <div class="headline">Class Preview</div>
               <span class="grey--text">1,000 miles of wonder</span>
@@ -104,7 +104,7 @@
   import {VForm, VCheckbox, VSelect} from 'vuetify'
 
   export default {
-    name: 'GenView',
+    name: 'class-gen',
     components: {VForm, VCheckbox, VSelect, ...VCard},
     data: () => ({
       show: false,

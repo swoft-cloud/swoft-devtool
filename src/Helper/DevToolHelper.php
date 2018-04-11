@@ -39,7 +39,7 @@ class DevToolHelper
                 'name' => $package['name'],
                 'version' => $package['version'],
                 'source' => $package['source'],
-                'require' => $package['require'],
+                'require' => $package['require'] ?? [],
                 'description' => $package['description'],
                 'keywords' => $package['keywords'],
                 'time' => $package['time'],

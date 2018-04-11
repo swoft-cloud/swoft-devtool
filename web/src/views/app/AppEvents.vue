@@ -1,14 +1,11 @@
 <template>
   <div>
-    <v-subheader><h2>{{ this.$route.name }}</h2></v-subheader>
+    <v-subheader><h1>{{ this.$route.name }}</h1></v-subheader>
     <v-layout>
-      <v-flex
-        xs12
-        sm5
-      >
+      <v-flex d-flex xs12 sm5>
         <v-card>
-          <v-card-title>
-            <h3>Listened Events</h3> (total: <code>{{ events.length }}</code>)
+          <v-card-title class="title grey lighten-3">
+            Listened Events (total: <code>{{ events.length }}</code>)
           </v-card-title>
           <v-divider></v-divider>
           <v-card-text class="pa-2">
@@ -19,13 +16,10 @@
         </v-card>
       </v-flex>
 
-      <v-flex
-        xs12
-        sm7
-      >
+      <v-flex d-flex xs12 sm7>
         <v-card>
-          <v-card-title>
-            <h3>Listeners of the event: <code>{{ selected }}</code></h3> (total: <code>{{ eventListeners.length }}</code>)
+          <v-card-title class="title green lighten-5">
+            Listeners of the event: <code>{{ selected }}</code> (total: <code>{{ eventListeners.length }}</code>)
           </v-card-title>
           <v-divider></v-divider>
           <v-list dense class="pa-2">

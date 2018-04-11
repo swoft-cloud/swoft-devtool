@@ -1,20 +1,20 @@
 <template>
   <div>
-    <v-subheader><h2>{{ this.$route.name }}</h2></v-subheader>
+    <v-subheader><h1>{{ this.$route.name }}</h1></v-subheader>
     <v-layout row wrap>
       <v-flex
         xs12
         lg6
       >
         <v-card>
-          <v-card-title class="title">Swoft Server</v-card-title>
+          <v-card-title class="title light-blue lighten-5">Swoft Server Events</v-card-title>
           <v-divider></v-divider>
           <v-card-text>
             <div v-for="(items, name) in server" :key="name" class="px-1">
-              <h4 class="my-2">- Event: <code>{{ name }}</code></h4>
-              <simple-table class="table-sm">
+              <h4 class="my-2"># Event: <span class="text--primary">{{ name }}</span></h4>
+              <simple-table class="table-sm table-bordered">
                 <template slot="header">
-                  <th style="width: 30px"> Number </th>
+                  <th> Number </th>
                   <th> Handler Class</th>
                 </template>
                 <tr v-for="(val, index) in items" :key="index">
@@ -31,12 +31,11 @@
         lg6
       >
         <v-card>
-          <v-card-title class="title">Swoole Server</v-card-title>
+          <v-card-title class="title blue lighten-5">Swoole Server Events</v-card-title>
           <v-divider></v-divider>
           <v-card-text>
             <v-subheader>Main Server</v-subheader>
-            <v-divider></v-divider>
-            <table class="table">
+            <table class="table table-sm table-bordered">
               <thead>
               <tr>
                 <th>Name</th><th>Value</th>
@@ -53,8 +52,7 @@
             <v-subheader>Attached Port Server</v-subheader>
             <div v-for="(items, name) in swoole.port" :key="name" v-if="swoole.port" class="px-1">
               <h4 class="pa-1"> - Port {{ name }}</h4>
-              <v-divider></v-divider>
-              <table class="table table-sm">
+              <table class="table table-sm table-bordered">
                 <thead>
                   <tr>
                     <th>Name</th><th>Value</th>

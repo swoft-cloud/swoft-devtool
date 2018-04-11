@@ -29,11 +29,11 @@ export default [{
     title: 'AOP Handlers',
     href: '/aop/handlers'
   }, {
-    title: 'HTTP Middleware',
-    href: '/http/middles'
-  }, {
     title: 'RPC Middleware',
     href: '/rpc/middles'
+  }, {
+    title: 'HTTP Middleware',
+    href: '/http/middles'
   }]
 }, {
   icon: 'language',
@@ -58,11 +58,11 @@ export default [{
     title: 'HTTP Routes',
     href: '/http/routes'
   }, {
-    title: 'WebSocket Routes',
-    href: '/ws/routes'
-  }, {
     title: 'RPC Routes',
     href: '/rpc/routes'
+  }, {
+    title: 'WebSocket Routes',
+    href: '/ws/routes'
   }]
 }, {
   icon: 'insert_drive_file',

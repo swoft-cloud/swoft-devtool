@@ -1,19 +1,17 @@
 <template>
     <v-layout row wrap>
       <v-flex xs12>
-        <v-subheader><h2>{{ this.$route.name }}</h2></v-subheader>
+        <v-subheader><h1>{{ this.$route.name }}</h1></v-subheader>
       </v-flex>
-      <v-flex xs12 md4>
+      <v-flex d-flex xs12 md4>
         <v-card>
-          <v-card-title>
-            Some Tips
-          </v-card-title>
+          <v-card-title class="title grey lighten-3">Some Tips</v-card-title>
           <v-card-text>
             <p>get config: <code>\bean('config')->get(key, default = null)</code></p>
           </v-card-text>
         </v-card>
       </v-flex>
-      <v-flex xs12 md8>
+      <v-flex d-flex xs12 md8>
         <v-card color="amber lighten-5" class="pa-3">
           <tree-view :data="dataMap" :options="{maxDepth: 2, rootObjectKey: 'config'}"></tree-view>
         </v-card>

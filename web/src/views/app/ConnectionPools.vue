@@ -1,7 +1,7 @@
 <template>
   <v-layout row wrap>
     <v-flex xs12>
-      <v-subheader><h2>{{ this.$route.name }}</h2></v-subheader>
+      <v-subheader><h1>{{ this.$route.name }}</h1></v-subheader>
     </v-flex>
     <v-flex xs12>
       <v-card>
@@ -24,8 +24,14 @@
       </v-card>
     </v-flex>
     <v-flex xs12>
-      <v-card color="yellow lighten-5" class="pa-3">
-        <tree-view :data="dataMap" :options="{maxDepth: 3, rootObjectKey: 'Config'}"></tree-view>
+      <v-card color="yellow lighten-5">
+        <v-card-title class="title blue lighten-4">
+          Pool Config
+          <small class="pl-1" v-show="select"> (For the pool: <code>{{ select }}</code>)</small>
+        </v-card-title>
+        <div class="pa-3">
+          <tree-view :data="dataMap" :options="{maxDepth: 3, rootObjectKey: 'Config'}"></tree-view>
+        </div>
       </v-card>
     </v-flex>
   </v-layout>
@@ -44,6 +50,7 @@
         dataMap: {
           tips: 'Please select a pool to see config!'
         },
+        select: null,
         pools: {}
       }
     },
@@ -62,6 +69,8 @@
         })
       },
       fetchPoolConfig (name) {
+        this.select = name
+
         getAppPools(name).then(({data}) => {
           this.dataMap = data
         })

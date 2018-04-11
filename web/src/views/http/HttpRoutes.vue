@@ -1,10 +1,8 @@
 <template>
   <div class="mb-2">
-    <v-subheader><h2>{{ this.$route.name }}</h2></v-subheader>
-    <v-tabs
-      color="blue"
-      dark>
-      <v-tabs-slider color="yellow"></v-tabs-slider>
+    <v-subheader><h1>{{ this.$route.name }}</h1></v-subheader>
+    <v-tabs color="blue lighten-5">
+      <v-tabs-slider color="blue"></v-tabs-slider>
       <v-tab href="#tab-1">
         <strong>Static Routes</strong>
       </v-tab>

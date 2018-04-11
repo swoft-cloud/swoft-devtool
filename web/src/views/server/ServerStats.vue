@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-subheader><h2>{{ this.$route.name }}</h2></v-subheader>
+    <v-subheader><h1>{{ this.$route.name }}</h1></v-subheader>
     <v-layout row>
       <v-flex
         xs12
@@ -9,7 +9,7 @@
         lg3
       >
         <v-card>
-          <v-card-title><h4>Server stats</h4></v-card-title>
+          <v-card-title class="title grey lighten-3">Server Stats</v-card-title>
           <v-divider></v-divider>
           <v-list dense>
             <v-list-tile v-for="(item, index) in stats" :key="index">

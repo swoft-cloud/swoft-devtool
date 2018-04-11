@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-subheader><h2>{{ this.$route.name }}</h2></v-subheader>
+    <v-subheader><h1>{{ this.$route.name }}</h1></v-subheader>
     <v-card>
       <v-card-title class="pt-1">
         <v-spacer></v-spacer>
@@ -26,7 +26,7 @@
             <td>
               <a :href="props.item.source.url" title="To github repo" target="_blank">{{ props.item.name }}</a>
             </td>
-            <td><code>{{ props.item.version }}</code></td>
+            <td><v-chip outline small color="green">{{ props.item.version }}</v-chip></td>
             <td><code>{{ props.item.source.reference.slice(0, 7) }}</code></td>
             <td>{{ props.item.keywords.join(', ') }}</td>
             <td>{{ props.item.time.slice(0, 19) }}</td>
@@ -51,13 +51,13 @@
 </template>
 
 <script>
-  import {VAlert, VDataTable} from 'vuetify'
+  import {VChip, VAlert, VDataTable} from 'vuetify'
   import * as VCard from 'vuetify/es5/components/VCard'
   import {getComponents} from '../../libs/api-services'
 
   export default {
     name: 'app-components',
-    components: {VAlert, ...VCard, VDataTable},
+    components: {VChip, VAlert, ...VCard, VDataTable},
     data() {
       return {
         search: '',

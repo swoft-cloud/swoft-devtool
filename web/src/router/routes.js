@@ -79,7 +79,7 @@ export default [{
 }, {
   path: URI_PREFIX + '/code/gen',
   name: 'Class Generator',
-  component: () => import('../views/gen/GenView.vue')
+  component: () => import('../views/gen/ClassGen.vue')
 }, {
   path: URI_PREFIX + '/run/trace',
   name: 'Run Tracing',
