@@ -41,7 +41,7 @@ export const ajax = axios.create({
     _time: Date.parse(new Date()) / 1000
   },
   headers: {
-    'X-Swoft-Devtool': '1.0.0',
-    'X-Requested-With': 'XMLHttpRequest'
+    // 'X-Swoft-Devtool': '1.0.0',
+    // 'X-Requested-With': 'XMLHttpRequest'
   }
 })
