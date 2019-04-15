@@ -8,26 +8,20 @@
         "debug",
         "devtool"
     ],
-    "description": "devTool for swoft",
+    "description": "Devtool for swoft framework",
     "license": "Apache-2.0",
     "require": {
-        "swoft/console": "^1.0",
-        "swoft/framework": "^1.0",
-        "swoft/data-parser": "^1.0",
         "seld/phar-utils": "^1.0",
         "text/template": "~2.3"
     },
     "autoload": {
         "psr-4": {
             "Swoft\\Devtool\\": "src/"
-        },
-        "files": [
-            "src/Helper/Functions.php"
-        ]
+        }
     },
     "autoload-dev": {
         "psr-4": {
-            "SwoftTest\\Devtool\\": "test/Cases"
+            "SwoftTest\\Devtool\\": "test/case"
         }
     },
     "repositories": [
@@ -37,7 +31,7 @@
         }
     ],
     "require-dev": {
-        "phpunit/phpunit": "^5.7"
+        "phpunit/phpunit": "^7.5"
     },
     "scripts": {
         "test": "./vendor/bin/phpunit",
