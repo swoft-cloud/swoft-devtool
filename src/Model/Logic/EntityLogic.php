@@ -1,9 +1,9 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Swoft\Devtool\Model\Logic;
 
-use Swoft\Bean\Annotation\Bean;
-use Swoft\Bean\Annotation\Inject;
+use Swoft\Bean\Annotation\Mapping\Bean;
+use Swoft\Bean\Annotation\Mapping\Inject;
 use Swoft\Db\Types;
 use Swoft\Devtool\FileGenerator;
 use Swoft\Devtool\Model\Data\SchemaData;
@@ -84,6 +84,7 @@ class EntityLogic
             'namespace'  => 'App\\Models\\Entity',
             'usespace'   => $usespace,
         ];
+
         $gen  = new FileGenerator($config);
         $gen->renderas($file, $data);
     }

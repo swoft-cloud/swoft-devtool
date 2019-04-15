@@ -1,29 +1,21 @@
-<?php
-/**
- * This file is part of Swoft.
- *
- * @link https://swoft.org
- * @document https://doc.swoft.org
- * @contact group@swoft.org
- * @license https://github.com/swoft-cloud/swoft/blob/master/LICENSE
- */
+<?php declare(strict_types=1);
 
 namespace Swoft\Devtool\Controller;
 
-use Swoft\Http\Message\Server\Request;
-use Swoft\Http\Server\Bean\Annotation\Controller;
-use Swoft\Http\Server\Bean\Annotation\RequestMapping;
-use Swoft\Http\Server\Bean\Annotation\RequestMethod;
+use Swoft\Http\Message\Request;
+use Swoft\Http\Server\Annotation\Mapping\Controller;
+use Swoft\Http\Server\Annotation\Mapping\RequestMapping;
+use Swoft\Http\Server\Annotation\Mapping\RequestMethod;
 
 /**
  * Class GenController
+ *
  * @Controller(prefix="/__devtool/gen/")
- * @package Swoft\Devtool\Controller
  */
 class GenController
 {
     /**
-     * this is a example action
+     * This is a example action
      * @RequestMapping(route="/__devtool/gen", method=RequestMethod::GET)
      * @param Request $request
      * @return array

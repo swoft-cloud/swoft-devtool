@@ -1,9 +1,8 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Swoft\Devtool\Model\Dao;
 
-use Swoft\Bean\Annotation\Bean;
-use Swoft\Db\Query;
+use Swoft\Bean\Annotation\Mapping\Bean;
 
 /**
  * Schema

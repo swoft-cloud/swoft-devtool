@@ -1,17 +1,16 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Swoft\Devtool\Controller;
 
-use Swoft\App;
 use Swoft\Bean\BeanFactory;
-use Swoft\Http\Message\Server\Request;
-use Swoft\Http\Server\Bean\Annotation\Controller;
-use Swoft\Http\Server\Bean\Annotation\RequestMapping;
-use Swoft\Http\Server\Bean\Annotation\RequestMethod;
+use Swoft\Http\Message\Request;
+use Swoft\Http\Server\Annotation\Mapping\Controller;
+use Swoft\Http\Server\Annotation\Mapping\RequestMapping;
+use Swoft\Http\Server\Annotation\Mapping\RequestMethod;
 
 /**
  * Class RouteController
- * @package Swoft\Devtool\Controller
+ *
  * @Controller("/__devtool")
  */
 class RouteController
@@ -19,40 +18,29 @@ class RouteController
     /**
      * @RequestMapping("http/routes", method=RequestMethod::GET)
      * @param Request $request
-     * @return array
+     * @return array|string
+     * @throws \Throwable
      */
-    public function httpRoutes(Request $request): array
+    public function httpRoutes(Request $request)
     {
-        $type = $request->query('type');
-        $types = [
-            'static' => 1,
-            'regular' => 1,
-            'vague' => 1,
-            'cached' => 1,
-        ];
+        $asString = (int)$request->query('asString', 0);
 
-        /** @var \Swoft\Http\Server\Router\HandlerMapping $router */
+        /** @var \Swoft\Http\Server\Router\Router $router */
         $router = \bean('httpRouter');
 
-        // one type
-        if (isset($types[$type])) {
-            $getter = 'get' . \ucfirst($type) . 'Routes';
-
-            return $router->$getter();
+        if ($asString === 1) {
+            return $router->toString();
         }
 
-        // all
         return [
-            'static' => $router->getStaticRoutes(),
-            'regular' => $router->getRegularRoutes(),
-            'vague' => $router->getVagueRoutes(),
-            'cached' => $router->getCacheRoutes(),
+            'routes'  => $router->getRoutes()
         ];
     }
 
     /**
      * @RequestMapping("ws/routes", method=RequestMethod::GET)
      * @return array
+     * @throws \Throwable
      */
     public function wsRoutes(): array
     {
@@ -77,15 +65,15 @@ class RouteController
         }
 
         /** @var \Swoft\Rpc\Server\Router\HandlerMapping $router */
-        $router = \bean('serviceRouter');
+        $router  = \bean('serviceRouter');
         $rawList = $router->getRoutes();
-        $routes = [];
+        $routes  = [];
 
         foreach ($rawList as $key => $route) {
             $routes[] = [
                 'serviceKey' => $key,
-                'class' => $route[0],
-                'method' => $route[1],
+                'class'      => $route[0],
+                'method'     => $route[1],
             ];
         }
 

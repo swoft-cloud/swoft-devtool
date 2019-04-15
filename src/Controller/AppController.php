@@ -1,32 +1,20 @@
-<?php
-/**
- * This file is part of Swoft.
- *
- * @link https://swoft.org
- * @document https://doc.swoft.org
- * @contact group@swoft.org
- * @license https://github.com/swoft-cloud/swoft/blob/master/LICENSE
- */
+<?php declare(strict_types=1);
 
 namespace Swoft\Devtool\Controller;
 
 use Swoft\Aop\Aop;
-use Swoft\App;
 use Swoft\Bean\BeanFactory;
-use Swoft\Bean\Collector\PoolCollector;
-use Swoft\Core\Config;
+use Swoft\Config\Config;
 use Swoft\Devtool\Helper\DevToolHelper;
-use Swoft\Http\Message\Server\Request;
-use Swoft\Http\Server\Bean\Annotation\Controller;
-use Swoft\Http\Server\Bean\Annotation\RequestMapping;
-use Swoft\Http\Server\Bean\Annotation\RequestMethod;
-use Swoft\Http\Server\Payload;
-use Swoft\Pool\PoolConfigInterface;
+use Swoft\Http\Message\Request;
+use Swoft\Http\Server\Annotation\Mapping\Controller;
+use Swoft\Http\Server\Annotation\Mapping\RequestMapping;
+use Swoft\Http\Server\Annotation\Mapping\RequestMethod;
 
 /**
  * Class AppController
+ *
  * @Controller(prefix="/__devtool/app")
- * @package Swoft\Devtool\Controller
  */
 class AppController
 {
@@ -38,26 +26,27 @@ class AppController
     public function index(): array
     {
         return [
-            'os' => \PHP_OS,
-            'phpVersion' => \PHP_VERSION,
+            'os'            => \PHP_OS,
+            'phpVersion'    => \PHP_VERSION,
             'swooleVersion' => \SWOOLE_VERSION,
-            'swoftVersion' => App::version(),
-            'appName' => \APP_NAME,
-            'basePath' => \BASE_PATH,
+            'swoftVersion'  => \Swoft::VERSION,
+            'appName'       => \APP_NAME,
+            'basePath'      => \BASE_PATH,
         ];
     }
 
     /**
-     * get app config
+     * Get app config
      * @RequestMapping(route="config", method=RequestMethod::GET)
      * @param Request $request
      * @return array|mixed
+     * @throws \Throwable
      */
     public function config(Request $request)
     {
         if ($key = $request->query('key')) {
             /** @see Config::get() */
-            return \bean('config')->get($key);
+            return \config($key);
         }
 
         /** @see Config::toArray() */
@@ -69,7 +58,6 @@ class AppController
      * @RequestMapping(route="pools", method=RequestMethod::GET)
      * @param Request $request
      * @return array
-     * @throws \Swoft\Exception\InvalidArgumentException
      */
     public function pools(Request $request): array
     {
@@ -99,7 +87,7 @@ class AppController
             return [];
         }
 
-        return BeanFactory::getContainer()->getBeanNames();
+        return BeanFactory::getContainer()->getNames();
     }
 
     /**
@@ -131,49 +119,50 @@ class AppController
      * get all registered application events list
      * @RequestMapping(route="events", method=RequestMethod::GET)
      * @param Request $request
-     * @return Payload
+     * @return array
+     * @throws \Throwable
      */
-    public function events(Request $request): Payload
+    public function events(Request $request): array
     {
-        /** @var \Swoft\Event\EventManager $em */
+        /** @var \Swoft\Event\Manager\EventManager $em */
         $em = \bean('eventManager');
 
         if ($event = \trim($request->query('name'))) {
-            $queue = $em->getListenerQueue($event);
-
-            if (!$queue) {
-                return Payload::make(['msg' => 'event name is invalid: ' . $event],404);
+            if (!$queue = $em->getListenerQueue($event)) {
+                return ['msg' => 'event name is invalid: ' . $event];
             }
 
             $classes = [];
-
             foreach ($queue->getIterator() as $listener) {
-                $classes[] = \get_parent_class($listener);
+                $classes[] = \get_class($listener);
             }
 
-            return Payload::make($classes);
+            return $classes;
         }
 
-        return Payload::make($em->getListenedEvents());
+        return $em->getListenedEvents();
     }
 
     /**
-     * get all registered components
+     * Get all registered components
+     *
      * @RequestMapping(route="components", method=RequestMethod::GET)
      * @return array
      * @throws \InvalidArgumentException
      */
     public function components(): array
     {
-        $lockFile = App::getAlias('@root/composer.lock');
+        $lockFile = \Swoft::getAlias('@base/composer.lock');
 
         return DevToolHelper::parseComposerLockFile($lockFile);
     }
 
     /**
-     * get all registered aop handlers
+     * Get all registered aop handlers
+     *
      * @RequestMapping(route="aop/handlers", method=RequestMethod::GET)
      * @return array
+     * @throws \Throwable
      */
     public function aopHandles(): array
     {
@@ -184,20 +173,21 @@ class AppController
     }
 
     /**
-     * get all registered http middleware list
+     * Get all registered http middleware list
+     *
      * @RequestMapping(route="http/middles", method=RequestMethod::GET)
      * @param Request $request
      * @return array
+     * @throws \Throwable
      */
     public function httpMiddles(Request $request): array
     {
-        /** @var \Swoft\Http\Server\ServerDispatcher $dispatcher */
+        /** @var \Swoft\Http\Server\HttpDispatcher $dispatcher */
         $dispatcher = \bean('serverDispatcher');
+        $middleType = (int)$request->query('type');
 
-        $type = (int)$request->query('type');
-
-        // 1 only return user's
-        if ($type === 1) {
+        // 1: only return user's
+        if ($middleType === 1) {
             return $dispatcher->getMiddlewares();
         }
 
@@ -209,22 +199,21 @@ class AppController
      * @RequestMapping(route="rpc/middles", method=RequestMethod::GET)
      * @param Request $request
      * @return array
+     * @throws \Throwable
      */
     public function rpcMiddles(Request $request): array
     {
-        $bean = 'ServiceDispatcher';
-
-        if (!App::hasBean($bean)) {
+        $beanName = 'serviceDispatcher';
+        if (!\Swoft::hasBean($beanName)) {
             return [];
         }
 
         /** @var \Swoft\Rpc\Server\ServiceDispatcher $dispatcher */
-        $dispatcher = \bean($bean);
-
-        $type = (int)$request->query('type');
+        $dispatcher = \bean($beanName);
+        $middleType = (int)$request->query('type');
 
         // 1 only return user's
-        if ($type === 1) {
+        if ($middleType === 1) {
             return $dispatcher->getMiddlewares();
         }
 

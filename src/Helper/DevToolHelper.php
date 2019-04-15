@@ -1,10 +1,9 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Swoft\Devtool\Helper;
 
 /**
  * Class DevToolHelper
- * @package Swoft\Devtool\Helper
  */
 class DevToolHelper
 {

@@ -1,13 +1,12 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Swoft\Devtool;
 
 use Leuffen\TextTemplate\TextTemplate;
-use Swoft\App;
 
 /**
  * Class FileGenerator
- * @package Swoft\Devtool
+ * @since 1.0
  */
 class FileGenerator
 {
@@ -64,7 +63,7 @@ class FileGenerator
             $firstChar = $partFile[0];
 
             if ($firstChar === '@') {
-                $partFile = App::getAlias($partFile);
+                $partFile = \Swoft::getAlias($partFile);
             } elseif ($firstChar !== '/') {
                 $relativePath = \dirname($this->getTplFile());
                 $partFile = \realpath($relativePath . '/' . $partFile);

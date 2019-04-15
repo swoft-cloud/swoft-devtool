@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 if (file_exists($file = dirname(__DIR__, 3) . '/autoload.php')) {
     require $file;

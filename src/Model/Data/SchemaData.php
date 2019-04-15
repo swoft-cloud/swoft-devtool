@@ -1,15 +1,14 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Swoft\Devtool\Model\Data;
 
-use Swoft\Bean\Annotation\Bean;
+use Swoft\Bean\Annotation\Mapping\Bean;
 use Swoft\Db\Driver\Driver;
 use Swoft\Db\Driver\Mysql\Schema as MysqlSchema;
 use Swoft\Db\Driver\Pgsql\Schema as PgsqlSchema;
 use Swoft\Devtool\Model\Dao\MysqlSchemaDao;
 use Swoft\Devtool\Model\Dao\SchemaInterface;
-use Swoft\Exception\Exception;
-use Swoft\Helper\StringHelper;
+use Swoft\Stdlib\Helper\StringHelper;
 
 /**
  * SchemaData
@@ -78,7 +77,6 @@ class SchemaData
      * @param string $driver
      *
      * @return \Swoft\Devtool\Model\Dao\SchemaInterface
-     * @throws \Swoft\Exception\Exception
      */
     private function getSchemaDao(string $driver): SchemaInterface
     {
@@ -86,14 +84,13 @@ class SchemaData
             return \bean(MysqlSchemaDao::class);
         }
 
-        throw new Exception(sprintf('The %s driver does not support!', $driver));
+        throw new \RuntimeException(sprintf('The %s driver does not support!', $driver));
     }
 
     /**
      * @param string $driver
      *
      * @return array
-     * @throws \Swoft\Exception\Exception
      */
     private function getSchemaTypes(string $driver): array
     {
@@ -104,6 +101,6 @@ class SchemaData
             return [PgsqlSchema::$typeMap, PgsqlSchema::$phpMap];
         }
 
-        throw new Exception(sprintf('The %s schema does not support!', $driver));
+        throw new \RuntimeException(sprintf('The %s schema does not support!', $driver));
     }
 }
