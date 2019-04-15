@@ -14,7 +14,7 @@ use Swoole\WebSocket\Server;
  * @see \Swoft\WebSocket\Server\HandlerInterface
  * @package Swoft\Devtool\WebSocket
  * - Remove dependency on 'websocket-server'
- * WebSocket("/__devtool")
+ * WsModule("/__devtool")
  * @Bean()
  */
 class DevToolController

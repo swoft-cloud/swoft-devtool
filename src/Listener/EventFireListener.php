@@ -1,6 +1,6 @@
 <?php
 
-namespace Swoft\Devtool\Bootstrap\Listener;
+namespace Swoft\Devtool\Listener;
 
 use Swoft\App;
 use Swoft\Bean\Annotation\Listener;
@@ -11,7 +11,6 @@ use Swoft\Event\EventInterface;
 
 /**
  * Class EventFireListener
- * @package Swoft\Devtool\Bootstrap\Listener
  * @Listener("*")
  */
 class EventFireListener implements EventHandlerInterface

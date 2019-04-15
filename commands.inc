@@ -7,6 +7,6 @@ return [
       // arg0, arg1
     ],
     'srcDir' => '@vendor/swoft/devtool/web/dist/devtool',
-    'dstDir' => '@root/public',
+    'dstDir' => '@base/public',
   ],
 ];
