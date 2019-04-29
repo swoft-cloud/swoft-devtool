@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Swoft\Devtool\Controller;
+namespace Swoft\Devtool\Http\Controller;
 
 use Swoft\Aop\Aop;
 use Swoft\Bean\BeanFactory;
@@ -112,11 +112,11 @@ class AppController
      */
     public function pathAliases(): array
     {
-        return App::getAliases();
+        return \Swoft::getAliases();
     }
 
     /**
-     * get all registered application events list
+     * Get all registered application events list
      * @RequestMapping(route="events", method=RequestMethod::GET)
      * @param Request $request
      * @return array

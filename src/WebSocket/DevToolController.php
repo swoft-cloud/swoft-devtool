@@ -2,9 +2,8 @@
 
 namespace Swoft\Devtool\WebSocket;
 
-use Swoft\Bean\Annotation\Bean;
-use Swoft\Http\Message\Server\Request;
-use Swoft\Http\Message\Server\Response;
+use Swoft\Http\Message\Request;
+use Swoft\Http\Message\Response;
 // use Swoft\WebSocket\Server\Bean\Annotation\WebSocket;
 use Swoole\WebSocket\Frame;
 use Swoole\WebSocket\Server;
@@ -15,7 +14,6 @@ use Swoole\WebSocket\Server;
  * @package Swoft\Devtool\WebSocket
  * - Remove dependency on 'websocket-server'
  * WsModule("/__devtool")
- * @Bean()
  */
 class DevToolController
 {

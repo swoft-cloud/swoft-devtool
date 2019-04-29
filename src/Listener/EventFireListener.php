@@ -2,10 +2,9 @@
 
 namespace Swoft\Devtool\Listener;
 
-use Swoft\App;
-use Swoft\Bean\Annotation\Listener;
-use Swoft\Bean\Annotation\Value;
-use Swoft\Console\Helper\ConsoleUtil;
+use Swoft\Config\Annotation\Mapping\Config;
+use Swoft\Console\Console;
+use Swoft\Event\Annotation\Mapping\Listener;
 use Swoft\Event\EventHandlerInterface;
 use Swoft\Event\EventInterface;
 
@@ -16,7 +15,7 @@ use Swoft\Event\EventInterface;
 class EventFireListener implements EventHandlerInterface
 {
     /**
-     * @Value("${config.devtool.logEventToConsole}")
+     * @Config("devtool.logEventToConsole")
      * @var bool
      */
     public $logEventToConsole = false;
@@ -24,19 +23,19 @@ class EventFireListener implements EventHandlerInterface
     /**
      * @param EventInterface $event
      */
-    public function handle(EventInterface $event)
+    public function handle(EventInterface $event): void
     {
         if (!$this->logEventToConsole) {
             return;
         }
 
-        ConsoleUtil::log(
+        Console::log(
             \sprintf('Trigger the event <cyan>%s</cyan>', $event->getName()),
             [],
             'debug',
             [
                 'Application',
-                'WorkerId' => App::getWorkerId()
+                // 'WorkerId' => App::getWorkerId()
             ]
         );
     }

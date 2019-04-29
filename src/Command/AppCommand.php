@@ -2,8 +2,10 @@
 
 namespace Swoft\Devtool\Command;
 
+use Swoft\Bean\BeanFactory;
 use Swoft\Console\Annotation\Mapping\Command;
 use Swoft\Console\Annotation\Mapping\CommandMapping;
+use Swoft\Console\Annotation\Mapping\CommandOption;
 use Swoft\Console\Helper\Show;
 use Swoft\Console\Output\Output;
 use Swoft\Stdlib\Helper\DirHelper;
@@ -19,9 +21,7 @@ class AppCommand
     /**
      * init the project, will create runtime dirs
      *
-     * @Usage
-     *   {fullCommand} [arguments] [options]
-     * @CommandMapping("init")
+     * @CommandMapping("init", usage="{fullCommand} [arguments] [options]")
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
      */
@@ -44,8 +44,13 @@ class AppCommand
 
     /**
      * Print current system environment information
+     *
+     * @CommandMapping()
+     *
      * @param Output $output
+     *
      * @throws \RuntimeException
+     * @throws \Swoft\Bean\Exception\ContainerException
      */
     public function env(Output $output): void
     {
@@ -55,7 +60,7 @@ class AppCommand
             'Php version'    => \PHP_VERSION,
             'Swoole version' => \SWOOLE_VERSION,
             'Swoft version'  => \Swoft::VERSION,
-            'App Name'       => \APP_NAME,
+            'App Name'       => \config('name', 'unknown'),
             'Base Path'      => \BASE_PATH,
         ];
 
@@ -63,10 +68,29 @@ class AppCommand
     }
 
     /**
+     * @CommandMapping()
+     * @CommandOption("type", desc="Display the bean names of the type")
+     */
+    public function bean(): void
+    {
+        $names = BeanFactory::getContainer()->getNames();
+        $type = \input()->getOpt('type');
+
+        if (isset($names[$type])) {
+            Show::prettyJSON($names[$type]);
+
+            return;
+        }
+
+        Show::prettyJSON($names);
+    }
+
+    /**
      * Check current operating environment information
      *
      * @CommandMapping()
      * @param Output $output
+     *
      * @throws \RuntimeException
      */
     public function check(Output $output): void
@@ -80,11 +104,12 @@ class AppCommand
             'PHP version is greater than 7.1?'    => self::wrap(\PHP_VERSION_ID > 70100, 'current is ' .
                 \PHP_VERSION),
             'Swoole extension is installed?'      => self::wrap(\extension_loaded('swoole')),
-            'Swoole version is greater than 2.1?' => self::wrap(\version_compare(\SWOOLE_VERSION, '4.0.0', '>='),
+            'Swoole version is greater than 4.3?' => self::wrap(\version_compare(\SWOOLE_VERSION, '4.3.0', '>='),
                 'current is ' . \SWOOLE_VERSION),
             'Swoole async redis is enabled?'      => self::wrap($asyncRdsEnabled),
             'Swoole coroutine is enabled?'        => self::wrap(\class_exists('Swoole\Coroutine', false)),
             "\n<bold>Extensions that conflict with 'swoole'</bold>\n",
+            // ' extensions'                             => 'installed',
             ' - zend'                             => self::wrap(!\extension_loaded('zend'),
                 'Please disabled it, otherwise swoole will be affected!', true),
             ' - xdebug'                           => self::wrap(!\extension_loaded('xdebug'),
@@ -123,6 +148,7 @@ class AppCommand
      * @param             $condition
      * @param string|null $msg
      * @param bool        $showOnFalse
+     *
      * @return array
      */
     public static function wrap($condition, string $msg = null, $showOnFalse = false): array

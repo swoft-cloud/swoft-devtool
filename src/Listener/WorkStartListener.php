@@ -2,36 +2,33 @@
 
 namespace Swoft\Devtool\Bootstrap\Listener;
 
-use Swoft\App;
-use Swoft\Bean\Annotation\ServerListener;
-use Swoft\Bean\Annotation\Value;
-use Swoft\Bootstrap\Listeners\Interfaces\WorkerStartInterface;
-use Swoft\Bootstrap\SwooleEvent;
-use Swoft\Bootstrap\Server\AbstractServer;
+use Swoft\Config\Annotation\Mapping\Config;
 use Swoft\Devtool\DevTool;
 use Swoft\Devtool\WebSocket\DevToolController;
-use Swoft\Memory\Table;
+use Swoft\Event\Annotation\Mapping\Listener;
+use Swoft\Event\EventHandlerInterface;
+use Swoft\Event\EventInterface;
 use Swoole\Server;
+use Swoft\Server\Swoole\SwooleEvent;
 
 /**
- * Class ServerStartListener
+ * Class WorkStartListener
  * @package Swoft\Devtool\Bootstrap\Listener
- * @ServerListener(event={
- *     SwooleEvent::ON_WORKER_START
- * })
+ * @Listener(SwooleEvent::WORKER_START)
  */
-class ServerStartListener implements WorkerStartInterface
+class WorkStartListener implements EventHandlerInterface
 {
     /**
-     * @Value("${config.devtool.appLogToConsole}")
+     * @Config("devtool.appLogToConsole")
      * @var bool
      */
     public $appLogToConsole = false;
 
     /**
      * @param Server $server
-     * @param int $workerId
-     * @param bool $isWorker
+     * @param int    $workerId
+     * @param bool   $isWorker
+     * @throws \Throwable
      */
     public function onWorkerStart(Server $server, int $workerId, bool $isWorker)
     {
@@ -46,11 +43,13 @@ class ServerStartListener implements WorkerStartInterface
             $workerId,
             $isWorker ? 'Worker' : 'Task'
         ));
+    }
 
-        // if websocket is enabled. register a ws route
-        if ($isWorker && App::hasBean('wsRouter')) {
-            /* @see \Swoft\WebSocket\Server\Router\HandlerMapping::add() */
-            \bean('wsRouter')->add(DevTool::ROUTE_PREFIX, DevToolController::class);
-        }
+    /**
+     * @param EventInterface $event
+     */
+    public function handle(EventInterface $event): void
+    {
+        // TODO: Implement handle() method.
     }
 }

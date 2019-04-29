@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Swoft\Devtool\Controller;
+namespace Swoft\Devtool\Http\Controller;
 
 use Swoft\Bean\BeanFactory;
 use Swoft\Http\Message\Request;
