@@ -22,6 +22,11 @@ class AutoLoader extends SwoftComponent
         \Swoft::setAlias('@devtool', \dirname(__DIR__, 2));
     }
 
+    public function enable(): bool
+    {
+        return (int)\env('SWOFT_DEBUG', 0) > 0;
+    }
+
     /**
      * @return array
      */
