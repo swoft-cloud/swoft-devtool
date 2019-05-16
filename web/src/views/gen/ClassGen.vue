@@ -46,7 +46,7 @@
                 :label="$t('App.templateDirectory')"
                 v-model="tplDir"
                 :rules="[v => /^@+[a-zA-Z]+\w|\/+$/.test(v) || $t('App.onlySuffix')]"
-                :hint="$t('App.templateDir') +'('+ $t('App.default') +': @devtool/res/templates)'"
+                :hint="$t('App.templateDir') +'('+ $t('App.default') +': @devtool/res/template)'"
                 persistent-hint
               ></v-text-field>
               <v-text-field
@@ -119,7 +119,7 @@
         v => /^@+\w+\w|\//.test(v) || 'directory must be valid'
       ],
       suffix: 'Controller',
-      tplDir: '@devtool/res/templates',
+      tplDir: '@devtool/res/template',
       tplFile: 'controller.stub',
       select: 'controller',
       items: [

@@ -2,7 +2,22 @@
 
 namespace Swoft\Devtool;
 
+use function array_merge;
+use function dirname;
+use function file_exists;
+use function file_get_contents;
+use function file_put_contents;
+use InvalidArgumentException;
+use Leuffen\TextTemplate\TemplateParsingException;
 use Leuffen\TextTemplate\TextTemplate;
+use function method_exists;
+use function property_exists;
+use function realpath;
+use function rtrim;
+use RuntimeException;
+use Swoft;
+use function trim;
+use function ucfirst;
 
 /**
  * Class FileGenerator
@@ -38,8 +53,8 @@ class FileGenerator
     /**
      * FileGenerator constructor.
      * @param array $config
-     * @throws \RuntimeException
-     * @throws \InvalidArgumentException
+     * @throws RuntimeException
+     * @throws InvalidArgumentException
      */
     public function __construct(array $config = [])
     {
@@ -63,13 +78,13 @@ class FileGenerator
             $firstChar = $partFile[0];
 
             if ($firstChar === '@') {
-                $partFile = \Swoft::getAlias($partFile);
+                $partFile = Swoft::getAlias($partFile);
             } elseif ($firstChar !== '/') {
-                $relativePath = \dirname($this->getTplFile());
-                $partFile = \realpath($relativePath . '/' . $partFile);
+                $relativePath = dirname($this->getTplFile());
+                $partFile = realpath($relativePath . '/' . $partFile);
             }
 
-            return PHP_EOL . \file_get_contents($partFile);
+            return PHP_EOL . file_get_contents($partFile);
         });
     }
 
@@ -80,11 +95,11 @@ class FileGenerator
     public function config(array $config = []): self
     {
         foreach ($config as $name => $value) {
-            $setter = 'set' . \ucfirst($name);
+            $setter = 'set' . ucfirst($name);
 
-            if (\method_exists($this, $setter)) {
+            if (method_exists($this, $setter)) {
                 $this->$setter($value);
-            } elseif (\property_exists($this, $name)) {
+            } elseif (property_exists($this, $name)) {
                 $this->$name = $value;
             }
         }
@@ -109,7 +124,7 @@ class FileGenerator
      */
     public function addData(array $data): self
     {
-        $this->data = \array_merge($this->data, $data);
+        $this->data = array_merge($this->data, $data);
 
         return $this;
     }
@@ -117,8 +132,8 @@ class FileGenerator
     /**
      * @param array $data
      * @return bool|int
-     * @throws \RuntimeException
-     * @throws \Leuffen\TextTemplate\TemplateParsingException
+     * @throws RuntimeException
+     * @throws TemplateParsingException
      */
     public function render(array $data = [])
     {
@@ -128,7 +143,7 @@ class FileGenerator
 
         $tplFile = $this->getTplFile();
         $text = $this->parser
-            ->loadTemplate(\file_get_contents($tplFile))
+            ->loadTemplate(file_get_contents($tplFile))
             ->apply($this->data);
 
         return $text;
@@ -138,8 +153,8 @@ class FileGenerator
      * @param string $file
      * @param array $data
      * @return bool|int
-     * @throws \RuntimeException
-     * @throws \Leuffen\TextTemplate\TemplateParsingException
+     * @throws RuntimeException
+     * @throws TemplateParsingException
      */
     public function renderAs(string $file, array $data = [])
     {
@@ -149,23 +164,23 @@ class FileGenerator
 
         $tplFile = $this->getTplFile();
         $text = $this->parser
-            ->loadTemplate(\file_get_contents($tplFile))
+            ->loadTemplate(file_get_contents($tplFile))
             ->apply($this->data);
 
-        return \file_put_contents($file, $text) > 0;
+        return file_put_contents($file, $text) > 0;
     }
 
     /**
      * @param bool $checkIt
      * @return string
-     * @throws \RuntimeException
+     * @throws RuntimeException
      */
     public function getTplFile(bool $checkIt = true): string
     {
         $file = $this->tplDir . $this->tplFilename . $this->tplExt;
 
-        if ($checkIt && !\file_exists($file)) {
-            throw new \RuntimeException("Template file not exists! File: $file");
+        if ($checkIt && !file_exists($file)) {
+            throw new RuntimeException("Template file not exists! File: $file");
         }
 
         return $file;
@@ -229,7 +244,7 @@ class FileGenerator
      */
     public function setTplDir(string $tplDir): self
     {
-        $this->tplDir = \rtrim($tplDir, '/ ') . '/';
+        $this->tplDir = rtrim($tplDir, '/ ') . '/';
 
         return $this;
     }
@@ -240,7 +255,7 @@ class FileGenerator
      */
     public function setTplExt(string $tplExt): self
     {
-        $this->tplExt = '.' . \trim($tplExt, '.');
+        $this->tplExt = '.' . trim($tplExt, '.');
 
         return $this;
     }
