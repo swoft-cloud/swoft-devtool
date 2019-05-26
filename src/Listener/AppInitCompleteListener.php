@@ -2,15 +2,19 @@
 
 namespace Swoft\Devtool\Listener;
 
-use Swoft\Devtool\DevTool;
-use Swoft\Devtool\WebSocket\DevToolController;
+use Swoft\Bean\BeanFactory;
+use Swoft\Devtool\Model\Logic\MetaLogic;
+use Swoft\Event\Annotation\Mapping\Listener;
 use Swoft\Event\EventHandlerInterface;
 use Swoft\Event\EventInterface;
+use Swoft\SwoftEvent;
 
 /**
  * Class AppInitCompleteListener
+ *
  * @since 2.0
- * @package Swoft\Devtool\Listener
+ *
+ * @Listener(event=SwoftEvent::APP_INIT_COMPLETE)
  */
 class AppInitCompleteListener implements EventHandlerInterface
 {
@@ -20,10 +24,10 @@ class AppInitCompleteListener implements EventHandlerInterface
      */
     public function handle(EventInterface $event): void
     {
-        // if websocket is enabled. register a ws route
-        if (\Swoft::hasBean('wsRouter')) {
-            /* @see \Swoft\WebSocket\Server\Router\HandlerMapping::add() */
-            // \bean('wsRouter')->add(DevTool::ROUTE_PREFIX, DevToolController::class);
+        // Generate phpstorm.meta.php
+        if(APP_DEBUG){
+            $phpstorm = BeanFactory::getBean(MetaLogic::class);
+            $phpstorm->generate();
         }
     }
 }
