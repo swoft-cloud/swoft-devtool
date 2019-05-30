@@ -11,6 +11,8 @@ use Swoft\Console\Annotation\Mapping\CommandMapping;
  */
 class IssueCommand
 {
+
+
     /**
      * Open github issues page
      *
@@ -18,6 +20,16 @@ class IssueCommand
      */
     public function open(): void
     {
+    /*
+    Mac：
+    open 'https://swoft.org'
+
+    Linux:
+    x-www-browser 'https://swoft.org'
+
+    Windows:
+    cmd /c start https://swoft.org
+     */
     }
 
     /**
