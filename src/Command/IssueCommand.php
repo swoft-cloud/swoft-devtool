@@ -4,6 +4,7 @@ namespace Swoft\Devtool\Command;
 
 use Swoft\Console\Annotation\Mapping\Command;
 use Swoft\Console\Annotation\Mapping\CommandMapping;
+use Swoft\Stdlib\Helper\Sys;
 
 /**
  * There are some commands for application dev[by <cyan>devtool</cyan>]
@@ -11,7 +12,7 @@ use Swoft\Console\Annotation\Mapping\CommandMapping;
  */
 class IssueCommand
 {
-
+    private $issueUrl = 'https://github.com/swoft-cloud/swoft/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc';
 
     /**
      * Open github issues page
@@ -20,16 +21,25 @@ class IssueCommand
      */
     public function open(): void
     {
-    /*
-    Mac：
-    open 'https://swoft.org'
+        /*
+        Mac：
+        open 'https://swoft.org'
 
-    Linux:
-    x-www-browser 'https://swoft.org'
+        Linux:
+        x-www-browser 'https://swoft.org'
 
-    Windows:
-    cmd /c start https://swoft.org
-     */
+        Windows:
+        cmd /c start https://swoft.org
+         */
+        if (Sys::isMac()) {
+            $cmd = 'open';
+        } elseif (Sys::isWin()) {
+            $cmd = 'cmd /c start';
+        } else {
+            $cmd = 'x-www-browser';
+        }
+
+        Sys::execute($cmd . ' ' . $this->issueUrl);
     }
 
     /**
