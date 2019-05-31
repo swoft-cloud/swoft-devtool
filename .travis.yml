@@ -8,7 +8,7 @@ php:
 before_script:
   - composer config -g process-timeout 9000 && composer update
   - phpenv config-rm xdebug.ini
-  - pecl install --onlyreqdeps swoole
+  - yes no | pecl install swoole
 
 script:
   - php --ri swoole
