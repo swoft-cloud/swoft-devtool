@@ -1,24 +1,31 @@
-<?php declare(strict_types=1);
+<?php
+// vendor at component dir
+if (file_exists(dirname(__DIR__) . '/vendor/autoload.php')) {
+    require dirname(__DIR__) . '/vendor/autoload.php';
+} elseif (file_exists(dirname(__DIR__, 3) . '/vendor/autoload.php')) {
+    /** @var \Composer\Autoload\ClassLoader $loader */
+    $loader = require dirname(__DIR__, 3) . '/vendor/autoload.php';
 
-if (file_exists($file = dirname(__DIR__, 3) . '/autoload.php')) {
-    require $file;
-} elseif (file_exists($file = dirname(__DIR__) . '/vendor/autoload.php')) {
-    require $file;
+    // need load testing psr4 config map
+    $componentDir  = dirname(__DIR__, 3);
+    $componentJson = $componentDir . '/composer.json';
+    $composerData  = json_decode(file_get_contents($componentJson), true);
+    foreach ($composerData['autoload-dev']['psr-4'] as $prefix => $dir) {
+        $loader->addPsr4($prefix, $componentDir . '/' . $dir);
+    }
+    // application's vendor
+} elseif (file_exists(dirname(__DIR__, 5) . '/autoload.php')) {
+    /** @var \Composer\Autoload\ClassLoader $loader */
+    $loader = require dirname(__DIR__, 5) . '/autoload.php';
+
+    // need load testing psr4 config map
+    $componentDir  = dirname(__DIR__, 3);
+    $componentJson = $componentDir . '/composer.json';
+    $composerData  = json_decode(file_get_contents($componentJson), true);
+
+    foreach ($composerData['autoload-dev']['psr-4'] as $prefix => $dir) {
+        $loader->addPsr4($prefix, $componentDir . '/' . $dir);
+    }
 } else {
-    exit('OO, The composer autoload file is not found!');
+    exit('Please run "composer install" to install the dependencies' . PHP_EOL);
 }
-
-require 'config/define.php';
-
-// init
-\Swoft\Bean\BeanFactory::init();
-
-/* @var \Swoft\Bootstrap\Boots\Bootable $bootstrap */
-$bootstrap = \Swoft\App::getBean(\Swoft\Bootstrap\Bootstrap::class);
-$bootstrap->bootstrap();
-
-\Swoft\Bean\BeanFactory::reload();
-
-$initApplicationContext = new \Swoft\Core\InitApplicationContext();
-$initApplicationContext->init();
-\Swoft\App::$isInTest = true;
