@@ -74,10 +74,10 @@ class MetaLogic
      */
     protected function generateBean(): string
     {
-        $itemStub     = '';
-        $overrideStub = '';
-
+        $indentSpace    = '            ';
+        $overrideStub   = $itemStub = '';
         $objDefinitions = Container::getInstance()->getObjectDefinitions();
+
         foreach ($objDefinitions as $beanName => $definition) {
             if (!$definition instanceof ObjectDefinition) {
                 continue;
@@ -86,10 +86,14 @@ class MetaLogic
             $alias     = $definition->getAlias();
             $className = $definition->getClassName();
 
-            $itemStub .= sprintf("'%s'=>\%s::class, %s", $beanName, $className, PHP_EOL);
-            $itemStub .= sprintf("'%s'=>\%s::class, %s", $className, $className, PHP_EOL);
+            $itemStub .= sprintf("%s'%s' => \%s::class,%s", $indentSpace, $beanName, $className, PHP_EOL);
+
+            if ($beanName !== $className) {
+                $itemStub .= sprintf("%s'%s' => \%s::class,%s", $indentSpace, $className, $className, PHP_EOL);
+            }
+
             if (!empty($alias)) {
-                $itemStub .= sprintf("%s=>\%s::class, %s", $alias, $className, PHP_EOL);
+                $itemStub .= sprintf("%s'%s' => \%s::class,%s", $indentSpace, $alias, $className, PHP_EOL);
             }
         }
 
