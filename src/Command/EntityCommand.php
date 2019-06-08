@@ -3,10 +3,14 @@
 
 namespace Swoft\Devtool\Command;
 
+use Leuffen\TextTemplate\TemplateParsingException;
+use ReflectionException;
 use Swoft\Bean\Annotation\Mapping\Inject;
+use Swoft\Bean\Exception\ContainerException;
 use Swoft\Console\Annotation\Mapping\Command;
 use Swoft\Console\Annotation\Mapping\CommandArgument;
 use Swoft\Console\Annotation\Mapping\CommandMapping;
+use Swoft\Db\Exception\DbException;
 use Swoft\Db\Pool;
 use Swoft\Devtool\Model\Logic\EntityLogic;
 use function input;
@@ -33,6 +37,10 @@ class EntityCommand
      *
      * @CommandMapping(alias="c,gen")
      * @CommandArgument(name="table", desc="table names", type="string")
+     * @throws TemplateParsingException
+     * @throws ReflectionException
+     * @throws ContainerException
+     * @throws DbException
      */
     public function create(): void
     {
