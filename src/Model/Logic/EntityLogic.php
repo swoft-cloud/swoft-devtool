@@ -2,11 +2,26 @@
 
 namespace Swoft\Devtool\Model\Logic;
 
+use Leuffen\TextTemplate\TemplateParsingException;
+use ReflectionException;
 use Swoft\Bean\Annotation\Mapping\Bean;
 use Swoft\Bean\Annotation\Mapping\Inject;
-use Swoft\Db\Types;
+use Swoft\Bean\Exception\ContainerException;
+use Swoft\Db\Exception\DbException;
+use Swoft\Db\Pool;
 use Swoft\Devtool\FileGenerator;
+use Swoft\Devtool\Helper\ConsoleHelper;
 use Swoft\Devtool\Model\Data\SchemaData;
+use function alias;
+use function array_filter;
+use function implode;
+use function in_array;
+use function is_dir;
+use function output;
+use function rtrim;
+use function sprintf;
+use function strpos;
+use function ucfirst;
 
 /**
  * EntityLogic
@@ -15,118 +30,129 @@ use Swoft\Devtool\Model\Data\SchemaData;
 class EntityLogic
 {
     /**
-     * @var SchemaData
      * @Inject()
+     *
+     * @var SchemaData
      */
     private $schemaData;
 
     /**
-     * @param array $params
+     * @var bool
      */
-    public function generate(array $params)
+    private $readyGenerateId = false;
+
+    /**
+     * Generate entity
+     *
+     * @param array $params
+     *
+     * @throws TemplateParsingException
+     * @throws ReflectionException
+     * @throws ContainerException
+     * @throws DbException
+     */
+    public function create(array $params): void
     {
-        list($db, $inc, $exc, $path, $driver, $tablePrefix, $fieldPrefix, $tplFile, $tplDir) = $params;
-        $tableSchemas = $this->schemaData->getSchemaTableData($driver, $db, $inc, $exc, $tablePrefix);
+        list($table, $tablePrefix, $fieldPrefix, $exclude, $pool, $path, $isConfirm, $tplDir) = $params;
+        $tableSchemas = $this->schemaData->getSchemaTableData($pool, $table, $exclude, $tablePrefix);
         foreach ($tableSchemas as $tableSchema) {
-            $this->generateClass($driver, $db, $tableSchema, $fieldPrefix, $path, $tplFile, $tplDir);
+            $this->readyGenerateId = false;
+            $this->generateEntity($tableSchema, $pool, $path, $isConfirm, $fieldPrefix, $tplDir);
         }
     }
 
     /**
-     * @param string $driver
-     * @param string $db
      * @param array  $tableSchema
-     * @param string $fieldPrefix
+     * @param string $pool
      * @param string $path
-     * @param string $tplFile
+     * @param bool   $isConfirm
+     * @param string $fieldPrefix
+     *
      * @param string $tplDir
+     *
+     * @throws TemplateParsingException
+     * @throws ReflectionException
+     * @throws ContainerException
+     * @throws DbException
      */
-    private function generateClass(string $driver, string $db, array $tableSchema, string $fieldPrefix, string $path, string $tplFile, string $tplDir)
-    {
+    private function generateEntity(
+        array $tableSchema,
+        string $pool,
+        string $path,
+        bool $isConfirm,
+        string $fieldPrefix,
+        string $tplDir
+    ): void {
         $mappingClass = $tableSchema['mapping'];
         $config       = [
-            'tplFilename' => $tplFile,
+            'tplFilename' => 'entity',
             'tplDir'      => $tplDir,
             'className'   => $mappingClass,
         ];
 
         $file = alias($path);
+        if (!is_dir($file)) {
+            if (!$isConfirm && !ConsoleHelper::confirm("mkdir path $file, Ensure continue?", true)) {
+                output()->writeln(' Quit, Bye!');
+                return;
+            }
+            mkdir($file, 0755, true);
+        }
         $file .= sprintf('/%s.php', $mappingClass);
 
-        $columnSchemas = $this->schemaData->getSchemaColumnsData($driver, $db, $tableSchema['name'], $fieldPrefix);
+        $columnSchemas = $this->schemaData->getSchemaColumnsData($pool, $tableSchema['name'], $fieldPrefix);
 
         $genSetters    = [];
         $genGetters    = [];
         $genProperties = [];
-        $useRequired   = false;
         foreach ($columnSchemas as $columnSchema) {
-            list($propertyCode, $required) = $this->generateProperties($columnSchema, $tplDir);
+            $propertyCode    = $this->generateProperties($columnSchema, $tplDir);
             $genProperties[] = $propertyCode;
-            if (!empty($required) && !$useRequired) {
-                $useRequired = true;
-            }
 
             $genSetters[] = $this->generateSetters($columnSchema, $tplDir);
             $genGetters[] = $this->generateGetters($columnSchema, $tplDir);
         }
 
-        $setterStr   = implode("\n", $genSetters);
-        $getterStr   = implode("\n", $genGetters);
+        $setterStr   = rtrim(implode("\n", $genSetters), "\n");
+        $getterStr   = rtrim(implode("\n", $genGetters), "\n");
         $propertyStr = implode("\n", $genProperties);
         $methodStr   = sprintf("%s\n\n%s", $setterStr, $getterStr);
-        $usespace    = (!$useRequired) ? '' : 'use Swoft\Db\Bean\Annotation\Required;';
 
         $data = [
-            'properties' => $propertyStr,
-            'methods'    => $methodStr,
-            'tableName'  => $tableSchema['name'],
-            'entityName' => $mappingClass,
-            'namespace'  => 'App\\Models\\Entity',
-            'usespace'   => $usespace,
+            'properties'   => $propertyStr,
+            'methods'      => $methodStr,
+            'tableName'    => $tableSchema['name'],
+            'entityName'   => $mappingClass,
+            'namespace'    => $this->getNameSpace($path),
+            'tableComment' => $tableSchema['comment'],
+            'dbPool'       => $pool == Pool::DEFAULT_POOL ? '' : ',pool="' . $pool . '"',
         ];
-
         $gen  = new FileGenerator($config);
-        $gen->renderas($file, $data);
+
+        if (!$isConfirm && !ConsoleHelper::confirm("generate entity $file, Ensure continue?", true)) {
+            output()->writeln(' Quit, Bye!');
+            return;
+        }
+        if ($gen->renderas($file, $data)) {
+            output()->colored(" Generate entity $file OK!", 'success');
+            return;
+        }
+        output()->colored(" Generate entity $file Fail!", 'error');
     }
 
     /**
-     * @param array  $colSchema
-     * @param string $tplDir
+     * Get file namespace
      *
-     * @return array
+     * @param string $path
+     *
+     * @return string
      */
-    private function generateProperties(array $colSchema, string $tplDir): array
+    private function getNameSpace(string $path): string
     {
-        $entityConfig = [
-            'tplFilename' => 'property',
-            'tplDir'      => $tplDir,
-        ];
+        $path = \str_replace(["@", "/"], ['', '\\'], $path);
+        $path = \ucfirst($path);
 
-        // id
-        $id = !empty($colSchema['key']) ? '* @Id()' : '';
-
-        // required
-        $isRequired = $colSchema['nullable'] === 'NO' && $colSchema['default'] === null;
-        $required   = !empty($colSchema['key']) ? false : $isRequired;
-        $required   = ($required == true) ? '* @Required()' : '';
-
-        // default
-        $default = $this->transferDefaultType($colSchema['type'], $colSchema['key'], $colSchema['default']);
-        $default = ($default !== null) ? sprintf(', default=%s', $default) : '';
-
-        $data         = [
-            'type'         => $colSchema['phpType'],
-            'propertyName' => $colSchema['mappingVar'],
-            'column'       => $colSchema['name'],
-            'columnType'   => $colSchema['mappingType'],
-            'default'      => $default,
-            'required'     => $required,
-            'id'           => $id,
-        ];
-        $gen          = new FileGenerator($entityConfig);
-        $propertyCode = $gen->render($data);
-
-        return [$propertyCode, $required];
+        return $path;
     }
 
     /**
@@ -134,6 +160,51 @@ class EntityLogic
      * @param string $tplDir
      *
      * @return string
+     * @throws TemplateParsingException
+     */
+    private function generateProperties(array $colSchema, string $tplDir): string
+    {
+        $entityConfig = [
+            'tplFilename' => 'property',
+            'tplDir'      => $tplDir,
+        ];
+        // Is auto increment
+        $auto = $colSchema['extra'] && strpos($colSchema['extra'], 'auto_increment') !== false ?
+            '' :
+            'incrementing=false';
+        // id
+        $id = '*';
+        if (!empty($colSchema['key']) && !$this->readyGenerateId) {
+            $id                    = "* @Id($auto)";
+            $this->readyGenerateId = true;
+        }
+        // nullable
+        $nullable     = $colSchema['nullable'] === 'YES' || $colSchema['default'] === null;
+        $prop         = $colSchema['mappingName'] == $colSchema['name'] ? '' :
+            sprintf('prop="%s"', $colSchema['mappingName']);
+        $type         = $colSchema['phpType'] . ($nullable ? '|null' : '');
+        $column       = $colSchema['name'] == $colSchema['mappingName'] ? '' : 'name="' . $colSchema['name'] . '"';
+        $hidden       = in_array($colSchema['mappingName'], ['password', 'pwd']) ? "hidden=true" : '';
+        $columnDetail = array_filter([$column, $prop, $hidden]);
+        $data         = [
+            'type'         => $type,
+            'propertyName' => '$' . $colSchema['mappingName'],
+            'columnDetail' => $columnDetail ? implode(',', $columnDetail) : '',
+            'id'           => $id,
+            'comment'      => $colSchema['columnComment'],
+        ];
+        $gen          = new FileGenerator($entityConfig);
+        $propertyCode = $gen->render($data);
+
+        return (string)$propertyCode;
+    }
+
+    /**
+     * @param array  $colSchema
+     * @param string $tplDir
+     *
+     * @return string
+     * @throws TemplateParsingException
      */
     private function generateGetters(array $colSchema, string $tplDir): string
     {
@@ -143,15 +214,20 @@ class EntityLogic
             'tplFilename' => 'getter',
             'tplDir'      => $tplDir,
         ];
-        $data   = [
-            'returnType' => $colSchema['phpType'],
-            'methodName' => sprintf('get%s', $getterName),
+        // nullable
+        $nullable = $colSchema['nullable'] === 'YES' || $colSchema['default'] === null;
+
+        $type = $nullable ? $colSchema['phpType'] . '|null' : $colSchema['phpType'];
+
+        $data = [
+            'returnType' => $type,
+            'methodName' => $getterName,
             'property'   => $colSchema['mappingName'],
         ];
 
         $gen = new FileGenerator($config);
 
-        return $gen->render($data);
+        return (string)$gen->render($data);
     }
 
     /**
@@ -159,6 +235,7 @@ class EntityLogic
      * @param string $tplDir
      *
      * @return string
+     * @throws TemplateParsingException
      */
     private function generateSetters(array $colSchema, string $tplDir): string
     {
@@ -168,54 +245,20 @@ class EntityLogic
             'tplFilename' => 'setter',
             'tplDir'      => $tplDir,
         ];
+        // nullable
+        $nullable = $colSchema['nullable'] === 'YES' || $colSchema['default'] === null;
 
-        $data = [
-            'type'       => $colSchema['phpType'],
+        $type      = $nullable ? '?' . $colSchema['phpType'] : $colSchema['phpType'];
+        $paramType = $nullable ? $colSchema['phpType'] . '|null' : $colSchema['phpType'];
+        $data      = [
+            'type'       => $type,
+            'paramType'  => $paramType,
             'methodName' => $setterName,
-            'paramName'  => $colSchema['mappingVar'],
+            'paramName'  => '$' . $colSchema['mappingName'],
             'property'   => $colSchema['mappingName'],
         ];
+        $gen       = new FileGenerator($config);
 
-        $gen = new FileGenerator($config);
-
-        return $gen->render($data);
-    }
-
-
-    /**
-     * @param string $type
-     * @param string $primaryKey
-     * @param mixed  $default
-     *
-     * @return bool|float|int|null|string
-     */
-    private function transferDefaultType(string $type, string $primaryKey, $default)
-    {
-        if (!empty($primaryKey)) {
-            return null;
-        }
-
-        if ($default === null) {
-            return null;
-        }
-
-        $default = trim($default);
-        switch ($type) {
-            case Types::INT:
-            case Types::NUMBER:
-                $default = (int)$default;
-                break;
-            case Types::BOOL:
-                $default = (bool)$default;
-                break;
-            case Types::FLOAT:
-                $default = (float)$default;
-                break;
-            default:
-                $default = sprintf('"%s"', $default);
-                break;
-        }
-
-        return $default;
+        return (string)$gen->render($data);
     }
 }

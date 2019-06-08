@@ -76,6 +76,13 @@ class MigrateLogic
         $this->createMigration('');
     }
 
+    /**
+     *
+     *
+     * @param string $db
+     *
+     * @return bool
+     */
     private function createMigration(string $db): bool
     {
         $sql = <<<sql

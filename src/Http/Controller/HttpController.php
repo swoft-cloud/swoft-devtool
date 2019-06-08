@@ -2,7 +2,6 @@
 
 namespace Swoft\Devtool\Http\Controller;
 
-use Swoft\Bean\BeanFactory;
 use Swoft\Http\Message\Request;
 use Swoft\Http\Server\Annotation\Mapping\Controller;
 use Swoft\Http\Server\Annotation\Mapping\RequestMapping;

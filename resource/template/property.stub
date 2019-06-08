@@ -1,7 +1,7 @@
     /**
-     * @var {= type} {= propertyName}
+     * {= comment | raw}
      {= id}
-     * @Column(name="{= column}", type="{= columnType}"{= default | raw })
-     {= required}
+     * @Column({= columnDetail | raw})
+     * @var {= type}
      */
     private {= propertyName};

@@ -2,105 +2,101 @@
 
 namespace Swoft\Devtool\Model\Data;
 
+use ReflectionException;
 use Swoft\Bean\Annotation\Mapping\Bean;
-use Swoft\Db\Driver\Driver;
-use Swoft\Db\Driver\Mysql\Schema as MysqlSchema;
-use Swoft\Db\Driver\Pgsql\Schema as PgsqlSchema;
-use Swoft\Devtool\Model\Dao\MysqlSchemaDao;
-use Swoft\Devtool\Model\Dao\SchemaInterface;
+use Swoft\Bean\Annotation\Mapping\Inject;
+use Swoft\Bean\Exception\ContainerException;
+use Swoft\Db\Exception\DbException;
+use Swoft\Devtool\Model\Dao\SchemaDao;
 use Swoft\Stdlib\Helper\StringHelper;
+use function mb_substr;
+use function mt_rand;
+use function preg_match;
+use function preg_replace;
+use function ucfirst;
 
 /**
- * SchemaData
+ * Class SchemaData
+ *
  * @Bean()
+ * @since 2.0
  */
 class SchemaData
 {
     /**
-     * @param string $driver
-     * @param string $db
-     * @param string $inc
-     * @param string $exc
-     * @param string $tablePrefix
+     * @Inject()
      *
-     * @return array
+     * @var SchemaDao
      */
-    public function getSchemaTableData(string $driver, string $db, string $inc, string $exc, string $tablePrefix): array
-    {
-        $schemaDao = $this->getSchemaDao($driver);
-        $schemas   = $schemaDao->getTableSchema($db, $inc, $exc);
-        foreach ($schemas as &$schema) {
-            if (empty($tablePrefix)) {
-                $mapping = $schema['name'];
-            } else {
-                $mapping = StringHelper::replaceFirst($tablePrefix, '', $schema['name']);
-            }
-
-            $schema['mapping'] = ucfirst(StringHelper::camel($mapping));
-        }
-
-        return $schemas;
-    }
+    protected $schemaDao;
 
     /**
-     * @param string $driver
-     * @param string $db
+     * Get schema columns
+     *
+     * @param string $pool
      * @param string $table
      * @param string $fieldPrefix
      *
      * @return array
+     * @throws ReflectionException
+     * @throws ContainerException
+     * @throws DbException
      */
-    public function getSchemaColumnsData(string $driver, string $db, string $table, string $fieldPrefix): array
+    public function getSchemaColumnsData(string $pool, string $table, string $fieldPrefix = ''): array
     {
-        $schemaDao = $this->getSchemaDao($driver);
-        list($mapingTypes, $phpTypes) = $this->getSchemaTypes($driver);
-        $columnSchemas = $schemaDao->getColumnsSchema($db, $table);
-
+        $columnSchemas = $this->schemaDao->getColumnsSchema($pool, $table);
         foreach ($columnSchemas as &$columnSchema) {
-            $type = $columnSchema['type'];
             if (empty($fieldPrefix)) {
                 $mappingName = $columnSchema['name'];
             } else {
                 $mappingName = StringHelper::replaceFirst($fieldPrefix, '', $columnSchema['name']);
             }
-
-            $columnSchema['mappingName'] = StringHelper::camel($mappingName);
-            $columnSchema['mappingVar']  = sprintf('$%s', $columnSchema['mappingName']);
-            $columnSchema['mappingType'] = $mapingTypes[$type]??'';
-            $columnSchema['phpType']     = $phpTypes[$type]??'';
+            $columnSchema['mappingName'] = $this->getSafeMappingName($mappingName);
         }
-
+        unset($columnSchema);
         return $columnSchemas;
     }
 
     /**
-     * @param string $driver
+     * Get schema table
      *
-     * @return \Swoft\Devtool\Model\Dao\SchemaInterface
+     * @param string $pool
+     * @param string $table
+     *
+     * @param string $exclude
+     * @param string $tablePrefix
+     *
+     * @return array
+     * @throws ReflectionException
+     * @throws ContainerException
+     * @throws DbException
      */
-    private function getSchemaDao(string $driver): SchemaInterface
+    public function getSchemaTableData(string $pool, string $table, string $exclude, string $tablePrefix): array
     {
-        if ($driver == Driver::MYSQL) {
-            return \bean(MysqlSchemaDao::class);
+        $schemas = $this->schemaDao->getTableSchema($pool, $table, $exclude, $tablePrefix);
+        foreach ($schemas as $originTableName => &$schema) {
+            $schema['mapping'] = $this->getSafeMappingName($originTableName, true);
         }
-
-        throw new \RuntimeException(sprintf('The %s driver does not support!', $driver));
+        unset($schema);
+        return $schemas;
     }
 
     /**
-     * @param string $driver
+     * @param string $mapping
+     * @param bool   $ucFirst
      *
-     * @return array
+     * @return string
      */
-    private function getSchemaTypes(string $driver): array
+    private function getSafeMappingName(string $mapping, bool $ucFirst = false)
     {
-        if ($driver == Driver::MYSQL) {
-            return [MysqlSchema::$typeMap, MysqlSchema::$phpMap];
+        $mapping = preg_replace("#[^\w|^\u{4E00}-\u{9FA5}]+#is", '', $mapping);
+        $first   = $mapping ? mb_substr($mapping, 0, 1) : '';
+        if ($first && !preg_match("#[^[A-Za-z_]|^\u{4E00}-\u{9FA5}]+#is", $first)) {
+            return $ucFirst ? ucfirst(StringHelper::camel($mapping)) : StringHelper::camel($mapping);
         }
-        if ($driver == Driver::PGSQL) {
-            return [PgsqlSchema::$typeMap, PgsqlSchema::$phpMap];
+        if (empty($first)) {
+            return $ucFirst ? 'Db' . mt_rand(1, 100) : 'db' . mt_rand(100, 1000);
         }
-
-        throw new \RuntimeException(sprintf('The %s schema does not support!', $driver));
+        return $ucFirst ? 'Db' . $mapping : 'db' . $mapping;
     }
 }

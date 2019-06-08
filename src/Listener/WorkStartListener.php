@@ -3,8 +3,6 @@
 namespace Swoft\Devtool\Bootstrap\Listener;
 
 use Swoft\Config\Annotation\Mapping\Config;
-use Swoft\Devtool\DevTool;
-use Swoft\Devtool\WebSocket\DevToolController;
 use Swoft\Event\Annotation\Mapping\Listener;
 use Swoft\Event\EventHandlerInterface;
 use Swoft\Event\EventInterface;
