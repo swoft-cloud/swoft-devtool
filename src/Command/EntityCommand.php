@@ -13,6 +13,7 @@ use Swoft\Console\Annotation\Mapping\CommandMapping;
 use Swoft\Db\Exception\DbException;
 use Swoft\Db\Pool;
 use Swoft\Devtool\Model\Logic\EntityLogic;
+use function alias;
 use function input;
 
 /**
@@ -51,7 +52,7 @@ class EntityCommand
         $fieldPrefix = input()->getOpt('field_prefix', input()->getOpt('fp'));
         $tablePrefix = input()->getOpt('table_prefix', input()->getOpt('tp'));
         $exclude     = input()->getOpt('exc', input()->getOpt('exclude'));
-        $tplDir      = input()->getOpt('tr', \alias('@devtool/devtool/resource/template'));
+        $tplDir      = input()->getOpt('tr', alias('@devtool/devtool/resource/template'));
 
         $this->logic->create([
             (string)$table,
