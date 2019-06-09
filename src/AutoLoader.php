@@ -22,6 +22,11 @@ class AutoLoader extends SwoftComponent
         \Swoft::setAlias('@devtool', \dirname(__DIR__, 2));
     }
 
+    /**
+     *
+     *
+     * @return bool
+     */
     public function enable(): bool
     {
         return (int)\env('SWOFT_DEBUG', 0) > 0;
@@ -46,7 +51,7 @@ class AutoLoader extends SwoftComponent
     public function getPrefixDirs(): array
     {
         return [
-            __NAMESPACE__ => __DIR__
+            __NAMESPACE__ => __DIR__,
         ];
     }
 

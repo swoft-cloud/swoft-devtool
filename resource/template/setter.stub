@@ -1,5 +1,5 @@
     /**
-     * @param {= type} {= paramName}
+     * @param {= paramType} {= paramName}
      * @return self
      */
     public function {= methodName}({= type} {= paramName}): self

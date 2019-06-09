@@ -3,13 +3,15 @@
 
 namespace Swoft\Devtool\Command;
 
-use InvalidArgumentException;
 use Swoft\Bean\Annotation\Mapping\Inject;
 use Swoft\Console\Annotation\Mapping\Command;
 use Swoft\Console\Annotation\Mapping\CommandArgument;
 use Swoft\Console\Annotation\Mapping\CommandMapping;
 use Swoft\Console\Annotation\Mapping\CommandOption;
 use Swoft\Devtool\Model\Logic\MigrateLogic;
+use Leuffen\TextTemplate\TemplateParsingException;
+use ReflectionException;
+use Swoft\Bean\Exception\ContainerException;
 
 /**
  * Class MigrateCommand
@@ -37,6 +39,9 @@ class MigrateCommand
      *
      * @CommandMapping()
      * @CommandArgument(name="name", desc="the name of the new migration", type="string", mode=Command::OPT_REQUIRED)
+     * @throws ContainerException
+     * @throws ReflectionException
+     * @throws TemplateParsingException
      */
     public function create(): void
     {

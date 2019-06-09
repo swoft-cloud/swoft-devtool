@@ -2,12 +2,10 @@
 
 namespace Swoft\Devtool\Command;
 
-use function array_merge;
 use InvalidArgumentException;
 use RuntimeException;
 use Swoft;
 use Swoft\Bean\BeanFactory;
-use Swoft\Bean\Exception\ContainerException;
 use Swoft\Console\Annotation\Mapping\Command;
 use Swoft\Console\Annotation\Mapping\CommandMapping;
 use Swoft\Console\Annotation\Mapping\CommandOption;
@@ -16,8 +14,8 @@ use Swoft\Console\Output\Output;
 use Swoft\Stdlib\Helper\DirHelper;
 use Swoft\Stdlib\Helper\Sys;
 use Swoole\Coroutine;
+use function array_merge;
 use function class_exists;
-use function config;
 use function extension_loaded;
 use function implode;
 use function input;
@@ -27,8 +25,6 @@ use function sprintf;
 use function str_pad;
 use function strpos;
 use function version_compare;
-use const BASE_PATH;
-use const PHP_OS;
 use const PHP_VERSION;
 use const PHP_VERSION_ID;
 use const SWOOLE_VERSION;
@@ -146,6 +142,8 @@ class AppCommand
      * @param bool|mixed  $condition
      * @param string|null $msg
      * @param bool        $showOnFalse
+     *
+     * @param array       $opts
      *
      * @return array
      */
