@@ -20,9 +20,9 @@ use function is_dir;
 use function output;
 use function rtrim;
 use function sprintf;
+use function str_replace;
 use function strpos;
 use function ucfirst;
-use function str_replace;
 
 /**
  * EntityLogic
@@ -84,14 +84,14 @@ class EntityLogic
         string $fieldPrefix,
         string $tplDir
     ): void {
+        $file         = alias($path);
+        $tplDir       = alias($tplDir);
         $mappingClass = $tableSchema['mapping'];
         $config       = [
             'tplFilename' => 'entity',
             'tplDir'      => $tplDir,
             'className'   => $mappingClass,
         ];
-
-        $file = alias($path);
         if (!is_dir($file)) {
             if (!$isConfirm && !ConsoleHelper::confirm("mkdir path $file, Ensure continue?", true)) {
                 output()->writeln(' Quit, Bye!');
@@ -180,7 +180,7 @@ class EntityLogic
             $id                    = "* @Id($auto)";
             $this->readyGenerateId = true;
         }
-        // Is need map
+        // is need map
         $prop = $colSchema['mappingName'] == $colSchema['name'] ? '' :
             sprintf('prop="%s"', $colSchema['mappingName']);
         // column name
@@ -212,17 +212,18 @@ class EntityLogic
     private function generateGetters(array $colSchema, string $tplDir): string
     {
         $getterName = sprintf('get%s', ucfirst($colSchema['mappingName']));
-
-        $config = [
+        $type       = $colSchema['is_nullable'] ? '?' . $colSchema['originPHPType'] : $colSchema['originPHPType'];
+        $config     = [
             'tplFilename' => 'getter',
             'tplDir'      => $tplDir,
         ];
-        $data   = [
+        $data       = [
+            'type'       => $type,
             'returnType' => $colSchema['phpType'],
             'methodName' => $getterName,
             'property'   => $colSchema['mappingName'],
         ];
-        $gen    = new FileGenerator($config);
+        $gen        = new FileGenerator($config);
 
         return (string)$gen->render($data);
     }
@@ -248,7 +249,7 @@ class EntityLogic
             'type'       => $type,
             'paramType'  => $colSchema['phpType'],
             'methodName' => $setterName,
-            'paramName'  => '$' . $colSchema['mappingName'],
+            'paramName'  => sprintf('$%s', $colSchema['mappingName']),
             'property'   => $colSchema['mappingName'],
         ];
         $gen  = new FileGenerator($config);
