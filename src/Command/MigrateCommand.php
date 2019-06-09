@@ -9,7 +9,6 @@ use Swoft\Console\Annotation\Mapping\CommandArgument;
 use Swoft\Console\Annotation\Mapping\CommandMapping;
 use Swoft\Console\Annotation\Mapping\CommandOption;
 use Swoft\Devtool\Model\Logic\MigrateLogic;
-
 use Leuffen\TextTemplate\TemplateParsingException;
 use ReflectionException;
 use Swoft\Bean\Exception\ContainerException;

@@ -5,19 +5,9 @@ namespace Swoft\Devtool\Helper;
 
 
 /**
+ * Class ConsoleHelper
  *
- * @uses     ConsoleHelper
- * @version  2019年06月09日
- * @author   zhenghongyang <sakuraovq@gmail.com>
- * @license  PHP Version 7.1.x {@link http://www.php.net/license/3_0.txt}
- */
-
-/**
- *
- * @uses     ConsoleHelper
- * @version  2019年06月09日
- * @author   zhenghongyang <sakuraovq@gmail.com>
- * @license  PHP Version 7.1.x {@link http://www.php.net/license/3_0.txt}
+ * @since 2.0
  */
 class ConsoleHelper
 {

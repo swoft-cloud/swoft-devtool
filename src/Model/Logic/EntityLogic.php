@@ -22,6 +22,7 @@ use function rtrim;
 use function sprintf;
 use function strpos;
 use function ucfirst;
+use function str_replace;
 
 /**
  * EntityLogic
@@ -149,8 +150,8 @@ class EntityLogic
      */
     private function getNameSpace(string $path): string
     {
-        $path = \str_replace(["@", "/"], ['', '\\'], $path);
-        $path = \ucfirst($path);
+        $path = str_replace(["@", "/"], ['', '\\'], $path);
+        $path = ucfirst($path);
 
         return $path;
     }
@@ -168,27 +169,29 @@ class EntityLogic
             'tplFilename' => 'property',
             'tplDir'      => $tplDir,
         ];
-        // Is auto increment
-        $auto = $colSchema['extra'] && strpos($colSchema['extra'], 'auto_increment') !== false ?
-            '' :
-            'incrementing=false';
         // id
         $id = '*';
         if (!empty($colSchema['key']) && !$this->readyGenerateId) {
+            // Is auto increment
+            $auto = $colSchema['extra'] && strpos($colSchema['extra'], 'auto_increment') !== false ?
+                '' :
+                'incrementing=false';
+            // builder @id
             $id                    = "* @Id($auto)";
             $this->readyGenerateId = true;
         }
-        // nullable
-        $nullable     = $colSchema['nullable'] === 'YES' || $colSchema['default'] === null;
-        $prop         = $colSchema['mappingName'] == $colSchema['name'] ? '' :
+        // Is need map
+        $prop = $colSchema['mappingName'] == $colSchema['name'] ? '' :
             sprintf('prop="%s"', $colSchema['mappingName']);
-        $type         = $colSchema['phpType'] . ($nullable ? '|null' : '');
-        $column       = $colSchema['name'] == $colSchema['mappingName'] ? '' : 'name="' . $colSchema['name'] . '"';
+        // column name
+        $columnName = $colSchema['name'] == $colSchema['mappingName'] ? '' :
+            sprintf('name="%s"', $colSchema['name']);
+        // is need hidden
         $hidden       = in_array($colSchema['mappingName'], ['password', 'pwd']) ? "hidden=true" : '';
-        $columnDetail = array_filter([$column, $prop, $hidden]);
+        $columnDetail = array_filter([$columnName, $prop, $hidden]);
         $data         = [
-            'type'         => $type,
-            'propertyName' => '$' . $colSchema['mappingName'],
+            'type'         => $colSchema['phpType'],
+            'propertyName' => sprintf('$%s', $colSchema['mappingName']),
             'columnDetail' => $columnDetail ? implode(',', $columnDetail) : '',
             'id'           => $id,
             'comment'      => $colSchema['columnComment'],
@@ -214,18 +217,12 @@ class EntityLogic
             'tplFilename' => 'getter',
             'tplDir'      => $tplDir,
         ];
-        // nullable
-        $nullable = $colSchema['nullable'] === 'YES' || $colSchema['default'] === null;
-
-        $type = $nullable ? $colSchema['phpType'] . '|null' : $colSchema['phpType'];
-
-        $data = [
-            'returnType' => $type,
+        $data   = [
+            'returnType' => $colSchema['phpType'],
             'methodName' => $getterName,
             'property'   => $colSchema['mappingName'],
         ];
-
-        $gen = new FileGenerator($config);
+        $gen    = new FileGenerator($config);
 
         return (string)$gen->render($data);
     }
@@ -246,18 +243,15 @@ class EntityLogic
             'tplDir'      => $tplDir,
         ];
         // nullable
-        $nullable = $colSchema['nullable'] === 'YES' || $colSchema['default'] === null;
-
-        $type      = $nullable ? '?' . $colSchema['phpType'] : $colSchema['phpType'];
-        $paramType = $nullable ? $colSchema['phpType'] . '|null' : $colSchema['phpType'];
-        $data      = [
+        $type = $colSchema['is_nullable'] ? '?' . $colSchema['originPHPType'] : $colSchema['originPHPType'];
+        $data = [
             'type'       => $type,
-            'paramType'  => $paramType,
+            'paramType'  => $colSchema['phpType'],
             'methodName' => $setterName,
             'paramName'  => '$' . $colSchema['mappingName'],
             'property'   => $colSchema['mappingName'],
         ];
-        $gen       = new FileGenerator($config);
+        $gen  = new FileGenerator($config);
 
         return (string)$gen->render($data);
     }
