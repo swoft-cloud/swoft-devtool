@@ -50,7 +50,7 @@ class MetaLogic
     /**
      * @throws TemplateParsingException
      */
-    public function generate()
+    public function generate(): void
     {
         $overrideStub = $this->generateBean();
         $file         = Swoft::getAlias($this->metaFile);
