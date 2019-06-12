@@ -127,7 +127,7 @@ class EntityLogic
             'entityName'   => $mappingClass,
             'namespace'    => $this->getNameSpace($path),
             'tableComment' => $tableSchema['comment'],
-            'dbPool'       => $pool == Pool::DEFAULT_POOL ? '' : ' ,pool="' . $pool . '"',
+            'dbPool'       => $pool == Pool::DEFAULT_POOL ? '' : ', pool="' . $pool . '"',
         ];
         $gen  = new FileGenerator($config);
 
