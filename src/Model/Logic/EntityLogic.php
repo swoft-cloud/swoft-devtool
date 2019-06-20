@@ -55,7 +55,13 @@ class EntityLogic
     public function create(array $params): void
     {
         list($table, $tablePrefix, $fieldPrefix, $exclude, $pool, $path, $isConfirm, $tplDir) = $params;
+
         $tableSchemas = $this->schemaData->getSchemaTableData($pool, $table, $exclude, $tablePrefix);
+        if (empty($tableSchemas)) {
+            output()->colored("Generate entity match table is empty!", 'error');
+            return;
+        }
+
         foreach ($tableSchemas as $tableSchema) {
             $this->readyGenerateId = false;
             $this->generateEntity($tableSchema, $pool, $path, $isConfirm, $fieldPrefix, $tplDir);
