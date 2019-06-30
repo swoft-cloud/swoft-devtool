@@ -38,7 +38,7 @@ class EntityCommand
      * @CommandOption(name="table", desc="database table names", type="string")
      * @CommandOption(name="pool", desc="database db pool default is 'db.pool'", type="string")
      * @CommandOption(name="path", desc="generate entity file path", type="string", default="@app/Model/Entity")
-     * @CommandOption(name="y", desc="do you need confirmation?", type="string")
+     * @CommandOption(name="y", desc="auto generate", type="string")
      * @CommandOption(name="field_prefix", desc="database field prefix ,alias is 'fp'", type="string")
      * @CommandOption(name="table_prefix", desc="like match database table prefix, alias is 'tp'", type="string")
      * @CommandOption(name="exclude", desc="expect generate database table entity, alias is 'exc'", type="string")
