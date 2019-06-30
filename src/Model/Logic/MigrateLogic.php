@@ -239,7 +239,7 @@ class MigrateLogic
     private function showHistory(int $limit, string $dbPrefix = '', string $db = '')
     {
         $pool     = Pool::DEFAULT_POOL;
-        $schema   = $this->getSchemaBuilder($pool, $db, $dbPrefix);
+        $schema   = $this->getSchemaAndCheckMigration($pool, $db, $dbPrefix);
         $database = $schema->getDatabaseName();
 
         $list = $this->migrateData->listMigrateHistory($limit, $pool, $database);
@@ -300,7 +300,7 @@ class MigrateLogic
                 $migrateNames[]                   = $migrateName = $migrate['name'];
                 $migrateNameTimeMap[$migrateName] = $time;
             }
-            $schema            = $this->getSchemaBuilder($pool, $db, $dbPrefix);
+            $schema            = $this->getSchemaAndCheckMigration($pool, $db, $dbPrefix);
             $effectiveMigrates = $this->migrateData->getEffectiveMigrates($migrateNames, $pool,
                 $schema->getDatabaseName());
             // Check migrate exists
@@ -351,7 +351,7 @@ class MigrateLogic
                 $migrateNameTimeMap[$migrateName] = $time;
             }
 
-            $schema = $this->getSchemaBuilder($pool, $db, $dbPrefix);
+            $schema = $this->getSchemaAndCheckMigration($pool, $db, $dbPrefix);
             // Check migrate exists
             $migrateNames = $this->migrateData->getRollbackMigrates($migrateNames, $pool, $schema->getDatabaseName());
             if (empty($migrateNames)) {
@@ -386,13 +386,18 @@ class MigrateLogic
      * @throws DbException
      * @throws ReflectionException
      */
-    private function getSchemaBuilder(string $pool, string $db, string $dbPrefix): Builder
+    private function getSchemaAndCheckMigration(string $pool, string $db, string $dbPrefix): Builder
     {
         $schema     = Schema::getSchemaConnection($pool);
         $connection = DB::connection($pool);
 
         $selectDb = $connection->getSelectDb() ?: $connection->getDb();
-        $db       = $dbPrefix . $db;
+
+        if ($db && empty($dbPrefix)) {
+            $db = $selectDb . $db;
+        } else {
+            $db = $dbPrefix . $db;
+        }
 
         // Reselect database
         if ($db && $db !== $selectDb) {
@@ -421,7 +426,7 @@ class MigrateLogic
     {
         $pool = Pool::DEFAULT_POOL;
 
-        $schema = $this->getSchemaBuilder($pool, $db, $dbPrefix);
+        $schema = $this->getSchemaAndCheckMigration($pool, $db, $dbPrefix);
 
         $migrateName = $this->migrateData->lastMigrationName($pool, $schema->getDatabaseName());
         if (empty($migrateName)) {
@@ -502,8 +507,10 @@ class MigrateLogic
             return;
         }
         if (method_exists($migration, 'setSchema')) {
-            $migration->setSchema($schema);
+            $copySchema = clone $schema;
+            $migration->setSchema($copySchema);
         }
+
 
         $callback = function () use ($schema, $migration, $method) {
             // Call up or down method
