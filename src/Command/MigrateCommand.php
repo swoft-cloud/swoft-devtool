@@ -27,15 +27,6 @@ use Throwable;
  */
 class MigrateCommand
 {
-
-    /**
-     * init method
-     */
-    public function init()
-    {
-        var_dump(111);
-    }
-
     /**
      * @Inject()
      *
