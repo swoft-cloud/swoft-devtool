@@ -239,8 +239,15 @@ class MigrateLogic
     private function showHistory(int $limit, string $dbPrefix = '', string $db = '')
     {
         $pool     = Pool::DEFAULT_POOL;
-        $schema   = $this->getSchemaAndCheckMigration($pool, $db, $dbPrefix);
+        $schema   = $this->getSchema($pool, $db, $dbPrefix);
         $database = $schema->getDatabaseName();
+
+        if ($schema->checkDatabaseExists() === false) {
+            output()->warning("database=$database not exists");
+            return;
+        }
+        $this->createMigrationIfNotExists($schema);
+
 
         $list = $this->migrateData->listMigrateHistory($limit, $pool, $database);
 
@@ -300,7 +307,16 @@ class MigrateLogic
                 $migrateNames[]                   = $migrateName = $migrate['name'];
                 $migrateNameTimeMap[$migrateName] = $time;
             }
-            $schema            = $this->getSchemaAndCheckMigration($pool, $db, $dbPrefix);
+            $schema   = $this->getSchema($pool, $db, $dbPrefix);
+            $database = $schema->getDatabaseName();
+
+            if ($schema->checkDatabaseExists() === false) {
+                output()->warning("database=$database not exists");
+                return;
+            }
+
+            $this->createMigrationIfNotExists($schema);
+
             $effectiveMigrates = $this->migrateData->getEffectiveMigrates($migrateNames, $pool,
                 $schema->getDatabaseName());
             // Check migrate exists
@@ -351,9 +367,18 @@ class MigrateLogic
                 $migrateNameTimeMap[$migrateName] = $time;
             }
 
-            $schema = $this->getSchemaAndCheckMigration($pool, $db, $dbPrefix);
+            $schema = $this->getSchema($pool, $db, $dbPrefix);
+
+            $database = $schema->getDatabaseName();
+            if ($schema->checkDatabaseExists() === false) {
+                output()->warning("database=$database not exists");
+                return;
+            }
+
+            $this->createMigrationIfNotExists($schema);
+
             // Check migrate exists
-            $migrateNames = $this->migrateData->getRollbackMigrates($migrateNames, $pool, $schema->getDatabaseName());
+            $migrateNames = $this->migrateData->getRollbackMigrates($migrateNames, $pool, $database);
             if (empty($migrateNames)) {
                 continue;
             }
@@ -368,15 +393,13 @@ class MigrateLogic
             foreach ($migrateNames as $rollbackName) {
                 $this->runMigration($schema, $rollbackName, 'down');
 
-                $this->migrateData->rollback($rollbackName, $pool, $schema->getDatabaseName());
+                $this->migrateData->rollback($rollbackName, $pool, $database);
             }
         }
         return;
     }
 
     /**
-     *
-     *
      * @param string $pool
      * @param string $db
      * @param string $dbPrefix
@@ -386,14 +409,14 @@ class MigrateLogic
      * @throws DbException
      * @throws ReflectionException
      */
-    private function getSchemaAndCheckMigration(string $pool, string $db, string $dbPrefix): Builder
+    private function getSchema(string $pool, string $db, string $dbPrefix): Builder
     {
         $schema     = Schema::getSchemaConnection($pool);
         $connection = DB::connection($pool);
 
         $selectDb = $connection->getSelectDb() ?: $connection->getDb();
 
-        if ($db && empty($dbPrefix)) {
+        if (empty($dbPrefix)) {
             $db = $selectDb . $db;
         } else {
             $db = $dbPrefix . $db;
@@ -404,8 +427,6 @@ class MigrateLogic
             $schema->setDatabase($db);
         }
         $connection->release();
-
-        $this->createMigrationIfNotExists($schema);
 
         return $schema;
     }
@@ -426,9 +447,17 @@ class MigrateLogic
     {
         $pool = Pool::DEFAULT_POOL;
 
-        $schema = $this->getSchemaAndCheckMigration($pool, $db, $dbPrefix);
+        $schema   = $this->getSchema($pool, $db, $dbPrefix);
+        $database = $schema->getDatabaseName();
 
-        $migrateName = $this->migrateData->lastMigrationName($pool, $schema->getDatabaseName());
+        if ($schema->checkDatabaseExists() === false) {
+            output()->warning("database=$database not exists");
+            return;
+        }
+
+        $this->createMigrationIfNotExists($schema);
+
+        $migrateName = $this->migrateData->lastMigrationName($pool, $database);
         if (empty($migrateName)) {
             $dbAlias = $dbPrefix . $db;
             output()->warning("Database $dbAlias nothing to rollback.");
@@ -445,7 +474,7 @@ class MigrateLogic
         }
         $this->runMigration($schema, $migrateName, 'down');
 
-        $this->migrateData->rollback($migrateName, $pool, $schema->getDatabaseName());
+        $this->migrateData->rollback($migrateName, $pool, $database);
     }
 
     /**

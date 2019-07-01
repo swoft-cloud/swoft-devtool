@@ -20,6 +20,11 @@ use Swoft\Db\Query\Builder;
 class MigrateDao
 {
 
+    /**
+     * Migration rollback status control
+     *
+     * @var int
+     */
     public const IS_ROLLBACK  = 1;
     public const NOT_ROLLBACK = 2;
 
@@ -45,7 +50,11 @@ class MigrateDao
      */
     public function listMigrate(int $limit, string $pool, string $db)
     {
-        return $this->table($pool, $db)->limit($limit)->get()->toArray();
+        return $this->table($pool, $db)
+            ->latest('id')
+            ->limit($limit)
+            ->get()
+            ->toArray();
     }
 
     /**
