@@ -14,7 +14,7 @@ use Throwable;
 use function input;
 
 /**
- * Class entityCommand generate entity
+ * Generate entity class by database tables
  *
  * @Command()
  *

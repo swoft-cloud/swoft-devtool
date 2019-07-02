@@ -14,7 +14,7 @@ use ReflectionException;
 use Swoft\Bean\Exception\ContainerException;
 
 /**
- * Class MigrateCommand
+ * Manage swoft project database migration commands
  *
  * @since 2.0
  *
