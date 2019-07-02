@@ -25,7 +25,7 @@ abstract class Migration implements MigrationInterface
     /**
      * @return array
      */
-    public function getWaitExwecuteSql(): array
+    public function getWaitExecuteSql(): array
     {
         return (array)$this->waitExecuteSql;
     }
