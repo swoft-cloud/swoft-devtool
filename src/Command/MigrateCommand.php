@@ -51,7 +51,8 @@ class MigrateCommand
             }
             $this->logic->create($name, (bool)$isConfirm);
         } catch (Throwable $e) {
-            ConsoleHelper::highlight($e->getMessage());
+            output()->error($e->getMessage());
+            ConsoleHelper::highlight($e->getTraceAsString());
         }
     }
 
@@ -116,7 +117,7 @@ class MigrateCommand
     /**
      * Displays the migration history.
      *
-     * @CommandMapping()
+     * @CommandMapping(alias="his")
      * @CommandArgument(name="limit", desc=" the maximum number of migrations to be displayed.", type="int")
      */
     public function history(): void

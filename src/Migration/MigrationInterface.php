@@ -1,7 +1,7 @@
 <?php declare(strict_types=1);
 
 
-namespace Swoft\Devtool\Contract;
+namespace Swoft\Devtool\Migration;
 
 /**
  * Class MigrationInterface

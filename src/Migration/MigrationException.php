@@ -25,6 +25,6 @@ class MigrationException extends Exception
     public static function make(string $message, ...$args): self
     {
         $message = sprintf($message, ...$args);
-        return new static("<error>$message</error>");
+        return new static($message);
     }
 }

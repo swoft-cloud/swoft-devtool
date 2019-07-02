@@ -16,11 +16,11 @@ use Swoft\Db\Pool;
 use Swoft\Db\Schema;
 use Swoft\Db\Schema\Blueprint;
 use Swoft\Db\Schema\Builder;
-use Swoft\Devtool\Contract\MigrationInterface;
 use Swoft\Devtool\FileGenerator;
 use Swoft\Devtool\Helper\ConsoleHelper;
 use Swoft\Devtool\Migration\Migration;
 use Swoft\Devtool\Migration\MigrationException;
+use Swoft\Devtool\Migration\MigrationInterface;
 use Swoft\Devtool\Migration\MigrationManager;
 use Swoft\Devtool\Migration\MigrationRegister;
 use Swoft\Devtool\Model\Dao\MigrateDao;
@@ -283,6 +283,7 @@ class MigrateLogic
         foreach ($dbs as $db) {
             $callback((string)$db);
         }
+        output()->success('execute ok');
         return true;
     }
 
@@ -332,11 +333,15 @@ class MigrateLogic
             }
 
             foreach ($effectiveMigrates as $effectiveMigrateName) {
-                $this->runMigration($schema, $effectiveMigrateName, 'up');
+                if ($this->runMigration($schema, $effectiveMigrateName, 'up')) {
+                    $time = $migrateNameTimeMap[$effectiveMigrateName];
 
-                $time = $migrateNameTimeMap[$effectiveMigrateName];
-                $this->migrateData->saveMigrateLog($effectiveMigrateName, $time, $pool, $schema->getDatabaseName());
+                    $this->migrateData->saveMigrateLog($effectiveMigrateName, $time, $pool, $schema->getDatabaseName());
+
+                    output()->success($effectiveMigrateName . $time . " up migration executed success");
+                }
             }
+
         }
     }
 
@@ -391,9 +396,12 @@ class MigrateLogic
             }
 
             foreach ($migrateNames as $rollbackName) {
-                $this->runMigration($schema, $rollbackName, 'down');
+                if ($this->runMigration($schema, $rollbackName, 'down')) {
+                    $this->migrateData->rollback($rollbackName, $pool, $database);
 
-                $this->migrateData->rollback($rollbackName, $pool, $database);
+                    output()->success($rollbackName . $migrateNameTimeMap[$rollbackName]
+                        . " down migration executed success");
+                }
             }
         }
         return;
@@ -411,7 +419,7 @@ class MigrateLogic
      */
     private function getSchema(string $pool, string $db, string $dbPrefix): Builder
     {
-        $schema     = Schema::getSchemaConnection($pool);
+        $schema     = Schema::getSchemaBuilder($pool);
         $connection = DB::connection($pool);
 
         $selectDb = $connection->getSelectDb() ?: $connection->getDb();
@@ -472,9 +480,11 @@ class MigrateLogic
             output()->writeln(' Quit, Bye!');
             return;
         }
-        $this->runMigration($schema, $migrateName, 'down');
+        if ($this->runMigration($schema, $migrateName, 'down')) {
+            $this->migrateData->rollback($migrateName, $pool, $database);
 
-        $this->migrateData->rollback($migrateName, $pool, $database);
+            output()->success($migrateName . $config['time'] . " down migration executed success");
+        }
     }
 
     /**
@@ -490,7 +500,7 @@ class MigrateLogic
         $shows = [];
         foreach ((array)$migrates as &$migrateName) {
             $migrateName .= (string)$migrateNameTimeMap[$migrateName];
-            $shows[]     = "<info>$migrateName</info>";
+            $shows[]     = "<blue>$migrateName</blue>";
         }
         unset($migrateName);
         output()->aList($shows, $message);
@@ -523,17 +533,19 @@ class MigrateLogic
      * @param string  $migrateName
      * @param string  $method
      *
+     * @return bool
      * @throws ContainerException
      * @throws DbException
+     * @throws ReflectionException
      * @throws Throwable
      */
-    private function runMigration(Builder $schema, string $migrateName, string $method)
+    private function runMigration(Builder $schema, string $migrateName, string $method): bool
     {
         /* @var MigrationInterface|Migration $migration */
         $migration = BeanFactory::getBean($migrateName);
         if (!$migration instanceof MigrationInterface) {
             output()->error("$migrateName migration must implement MigrationInterface");
-            return;
+            return false;
         }
         if (method_exists($migration, 'setSchema')) {
             $copySchema = clone $schema;
@@ -554,6 +566,7 @@ class MigrateLogic
         $schema->grammar->supportsSchemaTransactions() ?
             $schema->getConnection()->transaction($callback) :
             $callback();
+        return true;
     }
 
     /**

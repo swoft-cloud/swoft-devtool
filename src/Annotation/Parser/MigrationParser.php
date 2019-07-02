@@ -27,7 +27,7 @@ class MigrationParser extends Parser
      */
     public function parse(int $type, $annotationObject): array
     {
-        $className     = $this->className;
+        $className = $this->className;
 
         $time          = StringHelper::substr($className, -14, 14);
         $migrationName = StringHelper::replaceLast($time, '', $className);

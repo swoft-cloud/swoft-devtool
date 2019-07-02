@@ -3,13 +3,7 @@
 
 namespace Swoft\Devtool\Migration;
 
-use ReflectionException;
-use Swoft\Bean\Exception\ContainerException;
-use Swoft\Db\DB;
-use Swoft\Db\Exception\DbException;
 use Swoft\Db\Schema\Builder;
-use Swoft\Devtool\Contract\MigrationInterface;
-
 
 /**
  * Class Migration
@@ -31,7 +25,7 @@ abstract class Migration implements MigrationInterface
     /**
      * @return array
      */
-    public function getWaitExecuteSql(): array
+    public function getWaitExwecuteSql(): array
     {
         return (array)$this->waitExecuteSql;
     }
