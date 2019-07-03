@@ -27,8 +27,8 @@ class InfoCommand
      *
      * @param Output $output
      *
-     * @throws RuntimeException
      * @throws ContainerException
+     * @throws \ReflectionException
      */
     public function env(Output $output): void
     {

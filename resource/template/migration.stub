@@ -4,31 +4,32 @@
 namespace {= namespace};
 
 
-use Swoft\Db\Annotation\Mapping\Migration;
-use Swoft\Db\Contract\MigrationInterface;
+use Swoft\Devtool\Annotation\Mapping\Migration;
+use Swoft\Devtool\Migration\Migration as BaseMigration;
 
 /**
  * Class {= name}
  *
  * @since 2.0
  *
- * @Migration(time={= time})
+ * @Migration()
  */
-class {= name} implements MigrationInterface
+class {= name} extends BaseMigration
 {
     /**
-     * @return bool
+     * @return void
      */
-    public function up(): bool
+    public function up()
     {
-        return true;
+        //
+
     }
 
     /**
-     * @return bool
+     * @return void
      */
-    public function down(): bool
+    public function down()
     {
-        return true;
+
     }
 }
