@@ -37,7 +37,7 @@ class MigrateData
      * @throws DbException
      * @throws ReflectionException
      */
-    public function listMigrateHistory(int $limit, string $pool, string $db)
+    public function listMigrateHistory(int $limit, string $pool, string $db): array
     {
         return $this->migrateDao->listMigrate($limit, $pool, $db);
     }

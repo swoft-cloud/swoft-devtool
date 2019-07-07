@@ -36,7 +36,7 @@ class EntityCommand
      * @CommandMapping(alias="c,gen")
      * @CommandArgument(name="table", desc="database table names", type="string")
      * @CommandOption(name="table", desc="database table names", type="string")
-     * @CommandOption(name="pool", desc="database db pool default is 'db.pool'", type="string")
+     * @CommandOption(name="pool", desc="choose default database pool", type="string", default="db.pool")
      * @CommandOption(name="path", desc="generate entity file path", type="string", default="@app/Model/Entity")
      * @CommandOption(name="y", desc="auto generate", type="string")
      * @CommandOption(name="field_prefix", desc="database field prefix ,alias is 'fp'", type="string")

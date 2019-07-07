@@ -60,7 +60,7 @@ class MigrationRegister
     /**
      * @return array
      */
-    public static function getMigration(): array
+    public static function getMigrations(): array
     {
         return self::$migration;
     }

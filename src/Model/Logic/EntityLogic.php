@@ -11,6 +11,7 @@ use Swoft\Db\Exception\DbException;
 use Swoft\Db\Pool;
 use Swoft\Devtool\FileGenerator;
 use Swoft\Devtool\Helper\ConsoleHelper;
+use Swoft\Devtool\Model\Dao\MigrateDao;
 use Swoft\Devtool\Model\Data\SchemaData;
 use function alias;
 use function array_filter;
@@ -55,6 +56,11 @@ class EntityLogic
     public function create(array $params): void
     {
         list($table, $tablePrefix, $fieldPrefix, $exclude, $pool, $path, $isConfirm, $tplDir) = $params;
+
+        // Filter system table
+        $exclude   = explode(',', $exclude);
+        $exclude[] = MigrateDao::tableName();
+        $exclude   = implode(',', array_filter($exclude));
 
         $tableSchemas = $this->schemaData->getSchemaTableData($pool, $table, $exclude, $tablePrefix);
         if (empty($tableSchemas)) {
@@ -137,7 +143,14 @@ class EntityLogic
         ];
         $gen  = new FileGenerator($config);
 
-        if (!$isConfirm && !ConsoleHelper::confirm("generate entity $file, Ensure continue?", true)) {
+        $fileExists = file_exists($file);
+        if (!$fileExists &&
+            !$isConfirm &&
+            !ConsoleHelper::confirm("generate entity $file, Ensure continue?", true)) {
+            output()->writeln(' Quit, Bye!');
+            return;
+        }
+        if ($fileExists && !ConsoleHelper::confirm(" entity $file already exists, Ensure continue?", false)) {
             output()->writeln(' Quit, Bye!');
             return;
         }
@@ -182,8 +195,10 @@ class EntityLogic
         $id = '*';
         if (!empty($colSchema['key']) && !$this->readyGenerateId) {
             // Is auto increment
-            $auto = $colSchema['extra'] && strpos($colSchema['extra'], 'auto_increment') !== false ?
-                '' :
+            $auto = $colSchema['extra'] && strpos($colSchema['extra'], 'auto_increment') !== false
+                ?
+                ''
+                :
                 'incrementing=false';
 
             // builder @id
@@ -195,11 +210,15 @@ class EntityLogic
         $fieldName   = $colSchema['name'];
 
         // is need map
-        $prop = $mappingName == $fieldName ? '' :
+        $prop = $mappingName == $fieldName
+            ? ''
+            :
             sprintf('prop="%s"', $mappingName);
 
         // column name
-        $columnName = $mappingName == $fieldName ? '' :
+        $columnName = $mappingName == $fieldName
+            ? ''
+            :
             sprintf('name="%s"', $fieldName);
 
         // is need hidden

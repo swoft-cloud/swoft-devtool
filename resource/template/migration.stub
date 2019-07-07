@@ -12,14 +12,14 @@ use Swoft\Devtool\Migration\Migration as BaseMigration;
  *
  * @since 2.0
  *
- * @Migration()
+ * @Migration(time={= time})
  */
 class {= name} extends BaseMigration
 {
     /**
      * @return void
      */
-    public function up()
+    public function up(): void
     {
         //
 
@@ -28,7 +28,7 @@ class {= name} extends BaseMigration
     /**
      * @return void
      */
-    public function down()
+    public function down(): void
     {
 
     }

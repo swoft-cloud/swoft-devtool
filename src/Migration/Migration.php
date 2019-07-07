@@ -4,6 +4,7 @@
 namespace Swoft\Devtool\Migration;
 
 use Swoft\Db\Schema\Builder;
+use Swoft\Devtool\Migration\Contract\MigrationInterface;
 
 /**
  * Class Migration
