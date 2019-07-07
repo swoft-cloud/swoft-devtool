@@ -8,8 +8,9 @@ use Swoft\Console\Annotation\Mapping\Command;
 use Swoft\Console\Annotation\Mapping\CommandArgument;
 use Swoft\Console\Annotation\Mapping\CommandMapping;
 use Swoft\Console\Annotation\Mapping\CommandOption;
+use Swoft\Db\Pool;
 use Swoft\Devtool\Helper\ConsoleHelper;
-use Swoft\Devtool\Migration\MigrationException;
+use Swoft\Devtool\Migration\Exception\MigrationException;
 use Swoft\Devtool\Model\Logic\MigrateLogic;
 use Throwable;
 
@@ -47,7 +48,7 @@ class MigrateCommand
             $isConfirm = input()->getOpt('y', false);
 
             if (empty($name)) {
-                throw MigrationException::make("name param can't be empty", $name);
+                throw new MigrationException("name param can't be empty", $name);
             }
             $this->logic->create($name, (bool)$isConfirm);
         } catch (Throwable $e) {
@@ -91,12 +92,15 @@ class MigrateCommand
      * Downgrades the application by reverting old migrations.
      *
      * @CommandMapping()
+     * @CommandOption(name="pool", desc="choose default database pool", type="string", default="db.pool")
      */
     public function down(): void
     {
         [$dbs, $prefix, $start, $end, $isConfirm] = $this->getPublicParams();
 
-        $name  = input()->get('name', input()->getOpt('name', ''));
+        $name = (string)input()->get('name', input()->getOpt('name', ''));
+        $pool = (string)input()->getOpt('pool', Pool::DEFAULT_POOL);
+
         $names = $name ? explode(',', $name) : [];
 
         try {
@@ -106,7 +110,8 @@ class MigrateCommand
                 $prefix,
                 $start,
                 $end,
-                $isConfirm
+                $isConfirm,
+                $pool
             );
         } catch (Throwable $e) {
             output()->error($e->getMessage());
@@ -119,15 +124,17 @@ class MigrateCommand
      *
      * @CommandMapping(alias="his")
      * @CommandArgument(name="limit", desc=" the maximum number of migrations to be displayed.", type="int")
+     * @CommandOption(name="pool", desc="choose default database pool", type="string", default="db.pool")
      */
     public function history(): void
     {
         [$dbs, $prefix, $start, $end,] = $this->getPublicParams();
 
         $limit = (int)input()->get('limit', 10);
+        $pool  = (string)input()->getOpt('pool', Pool::DEFAULT_POOL);
 
         try {
-            $this->logic->history($dbs, $prefix, $start, $end, $limit);
+            $this->logic->history($dbs, $prefix, $start, $end, $limit, $pool);
         } catch (Throwable $e) {
             output()->error($e->getMessage());
             ConsoleHelper::highlight($e->getTraceAsString());

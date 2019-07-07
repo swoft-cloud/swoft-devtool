@@ -27,6 +27,11 @@ class Migration
     private $pool = Pool::DEFAULT_POOL;
 
     /**
+     * @var int
+     */
+    private $time = 0;
+
+    /**
      * Migration constructor.
      *
      * @param array $values
@@ -34,11 +39,15 @@ class Migration
     public function __construct(array $values)
     {
         if (isset($values['value'])) {
-            $this->pool = $values['value'];
+            $this->time = $values['value'];
         }
 
         if (isset($values['pool'])) {
             $this->pool = $values['pool'];
+        }
+
+        if (isset($values['time'])) {
+            $this->time = $values['time'];
         }
     }
 
@@ -48,5 +57,13 @@ class Migration
     public function getPool(): string
     {
         return $this->pool;
+    }
+
+    /**
+     * @return int
+     */
+    public function getTime(): int
+    {
+        return (int)$this->time;
     }
 }

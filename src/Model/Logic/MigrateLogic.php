@@ -19,8 +19,8 @@ use Swoft\Db\Schema\Builder;
 use Swoft\Devtool\FileGenerator;
 use Swoft\Devtool\Helper\ConsoleHelper;
 use Swoft\Devtool\Migration\Migration;
-use Swoft\Devtool\Migration\MigrationException;
-use Swoft\Devtool\Migration\MigrationInterface;
+use Swoft\Devtool\Migration\Exception\MigrationException;
+use Swoft\Devtool\Migration\Contract\MigrationInterface;
 use Swoft\Devtool\Migration\MigrationManager;
 use Swoft\Devtool\Migration\MigrationRegister;
 use Swoft\Devtool\Model\Dao\MigrateDao;
@@ -57,20 +57,19 @@ class MigrateLogic
     public function create($name, bool $notConfirm = true): void
     {
         if (preg_match("#[^[A-Za-z_]|^\u{4E00}-\u{9FA5}]+#is", $name)) {
-            throw MigrationException::make("name (%s) is invalid param", $name);
+            throw new MigrationException(sprintf("name (%s) is invalid param", $name));
         }
         /* @var MigrationManager $migrate */
         $migrate   = BeanFactory::getBean('migrationManager');
         $time      = date('YmdHis');
-        $className = $this->convertName($name);
+        $name      = $this->convertName($name);
         $namespace = $this->getNamespace($migrate->getMigrationPath());
 
         // check migrate exist
-        $mappingClass = sprintf('%s\%s', $namespace, $className);
+        $mappingClass = sprintf('%s\%s', $namespace, $name);
         if (MigrationRegister::checkExists($mappingClass)) {
-            throw MigrationException::make("%s migration exists, please check migration !", $name);
+            throw new MigrationException(sprintf("%s migration exists, please check migration !", $name));
         }
-        $name = sprintf('%s%s', $className, $time);
 
         $tplDir = $migrate->getTemplateDir();
         $config = [
@@ -101,6 +100,7 @@ class MigrateLogic
         $data = [
             'namespace' => $namespace,
             'name'      => $name,
+            'time'      => $time,
         ];
 
         $gen = new FileGenerator($config);
@@ -139,7 +139,7 @@ class MigrateLogic
 
         $migrateNames = $this->matchNames($names);
         if (empty($migrateNames)) {
-            throw MigrationException::make('Not match migrate, please check name');
+            throw new MigrationException('Not match migrate, please check name');
         }
 
         $specialHandlerStatus = $this->specialHandler(function ($db) use ($migrateNames, $prefix, $isConfirm) {
@@ -161,6 +161,7 @@ class MigrateLogic
      * @param int    $start
      * @param int    $end
      * @param bool   $isConfirm
+     * @param string $defaultPool
      *
      * @throws ContainerException
      * @throws DbException
@@ -173,23 +174,29 @@ class MigrateLogic
         string $prefix,
         int $start = 0,
         int $end = 0,
-        $isConfirm = false
+        $isConfirm = false,
+        string $defaultPool = Pool::DEFAULT_POOL
     ) {
         // Strict match rollback migrations
         $migrateNames = $this->matchNames($names, true);
         if ($names && empty($migrateNames)) {
-            throw MigrationException::make('Not match migrate, please check name');
+            throw new MigrationException('Not match migrate, please check name');
         }
 
-        $specialHandlerStatus = $this->specialHandler(function ($db) use ($migrateNames, $prefix, $isConfirm) {
-            $this->executeDown($migrateNames, $isConfirm, $prefix, $db);
+        $specialHandlerStatus = $this->specialHandler(function ($db) use (
+            $migrateNames,
+            $prefix,
+            $isConfirm,
+            $defaultPool
+        ) {
+            $this->executeDown($migrateNames, $isConfirm, $prefix, $db, $defaultPool);
         }, $dbs, $start, $end);
 
         if ($specialHandlerStatus === true) {
             return;
         }
 
-        $this->executeDown($migrateNames, $isConfirm, $prefix);
+        $this->executeDown($migrateNames, $isConfirm, $prefix, '', $defaultPool);
 
         output()->success('migrate down execute ok');
     }
@@ -200,6 +207,7 @@ class MigrateLogic
      * @param int    $start
      * @param int    $end
      * @param int    $limit
+     * @param string $defaultPool
      *
      * @throws ContainerException
      * @throws DbException
@@ -210,17 +218,22 @@ class MigrateLogic
         string $prefix,
         int $start = 0,
         int $end = 0,
-        int $limit = 10
+        int $limit = 10,
+        string $defaultPool = Pool::DEFAULT_POOL
     ) {
-        $specialHandlerStatus = $this->specialHandler(function ($db) use ($prefix, $limit) {
-            $this->showHistory($limit, $prefix, $db);
+        $specialHandlerStatus = $this->specialHandler(function ($db) use (
+            $prefix,
+            $limit,
+            $defaultPool
+        ) {
+            $this->showHistory($limit, $prefix, $db, $defaultPool);
         }, $dbs, $start, $end);
 
         if ($specialHandlerStatus === true) {
             return;
         }
 
-        $this->showHistory($limit, $prefix);
+        $this->showHistory($limit, $prefix, '', $defaultPool);
 
         output()->success('migrate show history ok');
     }
@@ -229,17 +242,21 @@ class MigrateLogic
      * Show migration history
      *
      * @param int    $limit
-     * @param string $db
      * @param string $dbPrefix
+     * @param string $db
+     * @param string $defaultPool
      *
      * @throws ContainerException
      * @throws DbException
      * @throws ReflectionException
      */
-    private function showHistory(int $limit, string $dbPrefix = '', string $db = '')
-    {
-        $pool     = Pool::DEFAULT_POOL;
-        $schema   = $this->getSchema($pool, $db, $dbPrefix);
+    private function showHistory(
+        int $limit,
+        string $dbPrefix = '',
+        string $db = '',
+        string $defaultPool = Pool::DEFAULT_POOL
+    ): void {
+        $schema   = $this->getSchema($defaultPool, $db, $dbPrefix);
         $database = $schema->getDatabaseName();
 
         if ($schema->checkDatabaseExists() === false) {
@@ -248,12 +265,14 @@ class MigrateLogic
         }
         $this->createMigrationIfNotExists($schema);
 
-
-        $list = $this->migrateData->listMigrateHistory($limit, $pool, $database);
+        $list = $this->getSafeMigrationData(function () use ($limit, $defaultPool, $database) {
+            return $this->migrateData->listMigrateHistory($limit, $defaultPool, $database);
+        });
 
         $showItems = [];
         foreach ($list as $k => $item) {
             $showItems[$k]['MigrationName'] = $item['name'] . $item['time'];
+            $showItems[$k]['Time']          = $item['time'];
             $showItems[$k]['RollBack']      = $item['is_rollback'] == MigrateDao::IS_ROLLBACK ? 'yes' : 'no';
         }
 
@@ -268,7 +287,7 @@ class MigrateLogic
      *
      * @return bool
      */
-    private function specialHandler(callable $callback, array $dbs, int $start = 0, int $end = 0)
+    private function specialHandler(callable $callback, array $dbs, int $start = 0, int $end = 0): bool
     {
         if ($start) {
             $end = empty($end) ? $start : $end;
@@ -277,13 +296,16 @@ class MigrateLogic
                 $dbs[] = $i;
             }
         }
+
         if (empty($dbs)) {
             return false;
         }
+
         foreach ($dbs as $db) {
             $callback((string)$db);
         }
         output()->success('execute ok');
+
         return true;
     }
 
@@ -298,17 +320,22 @@ class MigrateLogic
      * @throws ReflectionException
      * @throws Throwable
      */
-    private function executeUp(array $mathMigrateNames, bool $isConfirm, string $dbPrefix, string $db = '')
+    private function executeUp(array $mathMigrateNames, bool $isConfirm, string $dbPrefix, string $db = ''): void
     {
-        foreach ($this->groupByPoolMigrates($mathMigrateNames) as $pool => $migrates) {
+        $poolGroup = $this->groupByPoolMigrates($mathMigrateNames);
+
+        foreach ($poolGroup as $pool => $migrates) {
             $migrateNames       = [];
             $migrateNameTimeMap = [];
+
             foreach ($migrates as $migrate) {
                 $time                             = $migrate['time'];
                 $migrateNames[]                   = $migrateName = $migrate['name'];
                 $migrateNameTimeMap[$migrateName] = $time;
             }
-            $schema   = $this->getSchema($pool, $db, $dbPrefix);
+
+            $schema = $this->getSchema($pool, $db, $dbPrefix);
+
             $database = $schema->getDatabaseName();
 
             if ($schema->checkDatabaseExists() === false) {
@@ -350,22 +377,33 @@ class MigrateLogic
      * @param bool   $isConfirm
      * @param string $dbPrefix
      * @param string $db
+     * @param string $defaultPool
      *
      * @throws ContainerException
      * @throws DbException
      * @throws ReflectionException
      * @throws Throwable
      */
-    private function executeDown(array $mathMigrateNames, bool $isConfirm, string $dbPrefix, string $db = '')
-    {
+    private function executeDown(
+        array $mathMigrateNames,
+        bool $isConfirm,
+        string $dbPrefix,
+        string $db = '',
+        string $defaultPool = Pool::DEFAULT_POOL
+    ): void {
+
+        // Default execute last up migration
         if (empty($mathMigrateNames)) {
-            $this->rollback($isConfirm, $dbPrefix, $db);
+            $this->rollback($isConfirm, $dbPrefix, $db, $defaultPool);
             return;
         }
+
         // Batch Rollback
-        foreach ($this->groupByPoolMigrates($mathMigrateNames) as $pool => $migrates) {
+        $poolGroup = $this->groupByPoolMigrates($mathMigrateNames);
+        foreach ($poolGroup as $pool => $migrates) {
             $migrateNames       = [];
             $migrateNameTimeMap = [];
+
             foreach ($migrates as $migrate) {
                 $time                             = $migrate['time'];
                 $migrateNames[]                   = $migrateName = $migrate['name'];
@@ -380,22 +418,22 @@ class MigrateLogic
                 return;
             }
 
-            $this->createMigrationIfNotExists($schema);
+            $filterMigrateNames = $this->getSafeMigrationData(function () use ($migrateNames, $pool, $database) {
+                return $this->migrateData->getRollbackMigrates($migrateNames, $pool, $database);
+            });
 
-            // Check migrate exists
-            $migrateNames = $this->migrateData->getRollbackMigrates($migrateNames, $pool, $database);
-            if (empty($migrateNames)) {
+            if (empty($filterMigrateNames)) {
+                output()->warning("database=$database nothing migrations");
                 continue;
             }
-
-            $this->displayMigrates($migrateNames, $migrateNameTimeMap, 'Down migrations to be applied');
+            $this->displayMigrates($filterMigrateNames, $migrateNameTimeMap, 'Down migrations to be applied');
 
             if (!$isConfirm && !ConsoleHelper::confirm("Apply down the above migrations?", false)) {
                 output()->writeln(' Quit, Bye!');
                 return;
             }
 
-            foreach ($migrateNames as $rollbackName) {
+            foreach ($filterMigrateNames as $rollbackName) {
                 if ($this->runMigration($schema, $rollbackName, 'down')) {
                     $this->migrateData->rollback($rollbackName, $pool, $database);
 
@@ -405,6 +443,28 @@ class MigrateLogic
             }
         }
         return;
+    }
+
+    /**
+     * Get safe migrate table data
+     *
+     * @param callable $callback
+     *
+     * @return mixed
+     */
+    private function getSafeMigrationData(callable $callback)
+    {
+        try {
+            // Check migrate exists
+            $data = $callback();
+        } catch (Throwable $e) {
+            $message = $e->getMessage();
+            if (stripos($message, MigrateDao::tableName()) === false) {
+                output()->warning($e->getMessage());
+            }
+            return null;
+        }
+        return $data;
     }
 
     /**
@@ -445,17 +505,21 @@ class MigrateLogic
      * @param bool   $isConfirm
      * @param string $dbPrefix
      * @param string $db
+     * @param string $defaultPool
      *
      * @throws ContainerException
      * @throws DbException
      * @throws ReflectionException
      * @throws Throwable
      */
-    private function rollback(bool $isConfirm, string $dbPrefix, string $db = '')
-    {
-        $pool = Pool::DEFAULT_POOL;
+    private function rollback(
+        bool $isConfirm,
+        string $dbPrefix,
+        string $db = '',
+        string $defaultPool = Pool::DEFAULT_POOL
+    ): void {
 
-        $schema   = $this->getSchema($pool, $db, $dbPrefix);
+        $schema   = $this->getSchema($defaultPool, $db, $dbPrefix);
         $database = $schema->getDatabaseName();
 
         if ($schema->checkDatabaseExists() === false) {
@@ -465,10 +529,12 @@ class MigrateLogic
 
         $this->createMigrationIfNotExists($schema);
 
-        $migrateName = $this->migrateData->lastMigrationName($pool, $database);
+        $migrateName = $this->getSafeMigrationData(function () use ($defaultPool, $database) {
+            return $this->migrateData->lastMigrationName($defaultPool, $database);
+        });
+
         if (empty($migrateName)) {
-            $dbAlias = $dbPrefix . $db;
-            output()->warning("Database $dbAlias nothing to rollback.");
+            output()->warning("Database $database nothing to rollback.");
             return;
         }
 
@@ -481,7 +547,7 @@ class MigrateLogic
             return;
         }
         if ($this->runMigration($schema, $migrateName, 'down')) {
-            $this->migrateData->rollback($migrateName, $pool, $database);
+            $this->migrateData->rollback($migrateName, $defaultPool, $database);
 
             output()->success($migrateName . $config['time'] . " down migration executed success");
         }
@@ -496,7 +562,7 @@ class MigrateLogic
         $migrates,
         array $migrateNameTimeMap,
         string $message
-    ) {
+    ): void {
         $shows = [];
         foreach ((array)$migrates as &$migrateName) {
             $migrateName .= (string)$migrateNameTimeMap[$migrateName];
@@ -552,7 +618,6 @@ class MigrateLogic
             $migration->setSchema($copySchema);
         }
 
-
         $callback = function () use ($schema, $migration, $method) {
             // Call up or down method
             $migration->{$method}();
@@ -563,8 +628,10 @@ class MigrateLogic
             }
         };
 
-        $schema->grammar->supportsSchemaTransactions() ?
-            $schema->getConnection()->transaction($callback) :
+        $schema->grammar->supportsSchemaTransactions()
+            ?
+            $schema->getConnection()->transaction($callback)
+            :
             $callback();
         return true;
     }
@@ -579,7 +646,7 @@ class MigrateLogic
      */
     private function matchNames(array $names, $strict = false): array
     {
-        $migrations = MigrationRegister::getMigration();
+        $migrations = MigrationRegister::getMigrations();
 
         $matchNames = [];
         foreach ($names as $name) {
@@ -606,7 +673,7 @@ class MigrateLogic
      * @throws DbException
      * @throws ReflectionException
      */
-    private function createMigrationIfNotExists(Builder $schema)
+    private function createMigrationIfNotExists(Builder $schema): void
     {
         $schema->createIfNotExists(MigrateDao::tableName(), function (Blueprint $blueprint) {
             $blueprint->increments('id');

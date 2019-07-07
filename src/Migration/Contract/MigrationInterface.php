@@ -1,7 +1,7 @@
 <?php declare(strict_types=1);
 
 
-namespace Swoft\Devtool\Migration;
+namespace Swoft\Devtool\Migration\Contract;
 
 /**
  * Class MigrationInterface
@@ -13,10 +13,10 @@ interface MigrationInterface
     /**
      * @return void
      */
-    public function up();
+    public function up(): void;
 
     /**
      * @return void
      */
-    public function down();
+    public function down(): void;
 }

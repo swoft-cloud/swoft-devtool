@@ -4,6 +4,7 @@
 namespace Swoft\Devtool\Annotation\Parser;
 
 
+use InvalidArgumentException;
 use Swoft\Annotation\Annotation\Mapping\AnnotationParser;
 use Swoft\Annotation\Annotation\Parser\Parser;
 use Swoft\Bean\Annotation\Mapping\Bean;
@@ -29,10 +30,18 @@ class MigrationParser extends Parser
     {
         $className = $this->className;
 
-        $time          = StringHelper::substr($className, -14, 14);
-        $migrationName = StringHelper::replaceLast($time, '', $className);
+        if (!$time = $annotationObject->getTime()) {
+            $time = StringHelper::substr($className, -14, 14);
+        }
 
-        MigrationRegister::registerMigration($migrationName, (int)$time, $annotationObject->getPool());
+        $migrationName = StringHelper::replaceLast((string)$time, '', $className);
+        $time          = (int)$time;
+
+        if (empty($time)) {
+            throw new InvalidArgumentException(get_class($annotationObject) . ' time params must exists');
+        }
+
+        MigrationRegister::registerMigration($migrationName, $time, $annotationObject->getPool());
 
         return [$migrationName, $className, Bean::PROTOTYPE, ''];
     }
