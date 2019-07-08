@@ -87,15 +87,16 @@ class MigrateData
     /**
      * @param string $pool
      * @param string $db
+     * @param int    $step
      *
-     * @return string
+     * @return array
      * @throws ContainerException
      * @throws DbException
      * @throws ReflectionException
      */
-    public function lastMigrationName(string $pool, string $db): string
+    public function lastMigrationNames(string $pool, string $db, int $step = 1): array
     {
-        $last = $this->migrateDao->lastMigrationName($pool, $db);
+        $last = $this->migrateDao->lastMigrationNames($pool, $db, $step);
 
         return $last;
     }

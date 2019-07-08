@@ -102,24 +102,28 @@ class MigrateDao
     }
 
     /**
-     * Get effective migrate last log
+     * Get effective migrates last log
      *
      * @param string $pool
      * @param string $db
+     * @param int    $step
      *
-     * @return string
+     * @return array
      * @throws ContainerException
      * @throws DbException
      * @throws ReflectionException
      */
-    public function lastMigrationName(string $pool, string $db): string
+    public function lastMigrationNames(string $pool, string $db, int $step = 1): array
     {
-        $last = $this->table($pool, $db)
+        $lasts = $this->table($pool, $db)
+            ->select('name')
             ->where('is_rollback', static::NOT_ROLLBACK)
             ->latest('id')
-            ->value('name');
+            ->limit($step)
+            ->pluck('name')
+            ->toArray();
 
-        return (string)$last;
+        return $lasts;
     }
 
     /**
