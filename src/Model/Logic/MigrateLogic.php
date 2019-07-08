@@ -421,6 +421,7 @@ class MigrateLogic
             output()->warning("database=$database nothing migrations");
             return;
         }
+
         $this->displayMigrates($filterMigrateNames, $migrateNameTimeMap, 'Down migrations to be applied');
 
         if (!$isConfirm && !ConsoleHelper::confirm("Apply down the above migrations?", false)) {
