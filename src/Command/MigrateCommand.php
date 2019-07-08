@@ -93,6 +93,7 @@ class MigrateCommand
      *
      * @CommandMapping()
      * @CommandOption(name="pool", desc="choose default database pool", type="string", default="db.pool")
+     * @CommandOption(name="step", desc="rollback file step", type="int", default="1")
      */
     public function down(): void
     {
@@ -100,6 +101,7 @@ class MigrateCommand
 
         $name = (string)input()->get('name', input()->getOpt('name', ''));
         $pool = (string)input()->getOpt('pool', Pool::DEFAULT_POOL);
+        $step = (int)input()->getOpt('step', 1);
 
         $names = $name ? explode(',', $name) : [];
 
@@ -111,7 +113,8 @@ class MigrateCommand
                 $start,
                 $end,
                 $isConfirm,
-                $pool
+                $pool,
+                $step
             );
         } catch (Throwable $e) {
             output()->error($e->getMessage());
