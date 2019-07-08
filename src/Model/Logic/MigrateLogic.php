@@ -134,6 +134,8 @@ class MigrateLogic
         $this->handler(function ($db) use ($migrateNames, $prefix, $isConfirm) {
             $this->executeUp($migrateNames, $isConfirm, $prefix, $db);
         }, $dbs, $start, $end);
+
+        output()->success('execute ok');
     }
 
     /**
@@ -168,6 +170,8 @@ class MigrateLogic
         $this->handler(function ($db) use ($migrateNames, $prefix, $isConfirm, $defaultPool, $step) {
             $this->executeDown($migrateNames, $isConfirm, $prefix, $db, $defaultPool, $step);
         }, $dbs, $start, $end);
+
+        output()->success('execute ok');
     }
 
     /**
@@ -184,6 +188,8 @@ class MigrateLogic
         $this->handler(function ($db) use ($prefix, $limit, $defaultPool) {
             $this->showHistory($limit, $prefix, $db, $defaultPool);
         }, $dbs, $start, $end);
+
+        output()->success('execute ok');
     }
 
     /**
@@ -250,7 +256,6 @@ class MigrateLogic
             $callback((string)$db);
         }
 
-        output()->success('execute ok');
         return;
     }
 
