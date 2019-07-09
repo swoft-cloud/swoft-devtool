@@ -144,13 +144,16 @@ class EntityLogic
         $gen  = new FileGenerator($config);
 
         $fileExists = file_exists($file);
+
         if (!$fileExists &&
             !$isConfirm &&
             !ConsoleHelper::confirm("generate entity $file, Ensure continue?", true)) {
             output()->writeln(' Quit, Bye!');
             return;
         }
-        if ($fileExists && !ConsoleHelper::confirm(" entity $file already exists, Ensure continue?", false)) {
+        if ($fileExists &&
+            !$isConfirm &&
+            !ConsoleHelper::confirm(" entity $file already exists, Ensure continue?", false)) {
             output()->writeln(' Quit, Bye!');
             return;
         }
@@ -159,6 +162,7 @@ class EntityLogic
             output()->colored(" Generate entity $file OK!", 'success');
             return;
         }
+        
         output()->colored(" Generate entity $file Fail!", 'error');
     }
 
