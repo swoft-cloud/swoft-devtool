@@ -460,7 +460,7 @@ class MigrateLogic
             if (stripos($message, MigrateDao::tableName()) === false) {
                 output()->warning($message);
             }
-            return null;
+            return [];
         }
         return $data;
     }
@@ -572,11 +572,10 @@ class MigrateLogic
             }
         };
 
-        $schema->grammar->supportsSchemaTransactions()
-            ?
-            $schema->getConnection()->transaction($callback)
-            :
+        $schema->grammar->supportsSchemaTransactions() ?
+            $schema->getConnection()->transaction($callback) :
             $callback();
+        
         return true;
     }
 

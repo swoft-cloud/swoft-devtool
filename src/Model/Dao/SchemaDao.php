@@ -31,17 +31,19 @@ class SchemaDao
     {
         $schemaBuilder = Builder::new($pool);
         $columnsDetail = $schemaBuilder->getColumnsDetail($table);
+
         foreach ($columnsDetail as &$column) {
             $originPHPType = $schemaBuilder->convertType($column['type']);
 
             // if is null able
-            $nullable              = ($column['nullable'] === 'YES' || $column['default'] === null);
+            $nullable              = $column['nullable'] === 'YES';
             $column['is_nullable'] = $nullable;
 
             $column['phpType']       = $originPHPType . ($nullable ? '|null' : '');
             $column['originPHPType'] = $originPHPType;
         }
         unset($column);
+        
         return $columnsDetail;
     }
 
