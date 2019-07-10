@@ -567,7 +567,7 @@ class MigrateLogic
             $migration->{$method}();
             if (method_exists($migration, 'getWaitExecuteSql')) {
                 foreach ($migration->getWaitExecuteSql() as $statement) {
-                    $schema->getConnection()->statement($statement);
+                    $schema->getConnection()->unprepared($statement);
                 }
             }
         };
