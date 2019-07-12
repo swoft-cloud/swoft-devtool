@@ -3,6 +3,7 @@
 
 namespace Swoft\Devtool\Model\Logic;
 
+use InvalidArgumentException;
 use Leuffen\TextTemplate\TemplateParsingException;
 use ReflectionException;
 use Swoft;
@@ -68,6 +69,11 @@ class MigrateLogic
         $mappingClass = sprintf('%s\%s', $namespace, $name);
         if (MigrationRegister::checkExists($mappingClass)) {
             throw new MigrationException(sprintf("%s migration exists, please check migration !", $name));
+        }
+
+        if (StringHelper::length($mappingClass) > 255) {
+            throw new InvalidArgumentException($mappingClass .
+                ' this class name too long, please reduce the length');
         }
 
         $tplDir = $migrate->getTemplateDir();
@@ -572,10 +578,8 @@ class MigrateLogic
             }
         };
 
-        $schema->grammar->supportsSchemaTransactions() ?
-            $schema->getConnection()->transaction($callback) :
-            $callback();
-        
+        $schema->grammar->supportsSchemaTransactions() ? $schema->getConnection()->transaction($callback) : $callback();
+
         return true;
     }
 
@@ -620,9 +624,10 @@ class MigrateLogic
     {
         $schema->createIfNotExists(MigrateDao::tableName(), function (Blueprint $blueprint) {
             $blueprint->increments('id');
-            $blueprint->string('name', 60);
+            $blueprint->string('name');
             $blueprint->bigInteger('time');
             $blueprint->tinyInteger('is_rollback');
+            $blueprint->renameColumn('name', 'name', 'varchar', 255);
         });
     }
 
