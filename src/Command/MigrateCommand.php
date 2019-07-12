@@ -48,7 +48,7 @@ class MigrateCommand
             $isConfirm = input()->getOpt('y', false);
 
             if (empty($name)) {
-                throw new MigrationException("name param can't be empty", $name);
+                throw new MigrationException("name param can't be empty");
             }
             $this->logic->create($name, (bool)$isConfirm);
         } catch (Throwable $e) {

@@ -41,6 +41,11 @@ class MigrationParser extends Parser
             throw new InvalidArgumentException(get_class($annotationObject) . ' time params must exists');
         }
 
+        if (StringHelper::length($migrationName) > 255) {
+            throw new InvalidArgumentException(get_class($annotationObject) .
+                ' this class name too long, please reduce the length');
+        }
+
         MigrationRegister::registerMigration($migrationName, $time, $annotationObject->getPool());
 
         return [$migrationName, $className, Bean::PROTOTYPE, ''];
