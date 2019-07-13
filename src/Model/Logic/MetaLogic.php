@@ -152,6 +152,10 @@ class MetaLogic
             return true;
         }
 
+        if (strpos($className, '\\Validator\\') > 0) {
+            return true;
+        }
+
         return false;
     }
 }
