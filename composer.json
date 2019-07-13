@@ -11,7 +11,7 @@
   "description": "Devtool for swoft framework",
   "license": "Apache-2.0",
   "require": {
-    "text/template": "~2.3"
+    "text/template": "~2.6"
   },
   "autoload": {
     "psr-4": {
