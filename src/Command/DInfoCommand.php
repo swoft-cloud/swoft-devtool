@@ -111,15 +111,32 @@ class DInfoCommand
 
         $output->title('http routes');
 
-        if ($input->getBoolOpt('no-devtool')) {
-            $string = $router->toString(function (string $path) {
-                return strpos($path, DevTool::ROUTE_PREFIX) === false;
-            });
+        $include = (string)$input->getSameOpt(['include', 'c']);
+        $exclude = (string)$input->getSameOpt(['exclude', 'e']);
+        $filterDt = $input->getBoolOpt('no-devtool');
 
-            $output->writeln($string);
+        if ($filterDt || $include || $exclude) {
+            $filter = function (string $path) use ($filterDt, $include, $exclude) {
+                if ($exclude) {
+                    return strpos($path, $exclude) === false;
+                }
+
+                if ($include) {
+                    return strpos($path, $exclude) !== false;
+                }
+
+                if ($filterDt) {
+                    return strpos($path, DevTool::ROUTE_PREFIX) === false;
+                }
+
+                return true;
+            };
+
+            $output->writeln($router->toString($filter));
             return;
         }
 
+        // Print all routes
         $output->writeln($router->toString());
     }
 }
