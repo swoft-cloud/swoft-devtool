@@ -162,7 +162,7 @@ class EntityLogic
             output()->colored(" Generate entity $file OK!", 'success');
             return;
         }
-        
+
         output()->colored(" Generate entity $file Fail!", 'error');
     }
 
@@ -253,13 +253,12 @@ class EntityLogic
     private function generateGetters(array $colSchema, string $tplDir): string
     {
         $getterName = sprintf('get%s', ucfirst($colSchema['mappingName']));
-        $type       = $colSchema['is_nullable'] ? '?' . $colSchema['originPHPType'] : $colSchema['originPHPType'];
         $config     = [
             'tplFilename' => 'getter',
             'tplDir'      => $tplDir,
         ];
         $data       = [
-            'type'       => $type,
+            'type'       => '?' . $colSchema['originPHPType'],
             'returnType' => $colSchema['phpType'],
             'methodName' => $getterName,
             'property'   => $colSchema['mappingName'],
