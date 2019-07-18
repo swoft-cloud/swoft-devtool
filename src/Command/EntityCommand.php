@@ -14,10 +14,9 @@ use Throwable;
 use function input;
 
 /**
- * Generate entity class by database tables
+ * Generate entity class by database table names[by <cyan>devtool</cyan>]
  *
  * @Command()
- *
  * @since 2.0
  */
 class EntityCommand
