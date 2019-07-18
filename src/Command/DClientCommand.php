@@ -34,7 +34,7 @@ class DClientCommand
     {
         $proto = new Protocol();
         $sType = $input->getSameOpt(['split', 's'], 'eof');
-        if ($sType === 'length') {
+        if ($sType === 'len') {
             $proto->setOpenLengthCheck(true);
         }
 
