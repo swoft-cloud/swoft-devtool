@@ -2,7 +2,7 @@
 
 namespace Swoft\Devtool\Command;
 
-use RuntimeException;
+use ReflectionException;
 use Swoft;
 use Swoft\Bean\Exception\ContainerException;
 use Swoft\Console\Annotation\Mapping\Command;
@@ -28,7 +28,7 @@ class InfoCommand
      * @param Output $output
      *
      * @throws ContainerException
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public function env(Output $output): void
     {
@@ -78,7 +78,6 @@ class InfoCommand
         }
 
         $output->title('information for the swoole extension');
-
         $output->table($info, 'basic information', [
             'columns'   => ['name', 'value'],
             'bodyStyle' => 'info'
