@@ -71,10 +71,11 @@ class MigrateDao
      */
     public function save(string $name, int $time, string $pool, string $db): bool
     {
-        $params                = compact('name', 'time');
+        $where                 = compact('name', 'time');
+
         $params['is_rollback'] = static::NOT_ROLLBACK;
 
-        return $this->table($pool, $db)->insert($params);
+        return $this->table($pool, $db)->updateOrInsert($where, $params + $where);
     }
 
 

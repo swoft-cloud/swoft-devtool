@@ -2,12 +2,17 @@
 
 namespace Swoft\Devtool\Command;
 
-use RuntimeException;
+use ReflectionException;
+use function strpos;
 use Swoft;
 use Swoft\Bean\Exception\ContainerException;
 use Swoft\Console\Annotation\Mapping\Command;
 use Swoft\Console\Annotation\Mapping\CommandMapping;
+use Swoft\Console\Annotation\Mapping\CommandOption;
+use Swoft\Console\Input\Input;
 use Swoft\Console\Output\Output;
+use Swoft\Devtool\DevTool;
+use Swoft\Http\Server\Router\Router;
 use Swoft\Stdlib\Helper\Sys;
 use function alias;
 use function array_shift;
@@ -16,9 +21,9 @@ use function trim;
 
 /**
  * There are some commands for application dev[by <cyan>devtool</cyan>]
- * @Command(coroutine=false)
+ * @Command("dinfo", coroutine=false)
  */
-class InfoCommand
+class DInfoCommand
 {
     /**
      * Print current system environment information
@@ -28,7 +33,7 @@ class InfoCommand
      * @param Output $output
      *
      * @throws ContainerException
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public function env(Output $output): void
     {
@@ -78,7 +83,6 @@ class InfoCommand
         }
 
         $output->title('information for the swoole extension');
-
         $output->table($info, 'basic information', [
             'columns'   => ['name', 'value'],
             'bodyStyle' => 'info'
@@ -87,5 +91,52 @@ class InfoCommand
         $output->table($dirt, 'directive config', [
             'columns' => ['Directive', 'Local Value => Master Value']
         ]);
+    }
+
+    /**
+     * @CommandMapping("http-routes", alias="hroute,httproute,httproutes")
+     * @CommandOption("include", short="c", type="string", desc="must contains the string on route path")
+     * @CommandOption("exclude", short="e", type="string", desc="must exclude the string on route path")
+     * @CommandOption("no-devtool", type="bool", default="false", desc="exclude all devtool http routes")
+     * @param Input  $input
+     * @param Output $output
+     *
+     * @throws ContainerException
+     * @throws ReflectionException
+     */
+    public function httpRoutes(Input $input, Output $output): void
+    {
+        /** @var Router $router */
+        $router = Swoft::getBean('httpRouter');
+
+        $output->title('http routes');
+
+        $include = (string)$input->getSameOpt(['include', 'c']);
+        $exclude = (string)$input->getSameOpt(['exclude', 'e']);
+        $filterDt = $input->getBoolOpt('no-devtool');
+
+        if ($filterDt || $include || $exclude) {
+            $filter = function (string $path) use ($filterDt, $include, $exclude) {
+                if ($exclude) {
+                    return strpos($path, $exclude) === false;
+                }
+
+                if ($include) {
+                    return strpos($path, $exclude) !== false;
+                }
+
+                if ($filterDt) {
+                    return strpos($path, DevTool::ROUTE_PREFIX) === false;
+                }
+
+                return true;
+            };
+
+            $output->writeln($router->toString($filter));
+            return;
+        }
+
+        // Print all routes
+        $output->writeln($router->toString());
     }
 }

@@ -1,6 +1,5 @@
 <?php declare(strict_types=1);
 
-
 namespace Swoft\Devtool\Command;
 
 use Swoft\Bean\Annotation\Mapping\Inject;
@@ -15,11 +14,11 @@ use Swoft\Devtool\Model\Logic\MigrateLogic;
 use Throwable;
 
 /**
- * Manage swoft project database migration commands
+ * Manage swoft project database migration commands[by <cyan>devtool</cyan>]
  *
  * @since 2.0
  *
- * @Command(name="migrate",alias="mig")
+ * @Command(name="migrate", alias="mig")
  * @CommandOption(name="prefix", desc="database prefix", default="", type="string")
  * @CommandOption(name="start", desc="start index for database prefix and prefix is not empty", default="0", type="int")
  * @CommandOption(name="end", desc="end index for database prefix and prefix is not empty", default="0",  type="int")
