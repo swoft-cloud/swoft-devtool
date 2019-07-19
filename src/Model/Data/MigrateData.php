@@ -56,7 +56,14 @@ class MigrateData
     {
         $result = $this->migrateDao->getMigrateNames($migrateNames, $pool, $db);
 
-        return array_diff($migrateNames, array_keys($result));
+        $rollBackNames = [];
+        foreach ($result as $name => $status) {
+            if ((int)$status === MigrateDao::NOT_ROLLBACK) {
+                $rollBackNames[] = $name;
+            }
+        }
+
+        return array_diff($migrateNames, $rollBackNames);
     }
 
     /**
