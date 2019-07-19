@@ -61,8 +61,7 @@ class MigrateCommand
      * Upgrades the application by applying new migrations.
      *
      * @CommandMapping()
-     * @CommandArgument(name="name", desc="database migrate names. Can be prefix , Many is separated by ','",
-     *     type="string")
+     * @CommandArgument(name="name", desc="database migrate names. Can be prefix , Many is separated by ','", type="string")
      * @CommandOption(name="name", desc="database migrate names. Can be prefix , Many is separated by ','", type="string")
      */
     public function up(): void
@@ -92,6 +91,7 @@ class MigrateCommand
      * Downgrades the application by reverting old migrations.
      *
      * @CommandMapping()
+     * @CommandArgument(name="name", desc="database migrate names. Can be prefix , Many is separated by ','", type="string")
      * @CommandOption(name="pool", desc="choose default database pool", type="string", default="db.pool")
      * @CommandOption(name="step", desc="rollback file step", type="int", default="1")
      */
@@ -99,7 +99,7 @@ class MigrateCommand
     {
         [$dbs, $prefix, $start, $end, $isConfirm] = $this->getPublicParams();
 
-        $name = (string)input()->get('name', input()->getOpt('name', ''));
+        $name  = (string)input()->get('name', input()->getOpt('name', ''));
         $pool = (string)input()->getOpt('pool', Pool::DEFAULT_POOL);
         $step = (int)input()->getOpt('step', 1);
 
