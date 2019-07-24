@@ -3,7 +3,7 @@
 namespace Swoft\Devtool\Command;
 
 use ReflectionException;
-use function strpos;
+use RuntimeException;
 use Swoft;
 use Swoft\Bean\Exception\ContainerException;
 use Swoft\Console\Annotation\Mapping\Command;
@@ -14,9 +14,11 @@ use Swoft\Console\Output\Output;
 use Swoft\Devtool\DevTool;
 use Swoft\Http\Server\Router\Router;
 use Swoft\Stdlib\Helper\Sys;
+use Swoole\Coroutine;
 use function alias;
 use function array_shift;
 use function explode;
+use function strpos;
 use function trim;
 
 /**
@@ -28,7 +30,7 @@ class DInfoCommand
     /**
      * Print current system environment information
      *
-     * @CommandMapping()
+     * @CommandMapping(alias="sys")
      *
      * @param Output $output
      *
@@ -39,15 +41,16 @@ class DInfoCommand
     {
         $info = [
             // "<bold>System environment info</bold>\n",
-            'OS'             => PHP_OS,
-            'Php version'    => PHP_VERSION,
-            'Swoole version' => SWOOLE_VERSION,
-            'Swoft version'  => Swoft::VERSION,
-            'App Name'       => config('name', 'unknown'),
-            'Base Path'      => alias('@base'),
+            'Operating system' => PHP_OS,
+            'Php version'      => PHP_VERSION,
+            'Swoole version'   => SWOOLE_VERSION,
+            'Swoft version'    => Swoft::VERSION,
+            'Application Name' => config('name', 'unknown'),
+            'Project Path'     => alias('@base'),
+            'Runtime Path'     => alias('@runtime'),
         ];
 
-        $output->aList($info, 'System Environment Info');
+        $output->aList($info, 'System Environment');
     }
 
     /**
@@ -94,49 +97,92 @@ class DInfoCommand
     }
 
     /**
-     * @CommandMapping("http-routes", alias="hroute,httproute,httproutes")
-     * @CommandOption("include", short="c", type="string", desc="must contains the string on route path")
-     * @CommandOption("exclude", short="e", type="string", desc="must exclude the string on route path")
-     * @CommandOption("no-devtool", type="bool", default="false", desc="exclude all devtool http routes")
-     * @param Input  $input
+     * Check current operating environment information
+     *
+     * @CommandMapping()
      * @param Output $output
      *
-     * @throws ContainerException
-     * @throws ReflectionException
+     * @throws RuntimeException
      */
-    public function httpRoutes(Input $input, Output $output): void
+    public function check(Output $output): void
     {
-        /** @var Router $router */
-        $router = Swoft::getBean('httpRouter');
+        // Env check
+        [$code, $return,] = Sys::run('php --ri swoole');
+        $asyncRdsEnabled = $code === 0 ? strpos($return, 'async_redis') : false;
 
-        $output->title('http routes');
+        $swoVer = SWOOLE_VERSION;
+        $tipMsg = 'Please disabled it, otherwise swoole will be affected!';
+        $extOpt = [
+            'yes' => 'No',
+            'no'  => 'Yes',
+        ];
 
-        $include = (string)$input->getSameOpt(['include', 'c']);
-        $exclude = (string)$input->getSameOpt(['exclude', 'e']);
-        $filterDt = $input->getBoolOpt('no-devtool');
+        $list = [
+            "<bold>Runtime environment check</bold>\n",
+            'PHP version is greater than 7.1?'    => self::wrap(PHP_VERSION_ID > 70100, 'current is ' . PHP_VERSION),
+            'Swoole extension is installed?'      => self::wrap(extension_loaded('swoole')),
+            'Swoole version is greater than 4.3?' => self::wrap(version_compare($swoVer, '4.3.0', '>='), 'current is ' . $swoVer),
+            'Swoole async redis is enabled?'      => self::wrap($asyncRdsEnabled),
+            'Swoole coroutine is enabled?'        => self::wrap(class_exists(Coroutine::class, false)),
+            "\n<bold>Extensions that conflict with 'swoole'</bold>\n",
+            // ' extensions'                             => 'installed',
+            ' - zend'                             => self::wrap(!extension_loaded('zend'), $tipMsg, true, $extOpt),
+            ' - xdebug'                           => self::wrap(!extension_loaded('xdebug'), $tipMsg, true, $extOpt),
+            ' - xhprof'                           => self::wrap(!extension_loaded('xhprof'), $tipMsg, true, $extOpt),
+            ' - blackfire'                        => self::wrap(!extension_loaded('blackfire'), $tipMsg, true, $extOpt),
+        ];
 
-        if ($filterDt || $include || $exclude) {
-            $filter = function (string $path) use ($filterDt, $include, $exclude) {
-                if ($exclude) {
-                    return strpos($path, $exclude) === false;
-                }
+        $buffer = [];
+        $pass   = $total = 0;
 
-                if ($include) {
-                    return strpos($path, $exclude) !== false;
-                }
+        foreach ($list as $question => $value) {
+            if (is_int($question)) {
+                $buffer[] = $value;
+                continue;
+            }
 
-                if ($filterDt) {
-                    return strpos($path, DevTool::ROUTE_PREFIX) === false;
-                }
+            $total++;
 
-                return true;
-            };
+            if ($value[0]) {
+                $pass++;
+            }
 
-            $output->writeln($router->toString($filter));
-            return;
+            $question = str_pad($question, 45);
+            $buffer[] = sprintf('  <comment>%s</comment> %s', $question, $value[1]);
         }
 
-        // Print all routes
-        $output->writeln($router->toString());
+        $buffer[] = "\nCheck total: <bold>$total</bold>, Through the check: <success>$pass</success>";
+
+        $output->writeln($buffer);
+    }
+
+    /**
+     * @param bool|mixed  $condition
+     * @param string|null $msg
+     * @param bool        $showOnFalse
+     *
+     * @param array       $opts
+     *
+     * @return array
+     */
+    public static function wrap($condition, string $msg = null, $showOnFalse = false, array $opts = []): array
+    {
+        $desc = '';
+        $opts = array_merge([
+            'yes' => 'Yes',
+            'no'  => 'No',
+        ], $opts);
+
+        $result = $condition ? "<success>{$opts['yes']}</success>" : "<red>{$opts['yes']}</red>";
+
+        if ($msg) {
+            if ($showOnFalse) {
+                $desc = !$condition ? " ($msg)" : '';
+            } else {
+                $desc = " ($msg)";
+            }
+        }
+
+        return [(bool)$condition, $result . $desc];
     }
 }
