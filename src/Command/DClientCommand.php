@@ -6,6 +6,7 @@ use Swoft\Console\Annotation\Mapping\Command;
 use Swoft\Console\Annotation\Mapping\CommandArgument;
 use Swoft\Console\Annotation\Mapping\CommandMapping;
 use Swoft\Console\Annotation\Mapping\CommandOption;
+use Swoft\Console\Helper\Interact;
 use Swoft\Console\Helper\Show;
 use Swoft\Console\Input\Input;
 use Swoft\Console\Output\Output;
@@ -83,7 +84,7 @@ class DClientCommand
                 /** @noinspection PhpComposerExtensionStubsInspection */
                 $output->error('Send error - ' . socket_strerror($client->errCode));
 
-                if ($this->quickConfirm($input, 'Reconnect', true)) {
+                if (Interact::confirm('Reconnect', true, false)) {
                     $client->close();
                     goto CONNCET;
                 }
@@ -102,7 +103,7 @@ class DClientCommand
 
             if ($res === '') {
                 $output->info('Server closed connection');
-                if ($this->quickConfirm($input, 'Reconnect', true)) {
+                if (Interact::confirm('Reconnect', true, false)) {
                     $client->close();
                     goto CONNCET;
                 }
