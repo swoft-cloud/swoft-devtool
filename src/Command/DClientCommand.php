@@ -56,7 +56,7 @@ class DClientCommand
 
         CONNCET:
         $output->colored('Begin connecting to tcp server: ' . $addr);
-        if (!$ok = $client->connect((string)$host, (int)$port, 5.0)) {
+        if (!$client->connect((string)$host, (int)$port, 5.0)) {
             $code = $client->errCode;
             /** @noinspection PhpComposerExtensionStubsInspection */
             $msg = socket_strerror($code);
@@ -134,31 +134,76 @@ class DClientCommand
      */
     public function websocket(Input $input, Output $output): void
     {
+        $path = $input->getString('path');
         $host = $input->getSameOpt(['host', 'H'], '127.0.0.1');
-        $port = $input->getSameOpt(['port', 'p'], 18309);
+        $port = $input->getSameOpt(['port', 'p'], 18308);
         $addr = $host . ':' . $port;
 
-        $output->colored('Begin connecting to websocket server: ' . $addr);
+        $output->colored("Begin connecting to websocket server: $addr path: $path");
+
         $client = new HttpCoClient((string)$host, (int)$port, false);
-        $client->upgrade('/');
-    }
 
-    /**
-     * @param Input  $input
-     * @param string $msg
-     * @param bool   $default
-     *
-     * @return bool
-     */
-    private function quickConfirm(Input $input, string $msg, bool $default = false): bool
-    {
-        $def = $default ? 'y' : 'n';
-        $yes = $input->read("{$msg}? y/n[$def]: ");
+        $output->colored('Success connect to websocket server. Now, you can send message');
+        $output->title('INTERACTIVE', ['indent' => 0]);
 
-        if ('' === $yes) {
-            $yes = $def;
+        CONNCET:
+        if (!$client->upgrade($input->getString('path'))) {
+            $code = $client->errCode;
+            /** @noinspection PhpComposerExtensionStubsInspection */
+            $msg = socket_strerror($code);
+            Show::error("websocket handshake failed. Error($code): $msg");
+            return;
         }
 
-        return stripos($yes, 'y') === 0;
+        while (true) {
+            if (!$msg = $output->read('<info>client</info>> ')) {
+                $output->liteWarning('Please input message for send');
+                continue;
+            }
+
+            // Exit interactive terminal
+            if ($msg === 'quit' || $msg === 'exit') {
+                $output->colored('Quit, Bye!');
+                break;
+            }
+
+            // Send message
+            if (false === $client->push($msg)) {
+                /** @noinspection PhpComposerExtensionStubsInspection */
+                $output->error('Send error - ' . socket_strerror($client->errCode));
+
+                if (Interact::confirm('Reconnect', true, false)) {
+                    $client->close();
+                    goto CONNCET;
+                }
+
+                $output->colored('GoodBye!');
+                break;
+            }
+
+            // Recv response
+            $res = $client->recv(2.0);
+            if ($res === false) {
+                /** @noinspection PhpComposerExtensionStubsInspection */
+                $output->error('Recv error - ' . socket_strerror($client->errCode));
+                continue;
+            }
+
+            if ($res === '') {
+                $output->info('Server closed connection');
+                if (Interact::confirm('Reconnect', true, false)) {
+                    $client->close();
+                    goto CONNCET;
+                }
+
+                $output->colored('GoodBye!');
+                break;
+            }
+
+            // $output->prettyJSON($head);
+            $output->writef('<yellow>server</yellow>> %s', $res);
+        }
+
+        $client->close();
     }
 }
