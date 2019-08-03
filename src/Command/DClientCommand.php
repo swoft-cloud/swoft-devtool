@@ -29,6 +29,7 @@ class DClientCommand
      * @CommandOption("host", short="H", desc="the tcp server host address", default="127.0.0.1", type="string")
      * @CommandOption("port", short="p", desc="the tcp server port number", default="18309", type="integer")
      * @CommandOption("split", short="s", desc="the tcp package split type: eof, len", default="eof", type="string")
+     * @CommandOption("packer", desc="the tcp package data packer: token-text, json, php", default="token-text", type="string")
      *
      * @param Input  $input
      * @param Output $output
@@ -39,6 +40,15 @@ class DClientCommand
         $sType = $input->getSameOpt(['split', 's'], 'eof');
         if ($sType === 'len') {
             $proto->setOpenLengthCheck(true);
+        }
+
+        if ($pType = $input->getStringOpt('packer')) {
+            if (!$proto->isValidType($pType)) {
+                $output->error("input invalid packer type: {$pType}, allow: token-text, json, php");
+                return;
+            }
+
+            $proto->setType($pType);
         }
 
         $output->aList([
