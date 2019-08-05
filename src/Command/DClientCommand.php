@@ -2,6 +2,7 @@
 
 namespace Swoft\Devtool\Command;
 
+use function json_encode;
 use Swoft\Console\Annotation\Mapping\Command;
 use Swoft\Console\Annotation\Mapping\CommandArgument;
 use Swoft\Console\Annotation\Mapping\CommandMapping;
@@ -123,7 +124,7 @@ class DClientCommand
             }
 
             [$head, $body] = $proto->unpackData($res);
-            $output->prettyJSON($head);
+            $output->writeln('head: ' . json_encode($head));
             $output->writef('<yellow>server</yellow>> %s', $body);
         }
 
@@ -163,6 +164,10 @@ class DClientCommand
             $msg = socket_strerror($code);
             Show::error("websocket handshake failed. Error($code): $msg");
             return;
+        }
+
+        if ($res = $client->recv(1.0)) {
+            $output->writef('<yellow>server</yellow>> %s', $res);
         }
 
         while (true) {
