@@ -23,6 +23,7 @@ use function rtrim;
 use function sprintf;
 use function str_replace;
 use function strpos;
+use function trim;
 use function ucfirst;
 
 /**
@@ -234,7 +235,7 @@ class EntityLogic
             'propertyName' => sprintf('$%s', $mappingName),
             'columnDetail' => $columnDetail ? implode(', ', $columnDetail) : '',
             'id'           => $id,
-            'comment'      => $colSchema['columnComment'],
+            'comment'      => trim($colSchema['columnComment']),
         ];
 
         $gen          = new FileGenerator($entityConfig);

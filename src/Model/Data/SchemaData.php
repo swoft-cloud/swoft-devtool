@@ -51,6 +51,7 @@ class SchemaData
             } else {
                 $mappingName = StringHelper::replaceFirst($fieldPrefix, '', $columnSchema['name']);
             }
+
             $columnSchema['mappingName'] = $this->getSafeMappingName($mappingName);
         }
         unset($columnSchema);
