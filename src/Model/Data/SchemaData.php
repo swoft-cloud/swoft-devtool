@@ -67,15 +67,15 @@ class SchemaData
      * @param string $exclude
      * @param string $tablePrefix
      *
+     * @param string $removePrefix
      * @return array
      * @throws ReflectionException
-     * @throws ContainerException
-     * @throws DbException
      */
-    public function getSchemaTableData(string $pool, string $table, string $exclude, string $tablePrefix): array
+    public function getSchemaTableData(string $pool, string $table, string $exclude, string $tablePrefix, string $removePrefix = ''): array
     {
         $schemas = $this->schemaDao->getTableSchema($pool, $table, $exclude, $tablePrefix);
         foreach ($schemas as $originTableName => &$schema) {
+            $originTableName = $this->removePrefix($originTableName, $removePrefix);
             $schema['mapping'] = $this->getSafeMappingName($originTableName, true);
         }
         unset($schema);
@@ -99,5 +99,18 @@ class SchemaData
             return $ucFirst ? 'Db' . mt_rand(1, 100) : 'db' . mt_rand(100, 1000);
         }
         return $ucFirst ? 'Db' . $mapping : 'db' . $mapping;
+    }
+
+    /**
+     * @param string $mapping
+     * @param string $removePrefix
+     * @return string
+     */
+    private function removePrefix(string $mapping, string $removePrefix)
+    {
+        if (!empty($removePrefix)) {
+            $mapping = StringHelper::replaceFirst($removePrefix, '', $mapping);
+        }
+        return $mapping;
     }
 }

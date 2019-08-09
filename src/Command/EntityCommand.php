@@ -42,6 +42,7 @@ class EntityCommand
      * @CommandOption(name="table_prefix", desc="like match database table prefix, alias is 'tp'", type="string")
      * @CommandOption(name="exclude", desc="expect generate database table entity, alias is 'exc'", type="string")
      * @CommandOption(name="td", desc="generate entity template path",type="string", default="@devtool/devtool/resource/template")
+     * @CommandOption(name="remove_prefix", desc="remove table prefix ,alias is 'rp'",type="string")
      *
      */
     public function create(): void
@@ -54,6 +55,7 @@ class EntityCommand
         $tablePrefix = input()->getOpt('table_prefix', input()->getOpt('tp'));
         $exclude     = input()->getOpt('exc', input()->getOpt('exclude'));
         $tplDir      = input()->getOpt('td', '@devtool/devtool/resource/template');
+        $removePrefix = input()->getOpt('remove_prefix', input()->getOpt('rp'));
 
         try{
             $this->logic->create([
@@ -64,7 +66,8 @@ class EntityCommand
                 (string)$pool,
                 (string)$path,
                 (bool)$isConfirm,
-                (string)$tplDir
+                (string)$tplDir,
+                (string)$removePrefix
             ]);
         } catch (Throwable $exception) {
             output()->colored($exception->getMessage(), 'error');
