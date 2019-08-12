@@ -76,12 +76,11 @@ class EntityLogic
     }
 
     /**
-     * @param array $tableSchema
+     * @param array  $tableSchema
      * @param string $pool
      * @param string $path
-     * @param bool $isConfirm
+     * @param bool   $isConfirm
      * @param string $fieldPrefix
-     *
      * @param string $tplDir
      *
      * @throws TemplateParsingException
@@ -184,7 +183,7 @@ class EntityLogic
     }
 
     /**
-     * @param array $colSchema
+     * @param array  $colSchema
      * @param string $tplDir
      *
      * @return string
@@ -246,7 +245,7 @@ class EntityLogic
     }
 
     /**
-     * @param array $colSchema
+     * @param array  $colSchema
      * @param string $tplDir
      *
      * @return string
