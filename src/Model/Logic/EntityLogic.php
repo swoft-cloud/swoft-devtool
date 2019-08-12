@@ -4,6 +4,7 @@ namespace Swoft\Devtool\Model\Logic;
 
 use Leuffen\TextTemplate\TemplateParsingException;
 use ReflectionException;
+use RuntimeException;
 use Swoft\Bean\Annotation\Mapping\Bean;
 use Swoft\Bean\Annotation\Mapping\Inject;
 use Swoft\Bean\Exception\ContainerException;
@@ -112,7 +113,9 @@ class EntityLogic
                 output()->writeln(' Quit, Bye!');
                 return;
             }
-            mkdir($file, 0755, true);
+            if (!mkdir($file, 0755, true) && !is_dir($file)) {
+                throw new RuntimeException(sprintf('Directory "%s" was not created', $file));
+            }
         }
         $file .= sprintf('/%s.php', $mappingClass);
 
