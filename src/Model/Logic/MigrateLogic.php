@@ -591,25 +591,28 @@ class MigrateLogic
     {
         $migrations = MigrationRegister::getMigrations();
 
+        // Sort migrations by time
+        $temp = array_column($migrations, 'time');
+        array_multisort($migrations, SORT_ASC, $temp);
+
         $matchNames = [];
         foreach ($names as $name) {
             $name = $this->convertName($name);
             // match names
             foreach ($migrations as $migrationName => $migration) {
                 if (stripos($migrationName, $name) !== false) {
-                    $matchNames[$migration['time']] = $migrationName;
+                    $matchNames[] = $migrationName;
                 }
             }
         }
 
         if (empty($names) && $strict === false) {
             foreach ($migrations as $migrationName => $migration) {
-                $matchNames[$migration['time']] = $migrationName;
+                $matchNames[] = $migrationName;
             }
         }
 
-        ksort($matchNames);
-        return array_values($matchNames);
+        return $matchNames;
     }
 
     /**
