@@ -229,7 +229,7 @@ class MigrateLogic
         foreach ($list as $k => $item) {
             $showItems[$k]['MigrationName'] = $item['name'];
             $showItems[$k]['Time']          = $item['time'];
-            $showItems[$k]['RollBack']      = $item['is_rollback'] === MigrateDao::IS_ROLLBACK ? 'yes' : 'no';
+            $showItems[$k]['RollBack']      = (int)$item['is_rollback'] === MigrateDao::IS_ROLLBACK ? 'yes' : 'no';
         }
 
         output()->panel($showItems, "Database=$database migrations history");

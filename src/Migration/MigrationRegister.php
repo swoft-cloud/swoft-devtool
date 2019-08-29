@@ -14,8 +14,6 @@ class MigrationRegister
     /**
      * Migration array
      *
-     * @var array
-     *
      * @example
      * [
      *     'MigrationClassName' => [
@@ -23,18 +21,20 @@ class MigrationRegister
      *         'pool' => 'db.pool',
      *     ]
      * ]
+     * @var array
+     *
      */
     private static $migration = [];
 
     /**
      * Migration array
      *
-     * @var array
-     *
      * @example
      * [
      *     'MigrationClassName20190623183144' => 'MigrationClassName'
      * ]
+     * @var array
+     *
      */
     private static $migrationAlias = [];
 
@@ -74,7 +74,7 @@ class MigrationRegister
     {
         $key = self::$migrationAlias[$migrationName] ?? $migrationName;
 
-        return self::$migration[$key] ;
+        return self::$migration[$key] ?? [];
     }
 
     /**
