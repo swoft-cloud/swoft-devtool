@@ -49,15 +49,13 @@ class MigrateLogic
      * @param string $name
      * @param bool   $notConfirm
      *
-     * @throws ContainerException
      * @throws MigrationException
-     * @throws ReflectionException
      * @throws TemplateParsingException
      */
     public function create($name, bool $notConfirm = true): void
     {
         if (preg_match("#[^[A-Za-z_]|^\u{4E00}-\u{9FA5}]+#is", $name)) {
-            throw new MigrationException(sprintf("name (%s) is invalid param", $name));
+            throw new MigrationException(sprintf('name (%s) is invalid param', $name));
         }
         /* @var MigrationManager $migrate */
         $migrate   = BeanFactory::getBean('migrationManager');
@@ -68,7 +66,7 @@ class MigrateLogic
         // check migrate exist
         $mappingClass = sprintf('%s\%s', $namespace, $name);
         if (MigrationRegister::checkExists($mappingClass)) {
-            throw new MigrationException(sprintf("%s migration exists, please check migration !", $name));
+            throw new MigrationException(sprintf('%s migration exists, please check migration !', $name));
         }
 
         if (StringHelper::length($mappingClass) > 255) {
@@ -94,7 +92,9 @@ class MigrateLogic
                 return;
             }
             // generate path
-            mkdir($path, 0755, true);
+            if (!mkdir($path, 0755, true) && !is_dir($path)) {
+                throw new \RuntimeException(sprintf('Directory "%s" was not created', $path));
+            }
         }
 
         if (!$notConfirm && !ConsoleHelper::confirm("generate migrate $file, ensure continue?", true)) {
@@ -229,7 +229,7 @@ class MigrateLogic
         foreach ($list as $k => $item) {
             $showItems[$k]['MigrationName'] = $item['name'];
             $showItems[$k]['Time']          = $item['time'];
-            $showItems[$k]['RollBack']      = $item['is_rollback'] == MigrateDao::IS_ROLLBACK ? 'yes' : 'no';
+            $showItems[$k]['RollBack']      = (int)$item['is_rollback'] === MigrateDao::IS_ROLLBACK ? 'yes' : 'no';
         }
 
         output()->panel($showItems, "Database=$database migrations history");
@@ -261,8 +261,6 @@ class MigrateLogic
         foreach ($dbs as $db) {
             $callback((string)$db);
         }
-
-        return;
     }
 
     /**
@@ -310,7 +308,7 @@ class MigrateLogic
 
             $this->displayMigrates($effectiveMigrates, $migrateNameTimeMap, 'new migrations to be applied');
 
-            if (!$isConfirm && !ConsoleHelper::confirm("Apply the above migrations?", false)) {
+            if (!$isConfirm && !ConsoleHelper::confirm('Apply the above migrations ?', false)) {
                 output()->writeln(' Quit, Bye!');
                 return;
             }
@@ -321,7 +319,7 @@ class MigrateLogic
 
                     $this->migrateData->saveMigrateLog($effectiveMigrateName, $time, $pool, $schema->getDatabaseName());
 
-                    output()->success($effectiveMigrateName . $time . " up migration executed success");
+                    output()->success($effectiveMigrateName . $time . ' up migration executed success');
                 }
             }
 
@@ -360,7 +358,6 @@ class MigrateLogic
         foreach ($poolGroup as $pool => $migrates) {
             $this->batchRollback($pool, $migrates, $isConfirm, $db, $dbPrefix);
         }
-        return;
     }
 
     /**
@@ -435,7 +432,7 @@ class MigrateLogic
 
         $this->displayMigrates($filterMigrateNames, $migrateNameTimeMap, 'Down migrations to be applied');
 
-        if (!$isConfirm && !ConsoleHelper::confirm("Apply down the above migrations?", false)) {
+        if (!$isConfirm && !ConsoleHelper::confirm('Apply down the above migrations ?', false)) {
             output()->writeln(' Quit, Bye!');
             return;
         }
@@ -445,7 +442,7 @@ class MigrateLogic
                 $this->migrateData->rollback($rollbackName, $pool, $database);
 
                 output()->success($rollbackName . $migrateNameTimeMap[$rollbackName]
-                    . " down migration executed success");
+                    . 'down migration executed success');
             }
         }
     }
@@ -504,11 +501,11 @@ class MigrateLogic
     }
 
     /**
-     * @param array|string $migrates
-     * @param array        $migrateNameTimeMap
-     * @param string       $message
+     * @param array  $migrates
+     * @param array  $migrateNameTimeMap
+     * @param string $message
      */
-    private function displayMigrates($migrates, array $migrateNameTimeMap, string $message): void
+    private function displayMigrates(array $migrates, array $migrateNameTimeMap, string $message): void
     {
         $shows = [];
         foreach ((array)$migrates as &$migrateName) {
@@ -552,7 +549,6 @@ class MigrateLogic
      * @return bool
      * @throws ContainerException
      * @throws DbException
-     * @throws ReflectionException
      * @throws Throwable
      */
     private function runMigration(Builder $schema, string $migrateName, string $method): bool
@@ -591,9 +587,13 @@ class MigrateLogic
      *
      * @return array
      */
-    private function matchNames(array $names, $strict = false): array
+    private function matchNames(array $names, bool $strict = false): array
     {
         $migrations = MigrationRegister::getMigrations();
+
+        // Sort migrations by time
+        $temp = array_column($migrations, 'time');
+        array_multisort($migrations, SORT_ASC, $temp);
 
         $matchNames = [];
         foreach ($names as $name) {
@@ -607,7 +607,9 @@ class MigrateLogic
         }
 
         if (empty($names) && $strict === false) {
-            $matchNames = array_keys($migrations);
+            foreach ($migrations as $migrationName => $migration) {
+                $matchNames[] = $migrationName;
+            }
         }
 
         return $matchNames;
@@ -641,7 +643,7 @@ class MigrateLogic
      */
     private function getNameSpace(string $path): string
     {
-        $path = str_replace(["@", "/"], ['', '\\'], $path);
+        $path = str_replace(['@', '/'], ['', '\\'], $path);
         $path = ucfirst($path);
 
         return $path;
@@ -654,8 +656,6 @@ class MigrateLogic
      */
     private function convertName(string $name): string
     {
-        $result = ucfirst(StringHelper::camel($name));
-
-        return $result;
+        return ucfirst(StringHelper::camel($name));
     }
 }
