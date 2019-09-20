@@ -121,10 +121,13 @@ class AppCommand
     }
 
     /**
+     * display all registered http routes of the application
+     *
      * @CommandMapping("http-routes", alias="hroute,httproute,httproutes")
      * @CommandOption("include", short="c", type="string", desc="must contains the string on route path")
      * @CommandOption("exclude", short="e", type="string", desc="must exclude the string on route path")
      * @CommandOption("no-devtool", type="bool", default="false", desc="exclude all devtool http routes")
+     *
      * @param Input  $input
      * @param Output $output
      *
@@ -134,7 +137,7 @@ class AppCommand
         /** @var Router $router */
         $router = Swoft::getBean('httpRouter');
 
-        $output->title('http routes');
+        $output->title('HTTP Routes');
 
         $include  = (string)$input->getSameOpt(['include', 'c']);
         $exclude  = (string)$input->getSameOpt(['exclude', 'e']);
@@ -163,5 +166,31 @@ class AppCommand
 
         // Print all routes
         $output->writeln($router->toString());
+    }
+
+    /**
+     * display all registered tcp routes of the application
+     *
+     * @CommandMapping("tcp-routes", alias="tcproute,tcproutes")
+     *
+     * @param Input  $input
+     * @param Output $output
+     */
+    public function tcpRoutes(Input $input, Output $output): void
+    {
+        /** @var \Swoft\Tcp\Server\Router\Router $router */
+        $router = Swoft::getBean('tcpRouter');
+
+        $data = [];
+        foreach ($router->getRoutes() as $route) {
+            $data[] = [
+                $route['command'],
+                implode('@', $route['handler']),
+            ];
+        }
+
+        $output->table($data, 'TCP Routes', [
+            'columns' => ['Command Name', 'Route Handler']
+        ]);
     }
 }
