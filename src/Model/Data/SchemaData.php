@@ -2,10 +2,8 @@
 
 namespace Swoft\Devtool\Model\Data;
 
-use ReflectionException;
 use Swoft\Bean\Annotation\Mapping\Bean;
 use Swoft\Bean\Annotation\Mapping\Inject;
-use Swoft\Bean\Exception\ContainerException;
 use Swoft\Db\Exception\DbException;
 use Swoft\Devtool\Model\Dao\SchemaDao;
 use Swoft\Stdlib\Helper\StringHelper;
@@ -38,8 +36,6 @@ class SchemaData
      * @param string $fieldPrefix
      *
      * @return array
-     * @throws ReflectionException
-     * @throws ContainerException
      * @throws DbException
      */
     public function getSchemaColumnsData(string $pool, string $table, string $fieldPrefix = ''): array
@@ -68,8 +64,9 @@ class SchemaData
      * @param string $tablePrefix
      *
      * @param string $removePrefix
+     *
      * @return array
-     * @throws ReflectionException
+     * @throws DbException
      */
     public function getSchemaTableData(string $pool, string $table, string $exclude, string $tablePrefix, string $removePrefix = ''): array
     {

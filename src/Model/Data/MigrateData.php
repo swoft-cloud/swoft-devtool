@@ -33,9 +33,7 @@ class MigrateData
      * @param string $db
      *
      * @return array
-     * @throws ContainerException
      * @throws DbException
-     * @throws ReflectionException
      */
     public function listMigrateHistory(int $limit, string $pool, string $db): array
     {
@@ -48,8 +46,6 @@ class MigrateData
      * @param string $db
      *
      * @return array
-     * @throws ReflectionException
-     * @throws ContainerException
      * @throws DbException
      */
     public function getEffectiveMigrates(array $migrateNames, string $pool, string $db): array
@@ -72,9 +68,7 @@ class MigrateData
      * @param string $db
      *
      * @return array
-     * @throws ContainerException
      * @throws DbException
-     * @throws ReflectionException
      */
     public function getRollbackMigrates(array $migrateNames, string $pool, string $db): array
     {
@@ -97,9 +91,7 @@ class MigrateData
      * @param int    $step
      *
      * @return array
-     * @throws ContainerException
      * @throws DbException
-     * @throws ReflectionException
      */
     public function lastMigrationNames(string $pool, string $db, int $step = 1): array
     {

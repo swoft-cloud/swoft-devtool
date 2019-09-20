@@ -43,9 +43,7 @@ class MigrateDao
      * @param string $db
      *
      * @return array
-     * @throws ContainerException
      * @throws DbException
-     * @throws ReflectionException
      */
     public function listMigrate(int $limit, string $pool, string $db): array
     {
@@ -82,13 +80,11 @@ class MigrateDao
     /**
      * Get executed migrates
      *
-     * @param string $pool
      * @param array  $migrateNames
+     * @param string $pool
      * @param string $db
      *
      * @return array
-     * @throws ReflectionException
-     * @throws ContainerException
      * @throws DbException
      */
     public function getMigrateNames(array $migrateNames, string $pool, string $db): array
@@ -110,9 +106,7 @@ class MigrateDao
      * @param int    $step
      *
      * @return array
-     * @throws ContainerException
      * @throws DbException
-     * @throws ReflectionException
      */
     public function lastMigrationNames(string $pool, string $db, int $step = 1): array
     {
@@ -151,9 +145,7 @@ class MigrateDao
      * @param string $db
      *
      * @return Builder
-     * @throws ContainerException
      * @throws DbException
-     * @throws ReflectionException
      */
     public function table(string $pool, string $db): Builder
     {

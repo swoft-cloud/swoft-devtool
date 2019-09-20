@@ -369,9 +369,7 @@ class MigrateLogic
      * @param int    $step
      *
      * @return array
-     * @throws ContainerException
      * @throws DbException
-     * @throws ReflectionException
      */
     private function getRollbackMigrations(string $dbPrefix, string $db, string $defaultPool, int $step): array
     {
@@ -474,9 +472,7 @@ class MigrateLogic
      * @param string $dbPrefix
      *
      * @return Builder
-     * @throws ContainerException
      * @throws DbException
-     * @throws ReflectionException
      */
     private function getSchema(string $pool, string $db, string $dbPrefix): Builder
     {
@@ -547,7 +543,6 @@ class MigrateLogic
      * @param string  $method
      *
      * @return bool
-     * @throws ContainerException
      * @throws DbException
      * @throws Throwable
      */

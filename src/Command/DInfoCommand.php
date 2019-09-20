@@ -2,17 +2,11 @@
 
 namespace Swoft\Devtool\Command;
 
-use ReflectionException;
 use RuntimeException;
 use Swoft;
-use Swoft\Bean\Exception\ContainerException;
 use Swoft\Console\Annotation\Mapping\Command;
 use Swoft\Console\Annotation\Mapping\CommandMapping;
-use Swoft\Console\Annotation\Mapping\CommandOption;
-use Swoft\Console\Input\Input;
 use Swoft\Console\Output\Output;
-use Swoft\Devtool\DevTool;
-use Swoft\Http\Server\Router\Router;
 use Swoft\Stdlib\Helper\Sys;
 use Swoole\Coroutine;
 use function alias;
@@ -34,8 +28,6 @@ class DInfoCommand
      *
      * @param Output $output
      *
-     * @throws ContainerException
-     * @throws ReflectionException
      */
     public function env(Output $output): void
     {

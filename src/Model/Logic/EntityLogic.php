@@ -3,11 +3,9 @@
 namespace Swoft\Devtool\Model\Logic;
 
 use Leuffen\TextTemplate\TemplateParsingException;
-use ReflectionException;
 use RuntimeException;
 use Swoft\Bean\Annotation\Mapping\Bean;
 use Swoft\Bean\Annotation\Mapping\Inject;
-use Swoft\Bean\Exception\ContainerException;
 use Swoft\Db\Exception\DbException;
 use Swoft\Db\Pool;
 use Swoft\Devtool\FileGenerator;
@@ -50,10 +48,8 @@ class EntityLogic
      *
      * @param array $params
      *
-     * @throws TemplateParsingException
-     * @throws ReflectionException
-     * @throws ContainerException
      * @throws DbException
+     * @throws TemplateParsingException
      */
     public function create(array $params): void
     {
@@ -84,10 +80,8 @@ class EntityLogic
      * @param string $fieldPrefix
      * @param string $tplDir
      *
-     * @throws TemplateParsingException
-     * @throws ReflectionException
-     * @throws ContainerException
      * @throws DbException
+     * @throws TemplateParsingException
      */
     private function generateEntity(
         array $tableSchema,

@@ -3,11 +3,9 @@
 namespace Swoft\Devtool\Command;
 
 use InvalidArgumentException;
-use ReflectionException;
 use RuntimeException;
 use Swoft;
 use Swoft\Bean\BeanFactory;
-use Swoft\Bean\Exception\ContainerException;
 use Swoft\Console\Annotation\Mapping\Command;
 use Swoft\Console\Annotation\Mapping\CommandMapping;
 use Swoft\Console\Annotation\Mapping\CommandOption;
@@ -130,8 +128,6 @@ class AppCommand
      * @param Input  $input
      * @param Output $output
      *
-     * @throws ContainerException
-     * @throws ReflectionException
      */
     public function httpRoutes(Input $input, Output $output): void
     {
