@@ -169,14 +169,56 @@ class AppCommand
     }
 
     /**
+     * display all registered websocket routes of the application
+     *
+     * @CommandMapping("ws-routes", alias="wsroute,wsroutes")
+     *
+     * @param Output $output
+     */
+    public function wsRoutes(Output $output): void
+    {
+        /** @var Swoft\WebSocket\Server\Router\Router $router */
+        $router = Swoft::getBean('wsRouter');
+
+        $data = [];
+        foreach ($router->getModules() as $path => $module) {
+            $data[] = [
+                $path,
+                $module['class'],
+                $module['messageParser'],
+            ];
+        }
+
+        $output->table($data, 'WebSocket Modules', [
+            'columns' => ['Module Path', 'Module Class', 'Message Parser']
+        ]);
+
+        if ($commands = $router->getCommands()) {
+            $rows = [];
+            foreach ($commands as $path => $groups) {
+                foreach ($groups as $id => $command) {
+                    $rows[] = [
+                        $path,
+                        $id,
+                        implode('@', $command['handler']),
+                    ];
+                }
+            }
+
+            $output->table($rows, 'WebSocket Commands', [
+                'columns' => ['Module Path', 'Command ID', 'Command Handler']
+            ]);
+        }
+    }
+
+    /**
      * display all registered tcp routes of the application
      *
      * @CommandMapping("tcp-routes", alias="tcproute,tcproutes")
      *
-     * @param Input  $input
      * @param Output $output
      */
-    public function tcpRoutes(Input $input, Output $output): void
+    public function tcpRoutes(Output $output): void
     {
         /** @var \Swoft\Tcp\Server\Router\Router $router */
         $router = Swoft::getBean('tcpRouter');

@@ -156,6 +156,18 @@ class MetaLogic
             return true;
         }
 
+        if (strpos($className, 'Swoft\\Server\\Context\\') !== false) {
+            return true;
+        }
+
+        if (strpos($className, '\\WebSocket\\Server\\Context\\') > 0) {
+            return true;
+        }
+
+        if (strpos($className, '\\Tcp\\Server\\Context\\') > 0) {
+            return true;
+        }
+
         return false;
     }
 }
