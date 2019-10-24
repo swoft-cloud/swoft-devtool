@@ -16,6 +16,7 @@ use Swoft\Console\Output\Output;
 use Swoft\Devtool\DevTool;
 use Swoft\Http\Server\Router\Router;
 use Swoft\Stdlib\Helper\DirHelper;
+use function count;
 use function implode;
 use function input;
 use function output;
@@ -220,19 +221,23 @@ class AppCommand
      */
     public function tcpRoutes(Output $output): void
     {
-        /** @var \Swoft\Tcp\Server\Router\Router $router */
+        /** @var Swoft\Tcp\Server\Router\Router $router */
         $router = Swoft::getBean('tcpRouter');
 
         $data = [];
         foreach ($router->getRoutes() as $route) {
+            $cmdId  = $route['command'];
+            $count  = count($router->getCmdMiddlewares($cmdId));
             $data[] = [
-                $route['command'],
+                $cmdId,
                 implode('@', $route['handler']),
+                $count,
             ];
         }
 
         $output->table($data, 'TCP Routes', [
-            'columns' => ['Command Name', 'Route Handler']
+            'columns' => ['Command Name', 'Route Handler', 'Middleware Number']
         ]);
+        $output->writeln("> Notice: 'Middleware Number' is not contains global middleware");
     }
 }
