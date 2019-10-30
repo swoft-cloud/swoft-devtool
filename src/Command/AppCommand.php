@@ -197,18 +197,21 @@ class AppCommand
         if ($commands = $router->getCommands()) {
             $rows = [];
             foreach ($commands as $path => $groups) {
-                foreach ($groups as $id => $command) {
+                foreach ($groups as $cmdId => $command) {
+                    $count  = count($router->getCmdMiddlewares($path, $cmdId));
                     $rows[] = [
                         $path,
-                        $id,
+                        $cmdId,
                         implode('@', $command['handler']),
+                        $count,
                     ];
                 }
             }
 
             $output->table($rows, 'WebSocket Commands', [
-                'columns' => ['Module Path', 'Command ID', 'Command Handler']
+                'columns' => ['Module Path', 'Command ID', 'Command Handler', 'Middleware Number']
             ]);
+            $output->writeln("> Notice: 'Middleware Number' is not contains global middleware");
         }
     }
 
