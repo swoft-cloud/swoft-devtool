@@ -5,14 +5,17 @@ namespace Swoft\Devtool\Command;
 use InvalidArgumentException;
 use RuntimeException;
 use Swoft;
+use Swoft\Annotation\AnnotationRegister;
 use Swoft\Bean\BeanFactory;
 use Swoft\Console\Annotation\Mapping\Command;
+use Swoft\Console\Annotation\Mapping\CommandArgument;
 use Swoft\Console\Annotation\Mapping\CommandMapping;
 use Swoft\Console\Annotation\Mapping\CommandOption;
 use Swoft\Console\Exception\ConsoleErrorException;
 use Swoft\Console\Helper\Show;
 use Swoft\Console\Input\Input;
 use Swoft\Console\Output\Output;
+use Swoft\Contract\ComponentInterface;
 use Swoft\Devtool\DevTool;
 use Swoft\Http\Server\Router\Router;
 use Swoft\Stdlib\Helper\DirHelper;
@@ -21,6 +24,7 @@ use function implode;
 use function input;
 use function output;
 use function strpos;
+use function trim;
 
 /**
  * There are some help command for application[by <cyan>devtool</cyan>]
@@ -242,5 +246,80 @@ class AppCommand
             'columns' => ['Command Name', 'Route Handler', 'Middleware Number']
         ]);
         $output->writeln("> Notice: 'Middleware Number' is not contains global middleware");
+    }
+
+    /**
+     * display all swoft components of the application
+     *
+     * @CommandMapping(alias="cpt, component")
+     *
+     * @CommandArgument("name", type="string", desc="display detail for the component")
+     * @CommandOption("disabled", type="bool", default="false", desc="display all disabled components")
+     * @CommandOption("show-loader", type="bool", default="false", desc="display component autoloader class")
+     *
+     * @param Input  $input
+     * @param Output $output
+     */
+    public function components(Input $input, Output $output): void
+    {
+        if ($input->boolOpt('disabled')) {
+            $loaders = AnnotationRegister::getDisabledLoaders();
+        } else {
+            $loaders = AnnotationRegister::getAutoLoaders();
+        }
+
+        $metadata  = [];
+        $component = $input->getString('name');
+        if ($component = trim($component)) {
+            foreach ($loaders as $loader) {
+                if (!$loader instanceof ComponentInterface) {
+                    continue;
+                }
+
+                // If found, display and return.
+                if ($loader->getName() === $component) {
+                    $metadata = $loader->getMetadata();
+                    break;
+                }
+            }
+
+            if ($metadata) {
+                $title = "Metadata for '{$component}'";
+                $output->panel($metadata, $title, ['ucFirst' => false]);
+            } else {
+                $output->info("Not found component: {$component}");
+            }
+            return;
+        }
+
+        $loaderInfo = [];
+        $showLoader = $input->boolOpt('show-loader');
+
+        // Format loader information
+        foreach ($loaders as $loader) {
+            if (!$loader instanceof ComponentInterface) {
+                continue;
+            }
+
+            $col3 = $loader->getDescription() ?: '-';
+            if ($showLoader) {
+                $col3 = $loader->getClass();
+            }
+
+            $loaderInfo[] = [
+                $loader->getName() ?: 'UNKNOWN',
+                $loader->getVersion() ?: 'UNKNOWN',
+                $col3,
+            ];
+        }
+
+        if (!$loaderInfo) {
+            $output->info('Not found any information!');
+        }
+
+        $col3title = $showLoader ? 'AutoLoader Class' : 'Description';
+        $output->table($loaderInfo, 'Enabled Components', [
+            'columns' => ['Component Name', 'Component Version', $col3title]
+        ]);
     }
 }

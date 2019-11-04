@@ -11,8 +11,7 @@ use function env;
 /**
  * Class AutoLoader
  *
- * @since   2.0
- * @package Swoft\Devtool
+ * @since 2.0
  */
 class AutoLoader extends SwoftComponent
 {
@@ -27,21 +26,11 @@ class AutoLoader extends SwoftComponent
     }
 
     /**
-     *
-     *
      * @return bool
      */
-    public function enable(): bool
+    public function isEnable(): bool
     {
-        return (int)env('ENABLE_DEVTOOL', 0) > 0;
-    }
-
-    /**
-     * @return array
-     */
-    public function beans(): array
-    {
-        return [];
+        return (int)env('ENABLE_DEVTOOL', 1) > 0;
     }
 
     /**
