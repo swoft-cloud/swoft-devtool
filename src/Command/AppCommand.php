@@ -284,8 +284,11 @@ class AppCommand
             }
 
             if ($metadata) {
-                $title = "Metadata for '{$component}'";
-                $output->panel($metadata, $title, ['ucFirst' => false]);
+                $title = "Metadata For Component '{$component}'";
+                $output->panel($metadata, $title, [
+                    'ucFirst'  => false,
+                    'keyStyle' => 'cyan',
+                ]);
             } else {
                 $output->info("Not found component: {$component}");
             }
