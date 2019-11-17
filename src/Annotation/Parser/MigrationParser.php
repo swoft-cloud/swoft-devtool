@@ -37,7 +37,7 @@ class MigrationParser extends Parser
         $migrationName = StringHelper::replaceLast((string)$time, '', $className);
         $time          = (int)$time;
 
-        if (empty($time) && $time !== 0) {
+        if (empty($time)) {
             throw new InvalidArgumentException(get_class($annotationObject) . ' time params must exists');
         }
 
