@@ -128,7 +128,7 @@ class AppCommand
     /**
      * display all registered http routes of the application
      *
-     * @CommandMapping("http-routes", alias="hroute,httproute,httproutes")
+     * @CommandMapping("http-routes", alias="hroute, httproute, httproutes")
      * @CommandOption("include", short="c", type="string", desc="must contains the string on route path")
      * @CommandOption("exclude", short="e", type="string", desc="must exclude the string on route path")
      * @CommandOption("no-devtool", type="bool", default="false", desc="exclude all devtool http routes")
@@ -155,7 +155,7 @@ class AppCommand
                 }
 
                 if ($include) {
-                    return strpos($path, $exclude) !== false;
+                    return strpos($path, $include) !== false;
                 }
 
                 if ($filterDt) {
@@ -176,7 +176,7 @@ class AppCommand
     /**
      * display all registered websocket routes of the application
      *
-     * @CommandMapping("ws-routes", alias="wsroute,wsroutes")
+     * @CommandMapping("ws-routes", alias="wsroute, wsroutes, wroute, wroutes")
      *
      * @param Output $output
      */
@@ -222,7 +222,7 @@ class AppCommand
     /**
      * display all registered tcp routes of the application
      *
-     * @CommandMapping("tcp-routes", alias="tcproute,tcproutes")
+     * @CommandMapping("tcp-routes", alias="tcproute, tcproutes, troute, troutes")
      *
      * @param Output $output
      */
