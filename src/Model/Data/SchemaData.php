@@ -4,10 +4,10 @@ namespace Swoft\Devtool\Model\Data;
 
 use Swoft\Bean\Annotation\Mapping\Bean;
 use Swoft\Bean\Annotation\Mapping\Inject;
+use Swoft\Db\Eloquent\Model;
 use Swoft\Db\Exception\DbException;
 use Swoft\Devtool\Model\Dao\SchemaDao;
 use Swoft\Stdlib\Helper\StringHelper;
-use function mb_substr;
 use function mt_rand;
 use function preg_match;
 use function preg_replace;
@@ -48,7 +48,7 @@ class SchemaData
                 $mappingName = StringHelper::replaceFirst($fieldPrefix, '', $columnSchema['name']);
             }
 
-            $columnSchema['mappingName'] = $this->getSafeMappingName($mappingName);
+            $columnSchema['mappingName'] = $this->getModelNotConflictName($this->getSafeMappingName($mappingName));
         }
         unset($columnSchema);
         return $columnSchemas;
@@ -68,13 +68,21 @@ class SchemaData
      * @return array
      * @throws DbException
      */
-    public function getSchemaTableData(string $pool, string $table, string $exclude, string $tablePrefix, string $removePrefix = ''): array
-    {
+    public function getSchemaTableData(
+        string $pool,
+        string $table,
+        string $exclude,
+        string $tablePrefix,
+        string $removePrefix = ''
+    ): array {
         $schemas = $this->schemaDao->getTableSchema($pool, $table, $exclude, $tablePrefix);
+
         foreach ($schemas as $originTableName => &$schema) {
             $originTableName = $this->removePrefix($originTableName, $removePrefix);
+
             $schema['mapping'] = $this->getSafeMappingName($originTableName, true);
         }
+
         unset($schema);
         return $schemas;
     }
@@ -85,25 +93,54 @@ class SchemaData
      *
      * @return string
      */
-    private function getSafeMappingName(string $mapping, bool $ucFirst = false)
+    private function getSafeMappingName(string $mapping, bool $ucFirst = false): string
     {
         $mapping = preg_replace("#[^\w|^\u{4E00}-\u{9FA5}]+#is", '', $mapping);
-        $first   = $mapping ? mb_substr($mapping, 0, 1) : '';
+
+        $first = $mapping ? mb_substr($mapping, 0, 1) : '';
+
         if ($first && !preg_match("#[^[A-Za-z_]|^\u{4E00}-\u{9FA5}]+#is", $first)) {
             return $ucFirst ? ucfirst(StringHelper::camel($mapping)) : StringHelper::camel($mapping);
         }
+
         if (empty($first)) {
             return $ucFirst ? 'Db' . mt_rand(1, 100) : 'db' . mt_rand(100, 1000);
         }
+
         return $ucFirst ? 'Db' . $mapping : 'db' . $mapping;
+    }
+
+    /**
+     * Get variables that do not conflict with the model
+     *
+     * @param string $name
+     *
+     * @return string
+     */
+    private function getModelNotConflictName(string $name): string
+    {
+        $ucFirstName = ucfirst($name);
+
+        $getter = sprintf('get%s', $ucFirstName);
+        $setter = sprintf('get%s', $ucFirstName);
+
+        if (property_exists(Model::class, $name)
+            || method_exists(Model::class, $getter)
+            || method_exists(Model::class, $setter)) {
+
+            return sprintf('property%s', $ucFirstName);
+        }
+
+        return $name;
     }
 
     /**
      * @param string $mapping
      * @param string $removePrefix
+     *
      * @return string
      */
-    private function removePrefix(string $mapping, string $removePrefix)
+    private function removePrefix(string $mapping, string $removePrefix): string
     {
         if (!empty($removePrefix)) {
             $mapping = StringHelper::replaceFirst($removePrefix, '', $mapping);

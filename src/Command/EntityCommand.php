@@ -43,20 +43,21 @@ class EntityCommand
      * @CommandOption(name="td", desc="generate entity template path",type="string", default="@devtool/devtool/resource/template")
      * @CommandOption(name="remove_prefix", desc="remove table prefix ,alias is 'rp'",type="string")
      *
+     * @return void
      */
     public function create(): void
     {
-        $table       = input()->get('table', input()->getOpt('table'));
-        $pool        = input()->getOpt('pool', Pool::DEFAULT_POOL);
-        $path        = input()->getOpt('path', '@app/Model/Entity');
-        $isConfirm   = input()->getOpt('y', false);
-        $fieldPrefix = input()->getOpt('field_prefix', input()->getOpt('fp'));
-        $tablePrefix = input()->getOpt('table_prefix', input()->getOpt('tp'));
-        $exclude     = input()->getOpt('exc', input()->getOpt('exclude'));
-        $tplDir      = input()->getOpt('td', '@devtool/devtool/resource/template');
+        $table        = input()->get('table', input()->getOpt('table'));
+        $pool         = input()->getOpt('pool', Pool::DEFAULT_POOL);
+        $path         = input()->getOpt('path', '@app/Model/Entity');
+        $isConfirm    = input()->getOpt('y', false);
+        $fieldPrefix  = input()->getOpt('field_prefix', input()->getOpt('fp'));
+        $tablePrefix  = input()->getOpt('table_prefix', input()->getOpt('tp'));
+        $exclude      = input()->getOpt('exc', input()->getOpt('exclude'));
+        $tplDir       = input()->getOpt('td', '@devtool/devtool/resource/template');
         $removePrefix = input()->getOpt('remove_prefix', input()->getOpt('rp'));
 
-        try{
+        try {
             $this->logic->create([
                 (string)$table,
                 (string)$tablePrefix,
