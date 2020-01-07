@@ -2,25 +2,26 @@
 
 namespace Swoft\Devtool;
 
+use InvalidArgumentException;
+use Leuffen\TextTemplate\TemplateParsingException;
+use Leuffen\TextTemplate\TextTemplate;
+use RuntimeException;
+use Swoft;
 use function array_merge;
 use function dirname;
 use function file_exists;
 use function file_get_contents;
 use function file_put_contents;
-use InvalidArgumentException;
-use Leuffen\TextTemplate\TemplateParsingException;
-use Leuffen\TextTemplate\TextTemplate;
 use function method_exists;
 use function property_exists;
 use function realpath;
 use function rtrim;
-use RuntimeException;
-use Swoft;
 use function trim;
 use function ucfirst;
 
 /**
  * Class FileGenerator
+ *
  * @since 1.0
  */
 class FileGenerator
@@ -52,7 +53,9 @@ class FileGenerator
 
     /**
      * FileGenerator constructor.
+     *
      * @param array $config
+     *
      * @throws RuntimeException
      * @throws InvalidArgumentException
      */
@@ -81,7 +84,7 @@ class FileGenerator
                 $partFile = Swoft::getAlias($partFile);
             } elseif ($firstChar !== '/') {
                 $relativePath = dirname($this->getTplFile());
-                $partFile = realpath($relativePath . '/' . $partFile);
+                $partFile     = realpath($relativePath . '/' . $partFile);
             }
 
             return PHP_EOL . file_get_contents($partFile);
@@ -90,6 +93,7 @@ class FileGenerator
 
     /**
      * @param array $config
+     *
      * @return $this
      */
     public function config(array $config = []): self
@@ -109,6 +113,7 @@ class FileGenerator
 
     /**
      * @param array $data
+     *
      * @return $this
      */
     public function setData(array $data): self
@@ -120,6 +125,7 @@ class FileGenerator
 
     /**
      * @param array $data
+     *
      * @return $this
      */
     public function addData(array $data): self
@@ -131,6 +137,7 @@ class FileGenerator
 
     /**
      * @param array $data
+     *
      * @return bool|int
      * @throws RuntimeException
      * @throws TemplateParsingException
@@ -142,16 +149,15 @@ class FileGenerator
         }
 
         $tplFile = $this->getTplFile();
-        $text = $this->parser
-            ->loadTemplate(file_get_contents($tplFile))
-            ->apply($this->data);
+        $text    = $this->parser->loadTemplate(file_get_contents($tplFile))->apply($this->data);
 
         return $text;
     }
 
     /**
      * @param string $file
-     * @param array $data
+     * @param array  $data
+     *
      * @return bool|int
      * @throws RuntimeException
      * @throws TemplateParsingException
@@ -163,15 +169,14 @@ class FileGenerator
         }
 
         $tplFile = $this->getTplFile();
-        $text = $this->parser
-            ->loadTemplate(file_get_contents($tplFile))
-            ->apply($this->data);
+        $text    = $this->parser->loadTemplate(file_get_contents($tplFile))->apply($this->data);
 
         return file_put_contents($file, $text) > 0;
     }
 
     /**
      * @param bool $checkIt
+     *
      * @return string
      * @throws RuntimeException
      */
@@ -229,6 +234,7 @@ class FileGenerator
 
     /**
      * @param string $tplFilename
+     *
      * @return FileGenerator
      */
     public function setTplFilename(string $tplFilename): self
@@ -240,6 +246,7 @@ class FileGenerator
 
     /**
      * @param string $tplDir
+     *
      * @return FileGenerator
      */
     public function setTplDir(string $tplDir): self
@@ -251,6 +258,7 @@ class FileGenerator
 
     /**
      * @param string $tplExt
+     *
      * @return FileGenerator
      */
     public function setTplExt(string $tplExt): self
