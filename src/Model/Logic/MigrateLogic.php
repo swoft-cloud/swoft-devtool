@@ -18,9 +18,9 @@ use Swoft\Db\Schema\Blueprint;
 use Swoft\Db\Schema\Builder;
 use Swoft\Devtool\FileGenerator;
 use Swoft\Devtool\Helper\ConsoleHelper;
-use Swoft\Devtool\Migration\Migration;
-use Swoft\Devtool\Migration\Exception\MigrationException;
 use Swoft\Devtool\Migration\Contract\MigrationInterface;
+use Swoft\Devtool\Migration\Exception\MigrationException;
+use Swoft\Devtool\Migration\Migration;
 use Swoft\Devtool\Migration\MigrationManager;
 use Swoft\Devtool\Migration\MigrationRegister;
 use Swoft\Devtool\Model\Dao\MigrateDao;
@@ -70,8 +70,7 @@ class MigrateLogic
         }
 
         if (StringHelper::length($mappingClass) > 255) {
-            throw new InvalidArgumentException($mappingClass .
-                ' this class name too long, please reduce the length');
+            throw new InvalidArgumentException($mappingClass . ' this class name too long, please reduce the length');
         }
 
         $tplDir = $migrate->getTemplateDir();
@@ -439,8 +438,7 @@ class MigrateLogic
             if ($this->runMigration($schema, $rollbackName, 'down')) {
                 $this->migrateData->rollback($rollbackName, $pool, $database);
 
-                output()->success($rollbackName . $migrateNameTimeMap[$rollbackName]
-                    . 'down migration executed success');
+                output()->success($rollbackName . $migrateNameTimeMap[$rollbackName] . 'down migration executed success');
             }
         }
     }

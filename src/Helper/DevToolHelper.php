@@ -9,6 +9,7 @@ class DevToolHelper
 {
     /**
      * @param string $file
+     *
      * @return array
      */
     public static function parseComposerLockFile(string $file): array
@@ -22,7 +23,7 @@ class DevToolHelper
         }
 
         /** @var array[] $data */
-        $data = \json_decode($json, true);
+        $data       = \json_decode($json, true);
         $components = [];
 
         if (!$data || !isset($data['packages'])) {
@@ -35,13 +36,13 @@ class DevToolHelper
             }
 
             $components[] = [
-                'name' => $package['name'],
-                'version' => $package['version'],
-                'source' => $package['source'],
-                'require' => $package['require'] ?? [],
+                'name'        => $package['name'],
+                'version'     => $package['version'],
+                'source'      => $package['source'],
+                'require'     => $package['require'] ?? [],
                 'description' => $package['description'],
-                'keywords' => $package['keywords'],
-                'time' => $package['time'],
+                'keywords'    => $package['keywords'],
+                'time'        => $package['time'],
             ];
         }
 

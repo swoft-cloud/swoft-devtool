@@ -124,9 +124,9 @@ class SchemaData
         $getter = sprintf('get%s', $ucFirstName);
         $setter = sprintf('get%s', $ucFirstName);
 
-        if (property_exists(Model::class, $name)
-            || method_exists(Model::class, $getter)
-            || method_exists(Model::class, $setter)) {
+        if (property_exists(Model::class, $name) || method_exists(Model::class, $getter) || method_exists(Model::class,
+                $setter)
+        ) {
 
             return sprintf('property%s', $ucFirstName);
         }

@@ -4,8 +4,8 @@
 namespace Swoft\Devtool\Helper;
 
 
-use Toolkit\Cli\Highlighter;
 use Toolkit\Cli\Cli;
+use Toolkit\Cli\Highlighter;
 
 /**
  * Class ConsoleHelper

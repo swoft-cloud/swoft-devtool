@@ -18,6 +18,7 @@ class RouteController
     /**
      * @RequestMapping("http/routes", method=RequestMethod::GET)
      * @param Request $request
+     *
      * @return array|string
      * @throws \Throwable
      */
@@ -33,7 +34,7 @@ class RouteController
         }
 
         return [
-            'routes'  => $router->getRoutes()
+            'routes' => $router->getRoutes()
         ];
     }
 

@@ -16,7 +16,7 @@ class FileGeneratorTest extends TestCase
     public function testGen()
     {
         $data = [
-            'prefix' => '/path',
+            'prefix'    => '/path',
             'className' => 'DemoController',
             'namespace' => 'App\Controller',
         ];
@@ -25,9 +25,7 @@ class FileGeneratorTest extends TestCase
             'tplDir' => __DIR__ . '/res',
         ]);
 
-        $code = $gen
-            ->setTplFilename('some')
-            ->render($data);
+        $code = $gen->setTplFilename('some')->render($data);
 
         $this->assertTrue(\strpos($code, $data['prefix']) > 0);
         $this->assertTrue(\strpos($code, $data['className']) > 0);

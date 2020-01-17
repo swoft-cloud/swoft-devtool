@@ -3,12 +3,12 @@
 namespace Swoft\Devtool\Model\Logic;
 
 use Leuffen\TextTemplate\TemplateParsingException;
-use function strpos;
 use Swoft;
 use Swoft\Bean\Annotation\Mapping\Bean;
 use Swoft\Bean\Container;
 use Swoft\Bean\Definition\ObjectDefinition;
 use Swoft\Devtool\FileGenerator;
+use function strpos;
 
 /**
  * Class PhpstormLogic

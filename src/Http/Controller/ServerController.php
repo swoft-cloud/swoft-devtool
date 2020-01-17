@@ -19,6 +19,7 @@ class ServerController
     /**
      * Get server config
      * @RequestMapping(route="config", method=RequestMethod::GET)
+     *
      * @return array
      */
     public function config(): array
@@ -32,7 +33,9 @@ class ServerController
     /**
      * get all registered events list
      * @RequestMapping(route="events", method=RequestMethod::GET)
+     *
      * @param Request $request
+     *
      * @return array
      */
     public function events(Request $request): array
@@ -69,6 +72,7 @@ class ServerController
     /**
      * Get swoole server stats
      * @RequestMapping(route="stats", method=RequestMethod::GET)
+     *
      * @return array
      */
     public function stats(): array
@@ -87,6 +91,7 @@ class ServerController
     /**
      * get crontab list
      * @RequestMapping(route="crontab", method=RequestMethod::GET)
+     *
      * @return array
      * @throws \Throwable
      */
@@ -105,6 +110,7 @@ class ServerController
     /**
      * get swoole info
      * @RequestMapping(route="processes", method=RequestMethod::GET)
+     *
      * @return array
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
@@ -124,6 +130,7 @@ class ServerController
     /**
      * Get swoole info
      * @RequestMapping(route="swoole-info", method=RequestMethod::GET)
+     *
      * @return array
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
@@ -151,6 +158,7 @@ class ServerController
 
     /**
      * @param string $str
+     *
      * @return array
      */
     private function formatSwooleInfo(string $str): array

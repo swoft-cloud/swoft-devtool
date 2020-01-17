@@ -47,11 +47,7 @@ class MigrateDao
      */
     public function listMigrate(int $limit, string $pool, string $db): array
     {
-        return $this->table($pool, $db)
-            ->latest('id')
-            ->limit($limit)
-            ->get()
-            ->toArray();
+        return $this->table($pool, $db)->latest('id')->limit($limit)->get()->toArray();
     }
 
     /**
@@ -69,7 +65,7 @@ class MigrateDao
      */
     public function save(string $name, int $time, string $pool, string $db): bool
     {
-        $where                 = compact('name', 'time');
+        $where = compact('name', 'time');
 
         $params['is_rollback'] = static::NOT_ROLLBACK;
 
@@ -89,11 +85,8 @@ class MigrateDao
      */
     public function getMigrateNames(array $migrateNames, string $pool, string $db): array
     {
-        $migrateNames = $this->table($pool, $db)
-            ->whereIn('name', $migrateNames)
-            ->get(['name', 'is_rollback'])
-            ->pluck('is_rollback', 'name')
-            ->toArray();
+        $migrateNames = $this->table($pool, $db)->whereIn('name', $migrateNames)->get(['name', 'is_rollback'])
+                             ->pluck('is_rollback', 'name')->toArray();
 
         return $migrateNames;
     }
@@ -110,13 +103,8 @@ class MigrateDao
      */
     public function lastMigrationNames(string $pool, string $db, int $step = 1): array
     {
-        $lasts = $this->table($pool, $db)
-            ->select('name')
-            ->where('is_rollback', static::NOT_ROLLBACK)
-            ->latest('id')
-            ->limit($step)
-            ->pluck('name')
-            ->toArray();
+        $lasts = $this->table($pool, $db)->select('name')->where('is_rollback', static::NOT_ROLLBACK)->latest('id')
+                      ->limit($step)->pluck('name')->toArray();
 
         return $lasts;
     }
@@ -135,9 +123,8 @@ class MigrateDao
      */
     public function rollback($names, string $pool, string $db): bool
     {
-        return (bool)$this->table($pool, $db)
-            ->where('name', '=', $names)
-            ->update(['is_rollback' => static::IS_ROLLBACK]);
+        return (bool)$this->table($pool, $db)->where('name', '=', $names)
+                          ->update(['is_rollback' => static::IS_ROLLBACK]);
     }
 
     /**

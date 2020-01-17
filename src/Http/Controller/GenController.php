@@ -17,7 +17,9 @@ class GenController
     /**
      * This is a example action
      * @RequestMapping(route="/__devtool/gen", method=RequestMethod::GET)
+     *
      * @param Request $request
+     *
      * @return array
      */
     public function index(Request $request): array
@@ -30,7 +32,9 @@ class GenController
     /**
      * Generate class file preview
      * @RequestMapping(route="preview", method=RequestMethod::POST)
+     *
      * @param Request $request
+     *
      * @return array
      */
     public function preview(Request $request): array
@@ -43,7 +47,9 @@ class GenController
     /**
      * Generate class file
      * @RequestMapping(route="file", method=RequestMethod::POST)
+     *
      * @param Request $request
+     *
      * @return array
      */
     public function create(Request $request): array

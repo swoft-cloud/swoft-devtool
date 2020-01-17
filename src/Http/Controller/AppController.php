@@ -21,6 +21,7 @@ class AppController
     /**
      * get app info
      * @RequestMapping(route="env", method=RequestMethod::GET)
+     *
      * @return array
      */
     public function index(): array
@@ -38,7 +39,9 @@ class AppController
     /**
      * Get app config
      * @RequestMapping(route="config", method=RequestMethod::GET)
+     *
      * @param Request $request
+     *
      * @return array|mixed
      * @throws \Throwable
      */
@@ -56,7 +59,9 @@ class AppController
     /**
      * get app pools
      * @RequestMapping(route="pools", method=RequestMethod::GET)
+     *
      * @param Request $request
+     *
      * @return array
      */
     public function pools(Request $request): array
@@ -78,7 +83,9 @@ class AppController
     /**
      * get app beans
      * @RequestMapping(route="beans", method=RequestMethod::GET)
+     *
      * @param Request $request
+     *
      * @return array
      */
     public function beans(Request $request): array
@@ -93,7 +100,9 @@ class AppController
     /**
      * get app beans config
      * @RequestMapping(route="beans-config", method=RequestMethod::GET)
+     *
      * @param Request $request
+     *
      * @return array
      */
     public function beansConfig(Request $request): array
@@ -108,6 +117,7 @@ class AppController
     /**
      * get app path aliases
      * @RequestMapping(route="aliases", method=RequestMethod::GET)
+     *
      * @return array
      */
     public function pathAliases(): array
@@ -118,7 +128,9 @@ class AppController
     /**
      * Get all registered application events list
      * @RequestMapping(route="events", method=RequestMethod::GET)
+     *
      * @param Request $request
+     *
      * @return array
      * @throws \Throwable
      */
@@ -177,6 +189,7 @@ class AppController
      *
      * @RequestMapping(route="http/middles", method=RequestMethod::GET)
      * @param Request $request
+     *
      * @return array
      * @throws \Throwable
      */
@@ -197,7 +210,9 @@ class AppController
     /**
      * get all registered rpc middleware list
      * @RequestMapping(route="rpc/middles", method=RequestMethod::GET)
+     *
      * @param Request $request
+     *
      * @return array
      * @throws \Throwable
      */

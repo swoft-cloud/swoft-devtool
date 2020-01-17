@@ -142,15 +142,13 @@ class EntityLogic
 
         $fileExists = file_exists($file);
 
-        if (!$fileExists
-            && !$isConfirm
-            && !ConsoleHelper::confirm("generate entity $file, Ensure continue?", true)) {
+        if (!$fileExists && !$isConfirm && !ConsoleHelper::confirm("generate entity $file, Ensure continue?", true)) {
             output()->writeln(' Quit, Bye!');
             return;
         }
-        if ($fileExists
-            && !$isConfirm
-            && !ConsoleHelper::confirm(" entity $file already exists, Ensure continue?", false)) {
+        if ($fileExists && !$isConfirm && !ConsoleHelper::confirm(" entity $file already exists, Ensure continue?",
+                false)
+        ) {
             output()->writeln(' Quit, Bye!');
             return;
         }
@@ -196,10 +194,7 @@ class EntityLogic
         $id = '*';
         if (!empty($colSchema['key']) && !$this->readyGenerateId) {
             // Is auto increment
-            $auto = $colSchema['extra'] && strpos($colSchema['extra'], 'auto_increment') !== false
-                ?
-                ''
-                :
+            $auto = $colSchema['extra'] && strpos($colSchema['extra'], 'auto_increment') !== false ? '' :
                 'incrementing=false';
 
             // builder @id

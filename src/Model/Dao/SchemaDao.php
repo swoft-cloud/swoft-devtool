@@ -39,7 +39,7 @@ class SchemaDao
             $column['originPHPType'] = $originPHPType;
         }
         unset($column);
-        
+
         return $columnsDetail;
     }
 

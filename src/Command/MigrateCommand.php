@@ -72,14 +72,7 @@ class MigrateCommand
         $names = $name ? explode(',', $name) : [];
 
         try {
-            $this->logic->up(
-                $names,
-                $dbs,
-                $prefix,
-                $start,
-                $end,
-                $isConfirm
-            );
+            $this->logic->up($names, $dbs, $prefix, $start, $end, $isConfirm);
         } catch (Throwable $e) {
             output()->error($e->getMessage());
             ConsoleHelper::highlight($e->getTraceAsString());
@@ -98,23 +91,14 @@ class MigrateCommand
     {
         [$dbs, $prefix, $start, $end, $isConfirm] = $this->getPublicParams();
 
-        $name  = (string)input()->get('name', input()->getOpt('name', ''));
+        $name = (string)input()->get('name', input()->getOpt('name', ''));
         $pool = (string)input()->getOpt('pool', Pool::DEFAULT_POOL);
         $step = (int)input()->getOpt('step', 1);
 
         $names = $name ? explode(',', $name) : [];
 
         try {
-            $this->logic->down(
-                $names,
-                $dbs,
-                $prefix,
-                $start,
-                $end,
-                $isConfirm,
-                $pool,
-                $step
-            );
+            $this->logic->down($names, $dbs, $prefix, $start, $end, $isConfirm, $pool, $step);
         } catch (Throwable $e) {
             output()->error($e->getMessage());
             ConsoleHelper::highlight($e->getTraceAsString());

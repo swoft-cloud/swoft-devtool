@@ -2,7 +2,6 @@
 
 namespace Swoft\Devtool\Command;
 
-use function json_encode;
 use Swoft\Console\Annotation\Mapping\Command;
 use Swoft\Console\Annotation\Mapping\CommandArgument;
 use Swoft\Console\Annotation\Mapping\CommandMapping;
@@ -14,6 +13,7 @@ use Swoft\Console\Output\Output;
 use Swoft\Tcp\Protocol;
 use Swoole\Coroutine\Client;
 use Swoole\Coroutine\Http\Client as HttpCoClient;
+use function json_encode;
 use const SWOOLE_SOCK_TCP;
 
 /**
@@ -137,11 +137,13 @@ class DClientCommand
      * @CommandOption("host", short="H", desc="the tcp server host address", default="127.0.0.1", type="string")
      * @CommandOption("port", short="p", desc="the tcp server port number", default="18308", type="integer")
      * @CommandArgument("path", type="string", default="/echo", desc="the want connected websocket server uri path")
-     * @example
-     *  {fullCmd} /chat
      *
      * @param Input  $input
      * @param Output $output
+     *
+     * @example
+     *  {fullCmd} /chat
+     *
      */
     public function websocket(Input $input, Output $output): void
     {

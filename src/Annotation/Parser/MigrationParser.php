@@ -42,8 +42,7 @@ class MigrationParser extends Parser
         }
 
         if (StringHelper::length($migrationName) > 255) {
-            throw new InvalidArgumentException(get_class($annotationObject) .
-                ' this class name too long, please reduce the length');
+            throw new InvalidArgumentException(get_class($annotationObject) . ' this class name too long, please reduce the length');
         }
 
         MigrationRegister::registerMigration($migrationName, $time, $annotationObject->getPool());

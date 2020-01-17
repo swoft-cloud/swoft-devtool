@@ -4,13 +4,15 @@ namespace Swoft\Devtool\WebSocket;
 
 use Swoft\Http\Message\Request;
 use Swoft\Http\Message\Response;
-// use Swoft\WebSocket\Server\Bean\Annotation\WebSocket;
 use Swoole\WebSocket\Frame;
 use Swoole\WebSocket\Server;
 
+// use Swoft\WebSocket\Server\Bean\Annotation\WebSocket;
+
 /**
  * Class DevToolController
- * @see \Swoft\WebSocket\Server\HandlerInterface
+ *
+ * @see     \Swoft\WebSocket\Server\HandlerInterface
  * @package Swoft\Devtool\WebSocket
  * - Remove dependency on 'websocket-server'
  * WsModule("/__devtool")
@@ -26,9 +28,9 @@ class DevToolController
     }
 
     /**
-     * @param Server $server
+     * @param Server  $server
      * @param Request $request
-     * @param int $fd
+     * @param int     $fd
      */
     public function onOpen(Server $server, Request $request, int $fd)
     {
@@ -37,7 +39,7 @@ class DevToolController
 
     /**
      * @param Server $server
-     * @param Frame $frame
+     * @param Frame  $frame
      */
     public function onMessage(Server $server, Frame $frame)
     {
@@ -46,7 +48,7 @@ class DevToolController
 
     /**
      * @param Server $server
-     * @param int $fd
+     * @param int    $fd
      */
     public function onClose(Server $server, int $fd)
     {

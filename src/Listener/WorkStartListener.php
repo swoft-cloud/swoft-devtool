@@ -6,11 +6,12 @@ use Swoft\Config\Annotation\Mapping\Config;
 use Swoft\Event\Annotation\Mapping\Listener;
 use Swoft\Event\EventHandlerInterface;
 use Swoft\Event\EventInterface;
-use Swoole\Server;
 use Swoft\Server\Swoole\SwooleEvent;
+use Swoole\Server;
 
 /**
  * Class WorkStartListener
+ *
  * @package Swoft\Devtool\Bootstrap\Listener
  * @Listener(SwooleEvent::WORKER_START)
  */
@@ -26,6 +27,7 @@ class WorkStartListener implements EventHandlerInterface
      * @param Server $server
      * @param int    $workerId
      * @param bool   $isWorker
+     *
      * @throws \Throwable
      */
     public function onWorkerStart(Server $server, int $workerId, bool $isWorker)
@@ -34,13 +36,8 @@ class WorkStartListener implements EventHandlerInterface
             return;
         }
 
-        \output()->writeln(\sprintf(
-            'Children process start successful. ' .
-            'PID <magenta>%s</magenta>, Worker Id <magenta>%s</magenta>, Role <info>%s</info>',
-            $server->worker_pid,
-            $workerId,
-            $isWorker ? 'Worker' : 'Task'
-        ));
+        \output()->writeln(\sprintf('Children process start successful. ' . 'PID <magenta>%s</magenta>, Worker Id <magenta>%s</magenta>, Role <info>%s</info>',
+            $server->worker_pid, $workerId, $isWorker ? 'Worker' : 'Task'));
     }
 
     /**
