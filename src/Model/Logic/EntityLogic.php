@@ -146,7 +146,8 @@ class EntityLogic
             output()->writeln(' Quit, Bye!');
             return;
         }
-        if ($fileExists && !$isConfirm && !ConsoleHelper::confirm(" entity $file already exists, Ensure continue?",
+        if ($fileExists && !$isConfirm
+            && !ConsoleHelper::confirm(" entity $file already exists, Ensure continue?",
                 false)
         ) {
             output()->writeln(' Quit, Bye!');
@@ -192,7 +193,7 @@ class EntityLogic
 
         // id
         $id = '*';
-        if (!empty($colSchema['key']) && !$this->readyGenerateId) {
+        if (!empty($colSchema['key']) && !$this->readyGenerateId && $colSchema['key'] === 'PRI') {
             // Is auto increment
             $auto = $colSchema['extra'] && strpos($colSchema['extra'], 'auto_increment') !== false ? '' :
                 'incrementing=false';
