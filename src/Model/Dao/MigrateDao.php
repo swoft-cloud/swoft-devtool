@@ -1,11 +1,8 @@
 <?php declare(strict_types=1);
 
-
 namespace Swoft\Devtool\Model\Dao;
 
-use ReflectionException;
 use Swoft\Bean\Annotation\Mapping\Bean;
-use Swoft\Bean\Exception\ContainerException;
 use Swoft\Db\DB;
 use Swoft\Db\Exception\DbException;
 use Swoft\Db\Query\Builder;
@@ -59,9 +56,7 @@ class MigrateDao
      * @param string $db
      *
      * @return bool
-     * @throws ContainerException
      * @throws DbException
-     * @throws ReflectionException
      */
     public function save(string $name, int $time, string $pool, string $db): bool
     {
@@ -117,9 +112,7 @@ class MigrateDao
      * @param string $db
      *
      * @return bool
-     * @throws ContainerException
      * @throws DbException
-     * @throws ReflectionException
      */
     public function rollback($names, string $pool, string $db): bool
     {

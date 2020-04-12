@@ -1,12 +1,9 @@
 <?php declare(strict_types=1);
 
-
 namespace Swoft\Devtool\Model\Data;
 
-use ReflectionException;
 use Swoft\Bean\Annotation\Mapping\Bean;
 use Swoft\Bean\Annotation\Mapping\Inject;
-use Swoft\Bean\Exception\ContainerException;
 use Swoft\Db\Exception\DbException;
 use Swoft\Devtool\Model\Dao\MigrateDao;
 
@@ -95,9 +92,7 @@ class MigrateData
      */
     public function lastMigrationNames(string $pool, string $db, int $step = 1): array
     {
-        $last = $this->migrateDao->lastMigrationNames($pool, $db, $step);
-
-        return $last;
+        return $this->migrateDao->lastMigrationNames($pool, $db, $step);
     }
 
     /**
@@ -109,9 +104,7 @@ class MigrateData
      * @param string $db
      *
      * @return bool
-     * @throws ContainerException
      * @throws DbException
-     * @throws ReflectionException
      */
     public function saveMigrateLog(string $migrateName, int $time, string $pool, string $db): bool
     {
@@ -124,9 +117,7 @@ class MigrateData
      * @param string       $db
      *
      * @return bool
-     * @throws ContainerException
      * @throws DbException
-     * @throws ReflectionException
      */
     public function rollback($migrates, string $pool, string $db): bool
     {

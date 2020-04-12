@@ -1,16 +1,13 @@
 <?php declare(strict_types=1);
 
-
 namespace Swoft\Devtool\Model\Logic;
 
 use InvalidArgumentException;
 use Leuffen\TextTemplate\TemplateParsingException;
-use ReflectionException;
 use Swoft;
 use Swoft\Bean\Annotation\Mapping\Bean;
 use Swoft\Bean\Annotation\Mapping\Inject;
 use Swoft\Bean\BeanFactory;
-use Swoft\Bean\Exception\ContainerException;
 use Swoft\Db\DB;
 use Swoft\Db\Exception\DbException;
 use Swoft\Db\Schema;
@@ -205,9 +202,7 @@ class MigrateLogic
      * @param string $db
      * @param string $defaultPool
      *
-     * @throws ContainerException
      * @throws DbException
-     * @throws ReflectionException
      */
     private function showHistory(int $limit, string $dbPrefix, string $db, string $defaultPool): void
     {
@@ -268,9 +263,7 @@ class MigrateLogic
      * @param string $dbPrefix
      * @param string $db
      *
-     * @throws ContainerException
      * @throws DbException
-     * @throws ReflectionException
      * @throws Throwable
      */
     private function executeUp(array $mathMigrateNames, bool $isConfirm, string $dbPrefix, string $db = ''): void
@@ -333,9 +326,7 @@ class MigrateLogic
      * @param string $defaultPool
      * @param int    $step
      *
-     * @throws ContainerException
      * @throws DbException
-     * @throws ReflectionException
      * @throws Throwable
      */
     private function executeDown(
@@ -394,9 +385,7 @@ class MigrateLogic
      * @param string $dbPrefix
      * @param string $db
      *
-     * @throws ContainerException
      * @throws DbException
-     * @throws ReflectionException
      * @throws Throwable
      */
     private function batchRollback(string $pool, array $migrates, bool $isConfirm, string $dbPrefix, string $db): void
@@ -611,9 +600,7 @@ class MigrateLogic
     /**
      * @param Builder $schema
      *
-     * @throws ContainerException
      * @throws DbException
-     * @throws ReflectionException
      */
     private function createMigrationIfNotExists(Builder $schema): void
     {
