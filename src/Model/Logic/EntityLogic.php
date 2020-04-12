@@ -192,7 +192,7 @@ class EntityLogic
 
         // id
         $id = '*';
-        if (!empty($colSchema['key']) && !$this->readyGenerateId) {
+        if (!empty($colSchema['key']) && $colSchema['key'] === 'PRI' && !$this->readyGenerateId) {
             // Is auto increment
             $auto = $colSchema['extra'] && strpos($colSchema['extra'], 'auto_increment') !== false ? '' :
                 'incrementing=false';
