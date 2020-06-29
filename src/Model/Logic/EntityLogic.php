@@ -1,4 +1,12 @@
 <?php declare(strict_types=1);
+/**
+ * This file is part of Swoft.
+ *
+ * @link     https://swoft.org
+ * @document https://swoft.org/docs
+ * @contact  group@swoft.org
+ * @license  https://github.com/swoft-cloud/swoft/blob/master/LICENSE
+ */
 
 namespace Swoft\Devtool\Model\Logic;
 
@@ -147,8 +155,10 @@ class EntityLogic
             return;
         }
         if ($fileExists && !$isConfirm
-            && !ConsoleHelper::confirm(" entity $file already exists, Ensure continue?",
-                false)
+            && !ConsoleHelper::confirm(
+                " entity $file already exists, Ensure continue?",
+                false
+            )
         ) {
             output()->writeln(' Quit, Bye!');
             return;

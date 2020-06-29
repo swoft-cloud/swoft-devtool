@@ -1,4 +1,12 @@
 <?php declare(strict_types=1);
+/**
+ * This file is part of Swoft.
+ *
+ * @link     https://swoft.org
+ * @document https://swoft.org/docs
+ * @contact  group@swoft.org
+ * @license  https://github.com/swoft-cloud/swoft/blob/master/LICENSE
+ */
 
 namespace Swoft\Devtool\Model\Logic;
 
@@ -25,6 +33,7 @@ use Swoft\Devtool\Model\Data\MigrateData;
 use Swoft\Stdlib\Helper\StringHelper;
 use Throwable;
 use function method_exists;
+use RuntimeException;
 
 /**
  * Class MigrateLogic
@@ -89,7 +98,7 @@ class MigrateLogic
             }
             // generate path
             if (!mkdir($path, 0755, true) && !is_dir($path)) {
-                throw new \RuntimeException(sprintf('Directory "%s" was not created', $path));
+                throw new RuntimeException(sprintf('Directory "%s" was not created', $path));
             }
         }
 
@@ -133,7 +142,7 @@ class MigrateLogic
             throw new MigrationException('Not match migrate, please check name');
         }
 
-        $this->handler(function ($db) use ($migrateNames, $prefix, $isConfirm) {
+        $this->handler(function ($db) use ($migrateNames, $prefix, $isConfirm): void {
             $this->executeUp($migrateNames, $isConfirm, $prefix, $db);
         }, $dbs, $start, $end);
 
@@ -169,7 +178,7 @@ class MigrateLogic
             throw new MigrationException('Not match migrate, please check name');
         }
 
-        $this->handler(function ($db) use ($migrateNames, $prefix, $isConfirm, $defaultPool, $step) {
+        $this->handler(function ($db) use ($migrateNames, $prefix, $isConfirm, $defaultPool, $step): void {
             $this->executeDown($migrateNames, $isConfirm, $prefix, $db, $defaultPool, $step);
         }, $dbs, $start, $end);
 
@@ -187,7 +196,7 @@ class MigrateLogic
      */
     public function history(array $dbs, string $prefix, int $start, int $end, int $limit, string $defaultPool): void
     {
-        $this->handler(function ($db) use ($prefix, $limit, $defaultPool) {
+        $this->handler(function ($db) use ($prefix, $limit, $defaultPool): void {
             $this->showHistory($limit, $prefix, $db, $defaultPool);
         }, $dbs, $start, $end);
 
@@ -291,8 +300,11 @@ class MigrateLogic
 
             $this->createMigrationIfNotExists($schema);
 
-            $effectiveMigrates = $this->migrateData->getEffectiveMigrates($migrateNames, $pool,
-                $schema->getDatabaseName());
+            $effectiveMigrates = $this->migrateData->getEffectiveMigrates(
+                $migrateNames,
+                $pool,
+                $schema->getDatabaseName()
+            );
             // Check migrate exists
             if (empty($effectiveMigrates)) {
                 continue;
@@ -314,7 +326,6 @@ class MigrateLogic
                     output()->success($effectiveMigrateName . $time . ' up migration executed success');
                 }
             }
-
         }
     }
 
@@ -546,7 +557,7 @@ class MigrateLogic
             $migration->setSchema($copySchema);
         }
 
-        $callback = function () use ($schema, $migration, $method) {
+        $callback = function () use ($schema, $migration, $method): void {
             // Call up or down method
             $migration->{$method}();
             if (method_exists($migration, 'getWaitExecuteSql')) {
@@ -604,7 +615,7 @@ class MigrateLogic
      */
     private function createMigrationIfNotExists(Builder $schema): void
     {
-        $schema->createIfNotExists(MigrateDao::tableName(), function (Blueprint $blueprint) {
+        $schema->createIfNotExists(MigrateDao::tableName(), function (Blueprint $blueprint): void {
             $blueprint->increments('id');
             $blueprint->string('name');
             $blueprint->bigInteger('time');
@@ -612,7 +623,6 @@ class MigrateLogic
             $blueprint->renameColumn('name', 'name', 'varchar', 255);
         });
     }
-
 
     /**
      * Get file namespace

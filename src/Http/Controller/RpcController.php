@@ -1,4 +1,12 @@
 <?php declare(strict_types=1);
+/**
+ * This file is part of Swoft.
+ *
+ * @link     https://swoft.org
+ * @document https://swoft.org/docs
+ * @contact  group@swoft.org
+ * @license  https://github.com/swoft-cloud/swoft/blob/master/LICENSE
+ */
 
 namespace Swoft\Devtool\Http\Controller;
 
@@ -6,6 +14,7 @@ use Swoft\Bean\BeanFactory;
 use Swoft\Http\Server\Annotation\Mapping\Controller;
 use Swoft\Http\Server\Annotation\Mapping\RequestMapping;
 use Swoft\Http\Server\Annotation\Mapping\RequestMethod;
+use function bean;
 
 /**
  * Class RouteController
@@ -25,7 +34,7 @@ class RpcController
         }
 
         /** @var \Swoft\Rpc\Server\Router\Router $router */
-        $router  = \bean('serviceRouter');
+        $router  = bean('serviceRouter');
         $rawList = $router->getRoutes();
         $routes  = [];
 

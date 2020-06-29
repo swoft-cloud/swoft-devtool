@@ -1,4 +1,12 @@
 <?php declare(strict_types=1);
+/**
+ * This file is part of Swoft.
+ *
+ * @link     https://swoft.org
+ * @document https://swoft.org/docs
+ * @contact  group@swoft.org
+ * @license  https://github.com/swoft-cloud/swoft/blob/master/LICENSE
+ */
 
 namespace Swoft\Devtool\Http\Controller;
 
@@ -10,6 +18,18 @@ use Swoft\Http\Message\Request;
 use Swoft\Http\Server\Annotation\Mapping\Controller;
 use Swoft\Http\Server\Annotation\Mapping\RequestMapping;
 use Swoft\Http\Server\Annotation\Mapping\RequestMethod;
+use Swoft;
+use InvalidArgumentException;
+use Throwable;
+use function config;
+use function trim;
+use function get_class;
+use function bean;
+use const PHP_OS;
+use const PHP_VERSION;
+use const SWOOLE_VERSION;
+use const APP_NAME;
+use const BASE_PATH;
 
 /**
  * Class AppController
@@ -27,12 +47,12 @@ class AppController
     public function index(): array
     {
         return [
-            'os'            => \PHP_OS,
-            'phpVersion'    => \PHP_VERSION,
-            'swooleVersion' => \SWOOLE_VERSION,
-            'swoftVersion'  => \Swoft::VERSION,
-            'appName'       => \APP_NAME,
-            'basePath'      => \BASE_PATH,
+            'os'            => PHP_OS,
+            'phpVersion'    => PHP_VERSION,
+            'swooleVersion' => SWOOLE_VERSION,
+            'swoftVersion'  => Swoft::VERSION,
+            'appName'       => APP_NAME,
+            'basePath'      => BASE_PATH,
         ];
     }
 
@@ -43,17 +63,17 @@ class AppController
      * @param Request $request
      *
      * @return array|mixed
-     * @throws \Throwable
+     * @throws Throwable
      */
     public function config(Request $request)
     {
         if ($key = $request->query('key')) {
             /** @see Config::get() */
-            return \config($key);
+            return config($key);
         }
 
         /** @see Config::toArray() */
-        return \bean('config')->toArray();
+        return bean('config')->toArray();
     }
 
     /**
@@ -122,7 +142,7 @@ class AppController
      */
     public function pathAliases(): array
     {
-        return \Swoft::getAliases();
+        return Swoft::getAliases();
     }
 
     /**
@@ -132,21 +152,21 @@ class AppController
      * @param Request $request
      *
      * @return array
-     * @throws \Throwable
+     * @throws Throwable
      */
     public function events(Request $request): array
     {
         /** @var \Swoft\Event\Manager\EventManager $em */
-        $em = \bean('eventManager');
+        $em = bean('eventManager');
 
-        if ($event = \trim($request->query('name'))) {
+        if ($event = trim($request->query('name'))) {
             if (!$queue = $em->getListenerQueue($event)) {
                 return ['msg' => 'event name is invalid: ' . $event];
             }
 
             $classes = [];
             foreach ($queue->getIterator() as $listener) {
-                $classes[] = \get_class($listener);
+                $classes[] = get_class($listener);
             }
 
             return $classes;
@@ -160,11 +180,11 @@ class AppController
      *
      * @RequestMapping(route="components", method=RequestMethod::GET)
      * @return array
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function components(): array
     {
-        $lockFile = \Swoft::getAlias('@base/composer.lock');
+        $lockFile = Swoft::getAlias('@base/composer.lock');
 
         return DevToolHelper::parseComposerLockFile($lockFile);
     }
@@ -174,12 +194,12 @@ class AppController
      *
      * @RequestMapping(route="aop/handlers", method=RequestMethod::GET)
      * @return array
-     * @throws \Throwable
+     * @throws Throwable
      */
     public function aopHandles(): array
     {
         /** @var Aop $aop */
-        $aop = \bean(Aop::class);
+        $aop = bean(Aop::class);
 
         return $aop->getAspects();
     }
@@ -191,12 +211,12 @@ class AppController
      * @param Request $request
      *
      * @return array
-     * @throws \Throwable
+     * @throws Throwable
      */
     public function httpMiddles(Request $request): array
     {
         /** @var \Swoft\Http\Server\HttpDispatcher $dispatcher */
-        $dispatcher = \bean('serverDispatcher');
+        $dispatcher = bean('serverDispatcher');
         $middleType = (int)$request->query('type');
 
         // 1: only return user's
@@ -214,17 +234,17 @@ class AppController
      * @param Request $request
      *
      * @return array
-     * @throws \Throwable
+     * @throws Throwable
      */
     public function rpcMiddles(Request $request): array
     {
         $beanName = 'serviceDispatcher';
-        if (!\Swoft::hasBean($beanName)) {
+        if (!Swoft::hasBean($beanName)) {
             return [];
         }
 
         /** @var \Swoft\Rpc\Server\ServiceDispatcher $dispatcher */
-        $dispatcher = \bean($beanName);
+        $dispatcher = bean($beanName);
         $middleType = (int)$request->query('type');
 
         // 1 only return user's

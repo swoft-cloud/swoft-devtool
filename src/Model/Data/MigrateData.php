@@ -1,4 +1,12 @@
 <?php declare(strict_types=1);
+/**
+ * This file is part of Swoft.
+ *
+ * @link     https://swoft.org
+ * @document https://swoft.org/docs
+ * @contact  group@swoft.org
+ * @license  https://github.com/swoft-cloud/swoft/blob/master/LICENSE
+ */
 
 namespace Swoft\Devtool\Model\Data;
 
@@ -16,7 +24,6 @@ use Swoft\Devtool\Model\Dao\MigrateDao;
  */
 class MigrateData
 {
-
     /**
      * @Inject()
      *
@@ -79,7 +86,6 @@ class MigrateData
         }
 
         return array_diff($migrateNames, $rollBackNames);
-
     }
 
     /**
