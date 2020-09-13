@@ -525,9 +525,14 @@ class MigrateLogic
                 continue;
             }
             $time = $config['time'];
-            $pool = $config['pool'];
 
-            $poolMigrates[$pool][] = compact('time', 'name');
+            // support multiple connection pools
+            $pools  = $config['pool'];
+            $params = compact('time', 'name');
+
+            foreach (explode(',', $pools) as $pools) {
+                $poolMigrates[$pools][] = $params;
+            }
         }
 
         return $poolMigrates;
