@@ -1,6 +1,19 @@
 <?php declare(strict_types=1);
+/**
+ * This file is part of Swoft.
+ *
+ * @link     https://swoft.org
+ * @document https://swoft.org/docs
+ * @contact  group@swoft.org
+ * @license  https://github.com/swoft-cloud/swoft/blob/master/LICENSE
+ */
 
 namespace Swoft\Devtool\Helper;
+
+use function is_file;
+use function file_get_contents;
+use function json_decode;
+use function strpos;
 
 /**
  * Class DevToolHelper
@@ -14,16 +27,16 @@ class DevToolHelper
      */
     public static function parseComposerLockFile(string $file): array
     {
-        if (!\is_file($file)) {
+        if (!is_file($file)) {
             return [];
         }
 
-        if (!$json = \file_get_contents($file)) {
+        if (!$json = file_get_contents($file)) {
             return [];
         }
 
         /** @var array[] $data */
-        $data       = \json_decode($json, true);
+        $data       = json_decode($json, true);
         $components = [];
 
         if (!$data || !isset($data['packages'])) {
@@ -31,7 +44,7 @@ class DevToolHelper
         }
 
         foreach ($data['packages'] as $package) {
-            if (0 !== \strpos($package['name'], 'swoft/')) {
+            if (0 !== strpos($package['name'], 'swoft/')) {
                 continue;
             }
 

@@ -1,16 +1,21 @@
 <?php declare(strict_types=1);
-
+/**
+ * This file is part of Swoft.
+ *
+ * @link     https://swoft.org
+ * @document https://swoft.org/docs
+ * @contact  group@swoft.org
+ * @license  https://github.com/swoft-cloud/swoft/blob/master/LICENSE
+ */
 
 namespace Swoft\Devtool\Model\Logic;
 
 use InvalidArgumentException;
 use Leuffen\TextTemplate\TemplateParsingException;
-use ReflectionException;
 use Swoft;
 use Swoft\Bean\Annotation\Mapping\Bean;
 use Swoft\Bean\Annotation\Mapping\Inject;
 use Swoft\Bean\BeanFactory;
-use Swoft\Bean\Exception\ContainerException;
 use Swoft\Db\DB;
 use Swoft\Db\Exception\DbException;
 use Swoft\Db\Schema;
@@ -28,6 +33,7 @@ use Swoft\Devtool\Model\Data\MigrateData;
 use Swoft\Stdlib\Helper\StringHelper;
 use Throwable;
 use function method_exists;
+use RuntimeException;
 
 /**
  * Class MigrateLogic
@@ -92,7 +98,7 @@ class MigrateLogic
             }
             // generate path
             if (!mkdir($path, 0755, true) && !is_dir($path)) {
-                throw new \RuntimeException(sprintf('Directory "%s" was not created', $path));
+                throw new RuntimeException(sprintf('Directory "%s" was not created', $path));
             }
         }
 
@@ -136,7 +142,7 @@ class MigrateLogic
             throw new MigrationException('Not match migrate, please check name');
         }
 
-        $this->handler(function ($db) use ($migrateNames, $prefix, $isConfirm) {
+        $this->handler(function ($db) use ($migrateNames, $prefix, $isConfirm): void {
             $this->executeUp($migrateNames, $isConfirm, $prefix, $db);
         }, $dbs, $start, $end);
 
@@ -172,7 +178,7 @@ class MigrateLogic
             throw new MigrationException('Not match migrate, please check name');
         }
 
-        $this->handler(function ($db) use ($migrateNames, $prefix, $isConfirm, $defaultPool, $step) {
+        $this->handler(function ($db) use ($migrateNames, $prefix, $isConfirm, $defaultPool, $step): void {
             $this->executeDown($migrateNames, $isConfirm, $prefix, $db, $defaultPool, $step);
         }, $dbs, $start, $end);
 
@@ -190,7 +196,7 @@ class MigrateLogic
      */
     public function history(array $dbs, string $prefix, int $start, int $end, int $limit, string $defaultPool): void
     {
-        $this->handler(function ($db) use ($prefix, $limit, $defaultPool) {
+        $this->handler(function ($db) use ($prefix, $limit, $defaultPool): void {
             $this->showHistory($limit, $prefix, $db, $defaultPool);
         }, $dbs, $start, $end);
 
@@ -205,9 +211,7 @@ class MigrateLogic
      * @param string $db
      * @param string $defaultPool
      *
-     * @throws ContainerException
      * @throws DbException
-     * @throws ReflectionException
      */
     private function showHistory(int $limit, string $dbPrefix, string $db, string $defaultPool): void
     {
@@ -268,9 +272,7 @@ class MigrateLogic
      * @param string $dbPrefix
      * @param string $db
      *
-     * @throws ContainerException
      * @throws DbException
-     * @throws ReflectionException
      * @throws Throwable
      */
     private function executeUp(array $mathMigrateNames, bool $isConfirm, string $dbPrefix, string $db = ''): void
@@ -298,8 +300,11 @@ class MigrateLogic
 
             $this->createMigrationIfNotExists($schema);
 
-            $effectiveMigrates = $this->migrateData->getEffectiveMigrates($migrateNames, $pool,
-                $schema->getDatabaseName());
+            $effectiveMigrates = $this->migrateData->getEffectiveMigrates(
+                $migrateNames,
+                $pool,
+                $schema->getDatabaseName()
+            );
             // Check migrate exists
             if (empty($effectiveMigrates)) {
                 continue;
@@ -321,7 +326,6 @@ class MigrateLogic
                     output()->success($effectiveMigrateName . $time . ' up migration executed success');
                 }
             }
-
         }
     }
 
@@ -333,9 +337,7 @@ class MigrateLogic
      * @param string $defaultPool
      * @param int    $step
      *
-     * @throws ContainerException
      * @throws DbException
-     * @throws ReflectionException
      * @throws Throwable
      */
     private function executeDown(
@@ -394,9 +396,7 @@ class MigrateLogic
      * @param string $dbPrefix
      * @param string $db
      *
-     * @throws ContainerException
      * @throws DbException
-     * @throws ReflectionException
      * @throws Throwable
      */
     private function batchRollback(string $pool, array $migrates, bool $isConfirm, string $dbPrefix, string $db): void
@@ -557,7 +557,7 @@ class MigrateLogic
             $migration->setSchema($copySchema);
         }
 
-        $callback = function () use ($schema, $migration, $method) {
+        $callback = function () use ($schema, $migration, $method): void {
             // Call up or down method
             $migration->{$method}();
             if (method_exists($migration, 'getWaitExecuteSql')) {
@@ -611,13 +611,11 @@ class MigrateLogic
     /**
      * @param Builder $schema
      *
-     * @throws ContainerException
      * @throws DbException
-     * @throws ReflectionException
      */
     private function createMigrationIfNotExists(Builder $schema): void
     {
-        $schema->createIfNotExists(MigrateDao::tableName(), function (Blueprint $blueprint) {
+        $schema->createIfNotExists(MigrateDao::tableName(), function (Blueprint $blueprint): void {
             $blueprint->increments('id');
             $blueprint->string('name');
             $blueprint->bigInteger('time');
@@ -625,7 +623,6 @@ class MigrateLogic
             $blueprint->renameColumn('name', 'name', 'varchar', 255);
         });
     }
-
 
     /**
      * Get file namespace

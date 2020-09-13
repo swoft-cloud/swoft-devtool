@@ -1,4 +1,12 @@
 <?php declare(strict_types=1);
+/**
+ * This file is part of Swoft.
+ *
+ * @link     https://swoft.org
+ * @document https://swoft.org/docs
+ * @contact  group@swoft.org
+ * @license  https://github.com/swoft-cloud/swoft/blob/master/LICENSE
+ */
 
 namespace Swoft\Devtool\Model\Logic;
 
@@ -146,8 +154,11 @@ class EntityLogic
             output()->writeln(' Quit, Bye!');
             return;
         }
-        if ($fileExists && !$isConfirm && !ConsoleHelper::confirm(" entity $file already exists, Ensure continue?",
-                false)
+        if ($fileExists && !$isConfirm
+            && !ConsoleHelper::confirm(
+                " entity $file already exists, Ensure continue?",
+                false
+            )
         ) {
             output()->writeln(' Quit, Bye!');
             return;
@@ -192,7 +203,7 @@ class EntityLogic
 
         // id
         $id = '*';
-        if (!empty($colSchema['key']) && $colSchema['key'] === 'PRI' && !$this->readyGenerateId) {
+        if (!empty($colSchema['key']) && !$this->readyGenerateId && $colSchema['key'] === 'PRI') {
             // Is auto increment
             $auto = $colSchema['extra'] && strpos($colSchema['extra'], 'auto_increment') !== false ? '' :
                 'incrementing=false';

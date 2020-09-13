@@ -1,4 +1,12 @@
 <?php declare(strict_types=1);
+/**
+ * This file is part of Swoft.
+ *
+ * @link     https://swoft.org
+ * @document https://swoft.org/docs
+ * @contact  group@swoft.org
+ * @license  https://github.com/swoft-cloud/swoft/blob/master/LICENSE
+ */
 
 namespace Swoft\Devtool\Command;
 
@@ -113,8 +121,10 @@ class DInfoCommand
             "<bold>Runtime environment check</bold>\n",
             'PHP version is greater than 7.1?'    => self::wrap(PHP_VERSION_ID > 70100, 'current is ' . PHP_VERSION),
             'Swoole extension is installed?'      => self::wrap(extension_loaded('swoole')),
-            'Swoole version is greater than 4.3?' => self::wrap(version_compare($swoVer, '4.3.0', '>='),
-                'current is ' . $swoVer),
+            'Swoole version is greater than 4.3?' => self::wrap(
+                version_compare($swoVer, '4.3.0', '>='),
+                'current is ' . $swoVer
+            ),
             'Swoole async redis is enabled?'      => self::wrap($asyncRdsEnabled),
             'Swoole coroutine is enabled?'        => self::wrap(class_exists(Coroutine::class, false)),
             "\n<bold>Extensions that conflict with 'swoole'</bold>\n",

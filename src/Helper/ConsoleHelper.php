@@ -1,11 +1,19 @@
 <?php declare(strict_types=1);
-
+/**
+ * This file is part of Swoft.
+ *
+ * @link     https://swoft.org
+ * @document https://swoft.org/docs
+ * @contact  group@swoft.org
+ * @license  https://github.com/swoft-cloud/swoft/blob/master/LICENSE
+ */
 
 namespace Swoft\Devtool\Helper;
 
-
 use Toolkit\Cli\Cli;
 use Toolkit\Cli\Highlighter;
+use function output;
+use function input;
 
 /**
  * Class ConsoleHelper
@@ -14,8 +22,6 @@ use Toolkit\Cli\Highlighter;
  */
 class ConsoleHelper
 {
-
-
     /**
      * Send confirm question
      *
@@ -27,7 +33,7 @@ class ConsoleHelper
     public static function confirm(string $question, $default = true): bool
     {
         if (!$question = trim($question)) {
-            \output()->writeln('Please provide a question message!', true);
+            output()->writeln('Please provide a question message!', true);
         }
 
         $question    = ucfirst(trim($question, '?'));
@@ -36,8 +42,8 @@ class ConsoleHelper
         $message     = "<comment>$question ?</comment>\nPlease confirm (yes|no)[default:<info>$defaultText</info>]: ";
 
         while (true) {
-            \output()->writeln($message, false);
-            $answer = \input()->read();
+            output()->writeln($message, false);
+            $answer = input()->read();
 
             if (empty($answer)) {
                 return $default;
@@ -61,7 +67,7 @@ class ConsoleHelper
      * @param array|string $messages
      * @param bool         $quit
      */
-    public static function highlight($messages, $quit = true)
+    public static function highlight($messages, $quit = true): void
     {
         // this is an comment
         $rendered = Highlighter::create()->highlight($messages);

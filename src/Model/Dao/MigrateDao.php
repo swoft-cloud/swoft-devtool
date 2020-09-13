@@ -1,11 +1,16 @@
 <?php declare(strict_types=1);
-
+/**
+ * This file is part of Swoft.
+ *
+ * @link     https://swoft.org
+ * @document https://swoft.org/docs
+ * @contact  group@swoft.org
+ * @license  https://github.com/swoft-cloud/swoft/blob/master/LICENSE
+ */
 
 namespace Swoft\Devtool\Model\Dao;
 
-use ReflectionException;
 use Swoft\Bean\Annotation\Mapping\Bean;
-use Swoft\Bean\Exception\ContainerException;
 use Swoft\Db\DB;
 use Swoft\Db\Exception\DbException;
 use Swoft\Db\Query\Builder;
@@ -25,6 +30,7 @@ class MigrateDao
      * @var int
      */
     public const IS_ROLLBACK  = 1; // use flag record is rollback status
+
     public const NOT_ROLLBACK = 2; // use flag record is not rollback status
 
     /**
@@ -59,9 +65,7 @@ class MigrateDao
      * @param string $db
      *
      * @return bool
-     * @throws ContainerException
      * @throws DbException
-     * @throws ReflectionException
      */
     public function save(string $name, int $time, string $pool, string $db): bool
     {
@@ -71,7 +75,6 @@ class MigrateDao
 
         return $this->table($pool, $db)->updateOrInsert($where, $params + $where);
     }
-
 
     /**
      * Get executed migrates
@@ -117,9 +120,7 @@ class MigrateDao
      * @param string $db
      *
      * @return bool
-     * @throws ContainerException
      * @throws DbException
-     * @throws ReflectionException
      */
     public function rollback($names, string $pool, string $db): bool
     {

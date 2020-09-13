@@ -1,4 +1,12 @@
 <?php declare(strict_types=1);
+/**
+ * This file is part of Swoft.
+ *
+ * @link     https://swoft.org
+ * @document https://swoft.org/docs
+ * @contact  group@swoft.org
+ * @license  https://github.com/swoft-cloud/swoft/blob/master/LICENSE
+ */
 
 namespace Swoft\Devtool\Model\Data;
 
@@ -124,10 +132,11 @@ class SchemaData
         $getter = sprintf('get%s', $ucFirstName);
         $setter = sprintf('get%s', $ucFirstName);
 
-        if (property_exists(Model::class, $name) || method_exists(Model::class, $getter) || method_exists(Model::class,
-                $setter)
+        if (property_exists(Model::class, $name) || method_exists(Model::class, $getter) || method_exists(
+            Model::class,
+            $setter
+        )
         ) {
-
             return sprintf('property%s', $ucFirstName);
         }
 

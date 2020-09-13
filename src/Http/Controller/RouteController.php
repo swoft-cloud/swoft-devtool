@@ -1,4 +1,12 @@
 <?php declare(strict_types=1);
+/**
+ * This file is part of Swoft.
+ *
+ * @link     https://swoft.org
+ * @document https://swoft.org/docs
+ * @contact  group@swoft.org
+ * @license  https://github.com/swoft-cloud/swoft/blob/master/LICENSE
+ */
 
 namespace Swoft\Devtool\Http\Controller;
 
@@ -7,6 +15,8 @@ use Swoft\Http\Message\Request;
 use Swoft\Http\Server\Annotation\Mapping\Controller;
 use Swoft\Http\Server\Annotation\Mapping\RequestMapping;
 use Swoft\Http\Server\Annotation\Mapping\RequestMethod;
+use Throwable;
+use function bean;
 
 /**
  * Class RouteController
@@ -20,14 +30,14 @@ class RouteController
      * @param Request $request
      *
      * @return array|string
-     * @throws \Throwable
+     * @throws Throwable
      */
     public function httpRoutes(Request $request)
     {
         $asString = (int)$request->query('asString', 0);
 
         /** @var \Swoft\Http\Server\Router\Router $router */
-        $router = \bean('httpRouter');
+        $router = bean('httpRouter');
 
         if ($asString === 1) {
             return $router->toString();
@@ -41,7 +51,7 @@ class RouteController
     /**
      * @RequestMapping("ws/routes", method=RequestMethod::GET)
      * @return array
-     * @throws \Throwable
+     * @throws Throwable
      */
     public function wsRoutes(): array
     {
@@ -50,7 +60,7 @@ class RouteController
         }
 
         /** @var \Swoft\WebSocket\Server\Router\HandlerMapping $router */
-        $router = \bean('wsRouter');
+        $router = bean('wsRouter');
 
         return $router->getRoutes();
     }
@@ -66,7 +76,7 @@ class RouteController
         }
 
         /** @var \Swoft\Rpc\Server\Router\HandlerMapping $router */
-        $router  = \bean('serviceRouter');
+        $router  = bean('serviceRouter');
         $rawList = $router->getRoutes();
         $routes  = [];
 
